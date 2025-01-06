@@ -19,15 +19,21 @@ import frc.robot.util.SwerveModule;
 
 import static edu.wpi.first.units.Units.Rotation;
 
-import com.studica.frc.AHRS;
-import com.studica.frc.AHRS.NavXComType;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
+import com.ctre.phoenix6.hardware.Pigeon2;
+
+// import com.studica.frc.AHRS;
+// import com.studica.frc.AHRS.NavXComType;
 
 public class Swerve extends SubsystemBase {
   private static Swerve swerveInstance;
   private SwerveModule[] modules;
   private SparkConfigs swerveModuleConfigs;
   private SwerveDriveOdometry odometry;
-  private AHRS navx;
+  public Pigeon2 gyro;
+
+  // private AHRS navx;
+
 
 
   /** Creates a new Swerve. */
@@ -39,10 +45,14 @@ public class Swerve extends SubsystemBase {
       new SwerveModule(2, Constants.Mod2.constants, swerveModuleConfigs),
       new SwerveModule(3, Constants.Mod3.constants, swerveModuleConfigs),
     };
+    gyro = new Pigeon2(Constants.pigeonID, "612Test");
+    gyro.getConfigurator().apply(new Pigeon2Configuration());
+    gyro.setYaw(0);
+    gyro.reset();
 
     //CHECK THIS LATER!!
-    navx = new AHRS(NavXComType.kMXP_SPI);
-    navx.setAngleAdjustment(Constants.navxAngleOffset);
+    // navx = new AHRS(NavXComType.kMXP_SPI);
+    // navx.setAngleAdjustment(Constants.navxAngleOffset);
 
 
   }
@@ -61,8 +71,8 @@ public class Swerve extends SubsystemBase {
       else { //field relative
         swerveModuleStates =
         Constants.swerveKinematics.toSwerveModuleStates(
-          ChassisSpeeds.fromFieldRelativeSpeeds(
-                    translation.getX(), translation.getY(), rotation, getNavxAngle()));
+          ChassisSpeeds.fromFieldRelativeSpeeds(          // used to be get navx angle
+                    translation.getX(), translation.getY(), rotation, getPigeonAngle()));
       } 
     
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.maxSpeed);
@@ -72,13 +82,15 @@ public class Swerve extends SubsystemBase {
     }
   }
 
-  public Rotation2d getNavxAngle(){
-    return navx.getRotation2d();
+  // used to be get navx angle
+  public Rotation2d getPigeonAngle(){
+    return gyro.getRotation2d();
+    // used to be navx.getRotation2d();
   }
 
   public void zeroGyro() {
-    navx.zeroYaw();
-    
+    // navx.zeroYaw();
+    gyro.reset();
   }
 
 
@@ -100,7 +112,7 @@ public class Swerve extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Current Angle", navx.getAngle());
+    // SmartDashboard.putNumber("Current Angle", navx.getAngle());
     // This method will be called once per scheduler run
   }
 }

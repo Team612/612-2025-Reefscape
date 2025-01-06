@@ -91,6 +91,7 @@ public class Constants {
 
     /* navx angle offset */
     public static final double navxAngleOffset = 0;
+    public static final int pigeonID = 2;
 
     /* driver gunner ports */
     public static final int driverPort = 0;
