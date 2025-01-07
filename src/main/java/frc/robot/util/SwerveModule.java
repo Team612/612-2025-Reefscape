@@ -85,7 +85,9 @@ public class SwerveModule {
         lastAngle = angle;
     }
 
-
+    public Rotation2d getAngle() {
+        return Rotation2d.fromDegrees(angleEncoder.getPosition());
+    }
 
     public SwerveModuleState getState(){
         double velocity = driveEncoder.getVelocity();
@@ -99,7 +101,7 @@ public class SwerveModule {
         double absolutePosition = (canCoder.getAbsolutePosition().getValueAsDouble() * 360.0) - zeroAngle.getDegrees();
 
         angleEncoder.setPosition(absolutePosition);
-        angleController.setReference(absolutePosition, ControlType.kPosition);
+       // angleController.setReference(absolutePosition, ControlType.kPosition);
     }
 
     public void configure(SparkConfigs configs){
@@ -107,7 +109,7 @@ public class SwerveModule {
         angleMotor.configure(configs.angleMotorConfigs, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         driveEncoder.setPosition(0);
-        angleEncoder.setPosition(Units.degreesToRadians(canCoder.getAbsolutePosition().getValueAsDouble() - canCoderOffsets));
+        resetToAbsolute();
 
         CANcoderConfiguration canCoderConfigs = new CANcoderConfiguration();
         canCoderConfigs.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1; //unsigned [0,1]

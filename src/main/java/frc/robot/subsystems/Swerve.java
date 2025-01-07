@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,6 +22,12 @@ import static edu.wpi.first.units.Units.Rotation;
 
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.revrobotics.RelativeEncoder;
+import static edu.wpi.first.units.Units.Rotation;
+
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
+import com.ctre.phoenix6.hardware.Pigeon2;
+import com.revrobotics.RelativeEncoder;
 
 // import com.studica.frc.AHRS;
 // import com.studica.frc.AHRS.NavXComType;
@@ -31,7 +38,6 @@ public class Swerve extends SubsystemBase {
   private SparkConfigs swerveModuleConfigs;
   private SwerveDriveOdometry odometry;
   public Pigeon2 gyro;
-
   // private AHRS navx;
 
 
@@ -45,6 +51,7 @@ public class Swerve extends SubsystemBase {
       new SwerveModule(2, Constants.Mod2.constants, swerveModuleConfigs),
       new SwerveModule(3, Constants.Mod3.constants, swerveModuleConfigs),
     };
+
     gyro = new Pigeon2(Constants.pigeonID, "612Test");
     gyro.getConfigurator().apply(new Pigeon2Configuration());
     gyro.setYaw(0);
@@ -107,12 +114,20 @@ public class Swerve extends SubsystemBase {
     return swerveInstance;
   }
 
+  private Rotation2d getAngle() {
+    return Rotation2d.fromDegrees(gyro.getYaw().getValueAsDouble());
+  }
 
 
-
+  
   @Override
   public void periodic() {
+
     // SmartDashboard.putNumber("Current Angle", navx.getAngle());
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Gyro Angle", getAngle().getDegrees());
+    for(SwerveModule mod : modules) {
+      SmartDashboard.putNumber("Module " + mod.moduleNumber, mod.getAngle().getDegrees());
+    }
   }
 }
