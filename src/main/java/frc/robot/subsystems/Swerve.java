@@ -52,7 +52,7 @@ public class Swerve extends SubsystemBase {
       new SwerveModule(3, Constants.Mod3.constants, swerveModuleConfigs),
     };
 
-    gyro = new Pigeon2(Constants.pigeonID, "612Test");
+    gyro = new Pigeon2(Constants.pigeonID);
     gyro.getConfigurator().apply(new Pigeon2Configuration());
     gyro.setYaw(0);
     gyro.reset();
@@ -68,7 +68,6 @@ public class Swerve extends SubsystemBase {
     //Drives field relative
   public void drive(
       Translation2d translation, double rotation, boolean isOpenLoop, boolean robotRelative) {
-    
       SwerveModuleState[] swerveModuleStates;
       if (robotRelative) {
         swerveModuleStates =
@@ -127,7 +126,7 @@ public class Swerve extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Gyro Angle", getAngle().getDegrees());
     for(SwerveModule mod : modules) {
-      SmartDashboard.putNumber("Module " + mod.moduleNumber, mod.getAngle().getDegrees());
+      SmartDashboard.putNumber("Module " + mod.moduleNumber + " Angle", mod.getAngle().getDegrees());
     }
   }
 }

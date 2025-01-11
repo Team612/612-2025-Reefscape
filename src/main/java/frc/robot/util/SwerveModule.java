@@ -81,6 +81,7 @@ public class SwerveModule {
         ? lastAngle
         : desiredState.angle.getDegrees();
   
+        
         angleController.setReference(angle, ControlType.kPosition);
         lastAngle = angle;
     }
@@ -89,9 +90,11 @@ public class SwerveModule {
         return Rotation2d.fromDegrees(angleEncoder.getPosition());
     }
 
+ 
+
     public SwerveModuleState getState(){
         double velocity = driveEncoder.getVelocity();
-        Rotation2d rotation = new Rotation2d(angleEncoder.getPosition());
+        Rotation2d rotation = new Rotation2d(Units.degreesToRadians(angleEncoder.getPosition()));
 
         return new SwerveModuleState(velocity, rotation);
     }

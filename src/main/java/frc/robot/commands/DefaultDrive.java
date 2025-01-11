@@ -45,6 +45,8 @@ public class DefaultDrive extends Command {
             MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband));
 
     /* Drive */
+ 
+    System.out.println(rotationVal * Constants.maxSpeed);
     m_drivetrain.drive(
         new Translation2d(translationVal, strafeVal).times(Constants.maxSpeed),
         rotationVal * Constants.maxAngularVelocity,
