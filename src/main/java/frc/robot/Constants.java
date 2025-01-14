@@ -53,8 +53,8 @@ public class Constants {
     public static final double closedloopRate = 0;
 
     /* Current Limits */
-    public static final int driveCurrentLimit = 60;
-    public static final int angleCurrentLimit = 60;
+    public static final int driveCurrentLimit = 30;
+    public static final int angleCurrentLimit = 30;
 
 
     /* Angle Encoder Invert */
@@ -96,7 +96,7 @@ public class Constants {
     /* driver gunner ports */
     public static final int driverPort = 0;
     public static final int gunnerPort = 1;
-    public static final double stickDeadband = 0.01;
+    public static final double stickDeadband = 0.1;
    
 
     /* labeled clockwise from robot POV */

@@ -45,8 +45,6 @@ public class FieldRelativeDrive extends Command {
             MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband));
 
     /* Drive */
-    System.out.println(strafeVal);
-    System.out.println(translationVal);
     m_drivetrain.drive(
         new Translation2d(translationVal, strafeVal).times(Constants.maxSpeed),
         rotationVal * Constants.maxAngularVelocity,

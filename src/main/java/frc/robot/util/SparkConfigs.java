@@ -39,6 +39,7 @@ public class SparkConfigs {
             .openLoopRampRate(Constants.openLoopRate)
             .closedLoopRampRate(Constants.closedloopRate)
             .smartCurrentLimit(Constants.angleCurrentLimit);
+            
 
         angleMotorConfigs.closedLoop
             .pidf(Constants.angleKP, Constants.angleKI, Constants.angleKD, Constants.angleKFF);
