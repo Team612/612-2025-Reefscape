@@ -25,6 +25,7 @@ public class Constants {
 
     public static final double driveGearRatio = (6.75 / 1.0); // 6.75:1
     public static final double angleGearRatio = (150.0 / 7.0); // 12.8:1
+    public static final String limeName = "limelight";
 
     public static final SwerveDriveKinematics swerveKinematics =
         new SwerveDriveKinematics(
