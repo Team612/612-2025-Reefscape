@@ -60,10 +60,7 @@ public class Swerve extends SubsystemBase {
     //CHECK THIS LATER!!
     // navx = new AHRS(NavXComType.kMXP_SPI);
     // navx.setAngleAdjustment(Constants.navxAngleOffset);
-
-
   }
-
 
     //Drives field relative
   public void drive(
@@ -89,11 +86,29 @@ public class Swerve extends SubsystemBase {
     }
   }
 
-  // used to be get navx angle
+
   public Rotation2d getPigeonAngle(){
     return gyro.getRotation2d();
     // used to be navx.getRotation2d();
   }
+
+  public SwerveModulePosition[] getSwervePoses() {
+      SwerveModulePosition[] mods = new SwerveModulePosition[4];
+      for (SwerveModule mod : modules) {
+        mods[mod.moduleNumber] = mod.getPosition();
+      }
+      return mods;
+  }
+
+
+  public Rotation2d getModAngle() {
+    return new Rotation2d();
+  }
+
+  public double getDistanceMeters() {
+    return 0.0;
+  }
+
 
   public void zeroGyro() {
     // navx.zeroYaw();
