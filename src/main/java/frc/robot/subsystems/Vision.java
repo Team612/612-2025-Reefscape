@@ -9,6 +9,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 public class Vision implements Subsystem {
     String limeName;
@@ -36,6 +38,8 @@ public class Vision implements Subsystem {
     @Override
     public void periodic() {
         updateData();
+        SmartDashboard.putNumber("April Tag x", x);
+        SmartDashboard.putNumber("April Tag y", y);
     }
 
     public Pose2d getAprilTagPose(){
