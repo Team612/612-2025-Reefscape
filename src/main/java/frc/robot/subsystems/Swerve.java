@@ -100,16 +100,6 @@ public class Swerve extends SubsystemBase {
       return mods;
   }
 
-
-  public Rotation2d getModAngle() {
-    return new Rotation2d();
-  }
-
-  public double getDistanceMeters() {
-    return 0.0;
-  }
-
-
   public void zeroGyro() {
     // navx.zeroYaw();
     gyro.reset();
