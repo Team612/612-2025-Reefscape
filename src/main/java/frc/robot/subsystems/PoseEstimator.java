@@ -5,7 +5,12 @@
 package frc.robot.subsystems;
 
 
+import java.io.IOException;
+import java.util.Optional;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -34,18 +39,24 @@ import frc.robot.RobotContainer;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.LimelightHelpers.LimelightTarget_Fiducial;
+import frc.robot.LimelightHelpers.RawFiducial;
 
 public class PoseEstimator extends SubsystemBase {
-  SwerveDrivePoseEstimator drivePoseEstimator;
+
   Vision visionSubsystem;
   Swerve swerve;
-  private Field2d fieldLayout;
-  Pose2d pose = new Pose2d();
-  Pose2d estimatedPose;
-  
-  StructPublisher<Pose2d> publisher;
-  StructArrayPublisher<Pose2d> arrayPublisher;
-  
+
+  Pose3d estimatedPose;
+
+  AprilTagFieldLayout layout;
+  SwerveDrivePoseEstimator drivePoseEstimator;
+
+  // StructPublisher<Pose2d> publisher;
+  // StructArrayPublisher<Pose2d> arrayPublisher;
+  // {
+ 
+  // }
+
   public static final double FIELD_LENGTH_METERS = Units.inchesToMeters(651.25);
   public static final double FIELD_WIDTH_METERS = Units.inchesToMeters(323.25);
   private double previousPipelineTimestamp = 0;
@@ -55,18 +66,20 @@ public class PoseEstimator extends SubsystemBase {
   public PoseEstimator() {
     swerve = Swerve.getInstance();
     visionSubsystem = Vision.getInstance();
-    fieldLayout = new Field2d();
-    SmartDashboard.putData("Field", fieldLayout);
-
+       try{
+          layout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+        }
+        catch(IOException e) {
+                DriverStation.reportError("Failed to load AprilTagFieldLayout", e.getStackTrace());
+                layout = null;
+        }
     drivePoseEstimator = new SwerveDrivePoseEstimator(
       Constants.swerveKinematics, 
       swerve.getPigeonAngle(), 
       swerve.getSwervePoses(), 
       new Pose2d()
     );
-    
-    pose = visionSubsystem.getAprilTagPose();
-  }
+}
 
   public static PoseEstimator getPoseEstimatorInstance() {
     if (estimator == null) {
@@ -76,37 +89,48 @@ public class PoseEstimator extends SubsystemBase {
   }
 
 
-  public void updatePose(PoseEstimator poseEstimator, int camID){    
-    if(LimelightHelpers.getLatestResults(Constants.limeName).targets_Fiducials.length > 0) {
-      estimatedPose = visionSubsystem.getAprilTagPose();
+  public void updatePose(SwerveDrivePoseEstimator poseEstimator){ 
+      LimelightResults results = LimelightHelpers.getLatestResults(Constants.limeName);
+      LimelightTarget_Fiducial[] fiducials = results.targets_Fiducials;
 
-        if (estimatedPose.getX() >= 0.0 && estimatedPose.getX() <= FIELD_LENGTH_METERS  && estimatedPose.getY() >= 0.0 && estimatedPose.getY() <= FIELD_WIDTH_METERS) {
-            
-          for (LimelightHelpers.LimelightTarget_Fiducial target : visionSubsystem.getAprilTags()) {
-              Pose2d targetPose = visionSubsystem.returnTagPose(target);
-              // Transform3d bestTarget = target.getBestCameraToTarget();
-              // if (target.getPoseAmbiguity() <= .2) {
-              //   previousPipelineTimestamp = estimatedRobotPose.timestampSeconds;
-              // }
-            }
-        }
+      for (LimelightTarget_Fiducial fiducial : fiducials) {
+          Pose3d robotPoseField;
+          Pose3d tagPoseField = layout.getTagPose((int) fiducial.fiducialID).orElse(new Pose3d());
+
+          Pose3d tagPoseRobot = fiducial.getTargetPose_RobotSpace();
+
+          Translation3d invertedTranslation = tagPoseRobot.getTranslation().unaryMinus();
+          Rotation3d invertedRotation = tagPoseRobot.getRotation().unaryMinus();
+          Pose3d tagPoseRobotInverse = new Pose3d(invertedTranslation, invertedRotation);
+          Translation3d fieldTranslation = tagPoseField.getTranslation().plus(tagPoseRobotInverse.getTranslation());
+          Rotation3d fieldRotation = tagPoseField.getRotation().plus(tagPoseRobotInverse.getRotation());
+
+          robotPoseField = new Pose3d(fieldTranslation, fieldRotation);
+          Pose3d estimatedPose = robotPoseField;
+          if (estimatedPose.getX() >= 0.0 && estimatedPose.getX() <= FIELD_LENGTH_METERS  && estimatedPose.getY() >= 0.0 && estimatedPose.getY() <= FIELD_WIDTH_METERS) {
+          }
+          else{
+            estimatedPose = new Pose3d();
+          }
       }
-    }
+  }
 
 
   @Override
   public void periodic() {
     drivePoseEstimator.update(swerve.getPigeonAngle(), swerve.getSwervePoses());
-    publisher.set(drivePoseEstimator.getEstimatedPosition());
-    fieldLayout.setRobotPose(getPose());
+    updatePose(drivePoseEstimator);
+    SmartDashboard.putNumber("X", getPose().getX());
+    SmartDashboard.putNumber("Y", getPose().getY());
+    SmartDashboard.putNumber("Z", getPose().getZ());
   }
 
 
-  public Pose2d getPose() {
-    return drivePoseEstimator.getEstimatedPosition();
+  public Pose3d getPose() {
+    return estimatedPose;
   }
 
-  public void setPose(Pose2d newPose) {
-    drivePoseEstimator.resetPosition(swerve.getPigeonAngle(), swerve.getSwervePoses(), newPose);
+  public void setPose(Pose3d newPose) {
+      estimatedPose = newPose;
   }
 }
