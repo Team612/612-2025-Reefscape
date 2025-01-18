@@ -6,7 +6,11 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import com.revrobotics.*;
 import frc.robot.util.SparkConfigs;
+import com.revrobotics.spark.*;
+
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -17,12 +21,18 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.util.SwerveModule;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
+// import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 
 import static edu.wpi.first.units.Units.Rotation;
 
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
 import static edu.wpi.first.units.Units.Rotation;
 
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
@@ -32,25 +42,46 @@ import com.revrobotics.RelativeEncoder;
 // import com.studica.frc.AHRS;
 // import com.studica.frc.AHRS.NavXComType;
 
-public class Swerve extends SubsystemBase {
-  private static Swerve swerveInstance;
+public class Mechanum extends SubsystemBase {
+  private static Mechanum swerveInstance;
   private SwerveModule[] modules;
   private SparkConfigs swerveModuleConfigs;
   private SwerveDriveOdometry odometry;
   public Pigeon2 gyro;
   // private AHRS navx;
-
+  private final Spark spark_fl;
+  private final Spark spark_fr;
+  private final Spark spark_bl;
+  private final Spark spark_br;
 
 
   /** Creates a new Swerve. */
-  public Swerve() {
-    swerveModuleConfigs = new SparkConfigs();
-    modules = new SwerveModule[] {
-      new SwerveModule(0, Constants.Mod0.constants, swerveModuleConfigs),
-      new SwerveModule(1, Constants.Mod1.constants, swerveModuleConfigs),
-      new SwerveModule(2, Constants.Mod2.constants, swerveModuleConfigs),
-      new SwerveModule(3, Constants.Mod3.constants, swerveModuleConfigs),
-    };
+  public Mechanum() {
+
+    spark_fl = new Spark(Constants.DrivetrainConstants.SPARK_FL);
+    spark_fr = new Spark(Constants.DrivetrainConstants.SPARK_FR);
+    spark_bl = new Spark(Constants.DrivetrainConstants.SPARK_BL);
+    spark_br = new Spark(Constants.DrivetrainConstants.SPARK_BR);
+    
+    spark_fr.setInverted(true);
+    spark_br.setInverted(true);
+    spark_fl.setInverted(false);
+    spark_bl.setInverted(false);
+    
+    spark_fl.setIdleMode(IdleMode.kBrake);
+    spark_fr.setIdleMode(IdleMode.kBrake);
+    spark_bl.setIdleMode(IdleMode.kBrake);
+    spark_br.setIdleMode(IdleMode.kBrake);
+
+
+    spark_fr.getEncoder().setPositionConversionFactor(Constants.DrivetrainConstants.kEncoderDistancePerPulse);
+    spark_fl.getEncoder().setPositionConversionFactor(Constants.DrivetrainConstants.kEncoderDistancePerPulse);
+    spark_br.getEncoder().setPositionConversionFactor(Constants.DrivetrainConstants.kEncoderDistancePerPulse);
+    spark_bl.getEncoder().setPositionConversionFactor(Constants.DrivetrainConstants.kEncoderDistancePerPulse);
+    spark_fr.getEncoder().setVelocityConversionFactor(vel);
+    spark_fl.getEncoder().setVelocityConversionFactor(vel);
+    spark_br.getEncoder().setVelocityConversionFactor(vel);
+    spark_bl.getEncoder().setVelocityConversionFactor(vel);
 
     gyro = new Pigeon2(Constants.pigeonID, "612Test");
     gyro.getConfigurator().apply(new Pigeon2Configuration());
@@ -112,9 +143,9 @@ public class Swerve extends SubsystemBase {
     }
   }
 
-  public static Swerve getInstance(){
+  public static Mechanum getInstance(){
     if (swerveInstance == null){
-      swerveInstance = new Swerve();
+      swerveInstance = new Mechanum();
     }
     return swerveInstance;
   }

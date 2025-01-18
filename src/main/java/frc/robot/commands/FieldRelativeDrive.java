@@ -5,11 +5,11 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.Mechanum;
 import java.util.function.DoubleSupplier;
 
 public class FieldRelativeDrive extends Command {
-  private Swerve m_drivetrain;
+  private Mechanum m_drivetrain;
   private DoubleSupplier translationSup;
   private DoubleSupplier strafeSup;
   private DoubleSupplier rotationSup;
@@ -19,7 +19,7 @@ public class FieldRelativeDrive extends Command {
   private SlewRateLimiter rotationLimiter = new SlewRateLimiter(3.0);
 
   public FieldRelativeDrive(
-      Swerve drive,
+      Mechanum drive,
       DoubleSupplier translationSup,
       DoubleSupplier strafeSup,
       DoubleSupplier rotationSup) {

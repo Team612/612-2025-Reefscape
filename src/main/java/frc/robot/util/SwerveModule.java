@@ -13,7 +13,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 
 import frc.robot.Constants;
 import frc.robot.SwerveModuleConstants;
-import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.Mechanum;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 

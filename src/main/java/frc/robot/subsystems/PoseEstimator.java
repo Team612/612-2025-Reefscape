@@ -44,7 +44,7 @@ import frc.robot.LimelightHelpers.RawFiducial;
 public class PoseEstimator extends SubsystemBase {
 
   Vision visionSubsystem;
-  Swerve swerve;
+  Mechanum swerve;
 
   Pose3d estimatedPose;
 
@@ -64,7 +64,7 @@ public class PoseEstimator extends SubsystemBase {
   static PoseEstimator estimator = null;
   
   public PoseEstimator() {
-    swerve = Swerve.getInstance();
+    swerve = Mechanum.getInstance();
     visionSubsystem = Vision.getInstance();
        try{
           layout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);

@@ -98,6 +98,12 @@ public class Constants {
     public static final int driverPort = 0;
     public static final int gunnerPort = 1;
     public static final double stickDeadband = 0.1;
+    public static final class DrivetrainConstants {
+        public final static int SPARK_FL = 2;
+        public final static int SPARK_FR = 1;
+        public final static int SPARK_BL = 4;
+        public final static int SPARK_BR = 3;
+    }
    
     public static final class Mod0 {
     public static final int driveMotorID = 2;
