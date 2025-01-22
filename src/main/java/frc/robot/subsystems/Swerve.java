@@ -52,7 +52,7 @@ public class Swerve extends SubsystemBase {
       new SwerveModule(3, Constants.Mod3.constants, swerveModuleConfigs),
     };
 
-    gyro = new Pigeon2(Constants.pigeonID, "612Test");
+    gyro = new Pigeon2(Constants.pigeonID);
     gyro.getConfigurator().apply(new Pigeon2Configuration());
     gyro.setYaw(0);
     gyro.reset();
