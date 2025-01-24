@@ -89,25 +89,27 @@ public class Constants {
  //Distance btwn centers of right and left wheels
 
     public class DrivetrainConstants{
+        // Starting from here we don't know the stuff
+        // Get IDs from rev client
         public static final int SPARK_FL = 0;
         public static final int SPARK_BR = 1;
         public static final int SPARK_BL = 2;
+        public static final int SPARK_FR = 3;
 
         // Need to get locations of wheels relative to center of robot
         public static final Translation2d m_frontLeftLocation = new Translation2d(0.381, 0.381);
         public static final Translation2d m_frontRightLocation = new Translation2d(0.381, -0.381);
         public static final Translation2d m_backLeftLocation = new Translation2d(-0.381, 0.381);
         public static final Translation2d m_backRightLocation = new Translation2d(-0.381, -0.381);
-
-        public static final double kWheelBase =  Units.inchesToMeters(21);
-        public static final double kTrackWidth = Units.inchesToMeters(26.625);
-        public static final int SPARK_FR = 3;
+        // We know none of this
+        public static final double kWheelBase =  Units.inchesToMeters(21); // width from center of back to front wheels (center of the wheel)
+        public static final double kTrackWidth = Units.inchesToMeters(26.625); // width from right to left wheels (center of the wheel)
         public static final double kGearReduction = 16; // we do not know this, ask Ayush
-        public static final double kWheelDiameterMeters = 0.1524; 
 
+        // this stuff we know
+        public static final double kWheelDiameterMeters = 0.1524; 
         public static final double kEncoderDistancePerPulse =
             ((kWheelDiameterMeters * Math.PI)) / (kGearReduction);
-
         public static final MecanumDriveKinematics kDriveKinematics =
             new MecanumDriveKinematics(
                 new Translation2d(kWheelBase / 2, kTrackWidth / 2),
