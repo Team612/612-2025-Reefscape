@@ -3,13 +3,16 @@ package frc.robot.commands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
+import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.Mechanum;
+import frc.robot.subsystems.Mecanum;
 import java.util.function.DoubleSupplier;
 
 public class FieldRelativeDrive extends Command {
-  private Mechanum m_drivetrain;
+  private Mecanum Mecanum;
   private DoubleSupplier translationSup;
   private DoubleSupplier strafeSup;
   private DoubleSupplier rotationSup;
@@ -19,11 +22,11 @@ public class FieldRelativeDrive extends Command {
   private SlewRateLimiter rotationLimiter = new SlewRateLimiter(3.0);
 
   public FieldRelativeDrive(
-      Mechanum drive,
+      Mecanum drive,
       DoubleSupplier translationSup,
       DoubleSupplier strafeSup,
       DoubleSupplier rotationSup) {
-    this.m_drivetrain = drive;
+    this.Mecanum = drive;
     addRequirements(drive);
 
     this.translationSup = translationSup;
@@ -33,7 +36,7 @@ public class FieldRelativeDrive extends Command {
 
   @Override
   public void execute() {
-    /* Get Values, Deadband*/
+
     double translationVal =
         translationLimiter.calculate(
             MathUtil.applyDeadband(translationSup.getAsDouble(), Constants.stickDeadband));
@@ -44,10 +47,21 @@ public class FieldRelativeDrive extends Command {
         rotationLimiter.calculate(
             MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband));
 
+    MecanumDriveKinematics m_kinematics = new MecanumDriveKinematics(
+      Constants.DrivetrainConstants.m_frontLeftLocation, Constants.DrivetrainConstants.m_frontRightLocation, Constants.DrivetrainConstants.m_backLeftLocation, Constants.DrivetrainConstants.m_backRightLocation
+    );
+
+    ChassisSpeeds speeds = new ChassisSpeeds(translationVal, strafeVal, rotationVal);
+    // Convert to wheel speeds
+    MecanumDriveWheelSpeeds wheelSpeeds = m_kinematics.toWheelSpeeds(speeds);
+    // Get the individual wheel speeds
+    double frontLeft = wheelSpeeds.frontLeftMetersPerSecond;
+    double frontRight = wheelSpeeds.frontRightMetersPerSecond;
+    double backLeft = wheelSpeeds.rearLeftMetersPerSecond;
+    double backRight = wheelSpeeds.rearRightMetersPerSecond;
+
+
     /* Drive */
-    m_drivetrain.drive(
-        new Translation2d(translationVal, strafeVal).times(Constants.maxSpeed),
-        rotationVal * Constants.maxAngularVelocity,
-        true, false);
+    Mecanum.driveMecanum(frontLeft, backLeft, frontRight, backRight);
   }
 }

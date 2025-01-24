@@ -13,11 +13,11 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.estimator.MecanumDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -44,12 +44,12 @@ import frc.robot.LimelightHelpers.RawFiducial;
 public class PoseEstimator extends SubsystemBase {
 
   Vision visionSubsystem;
-  Mechanum swerve;
+  Mecanum mecanum;
 
   Pose3d estimatedPose;
 
   AprilTagFieldLayout layout;
-  SwerveDrivePoseEstimator drivePoseEstimator;
+  MecanumDrivePoseEstimator drivePoseEstimator;
 
   // StructPublisher<Pose2d> publisher;
   // StructArrayPublisher<Pose2d> arrayPublisher;
@@ -64,7 +64,7 @@ public class PoseEstimator extends SubsystemBase {
   static PoseEstimator estimator = null;
   
   public PoseEstimator() {
-    swerve = Mechanum.getInstance();
+    mecanum = Mecanum.getInstance();
     visionSubsystem = Vision.getInstance();
        try{
           layout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
@@ -73,10 +73,10 @@ public class PoseEstimator extends SubsystemBase {
                 DriverStation.reportError("Failed to load AprilTagFieldLayout", e.getStackTrace());
                 layout = null;
         }
-    drivePoseEstimator = new SwerveDrivePoseEstimator(
-      Constants.swerveKinematics, 
-      swerve.getPigeonAngle(), 
-      swerve.getSwervePoses(), 
+    drivePoseEstimator = new MecanumDrivePoseEstimator(
+      Constants.DrivetrainConstants.kDriveKinematics, 
+      mecanum.getPigeonAngle(), 
+      mecanum.getMecanumDriveWheelPositions(), 
       new Pose2d()
     );
 }
@@ -89,7 +89,7 @@ public class PoseEstimator extends SubsystemBase {
   }
 
 
-  public void updatePose(SwerveDrivePoseEstimator poseEstimator){ 
+  public void updatePose(MecanumDrivePoseEstimator poseEstimator){ 
       LimelightResults results = LimelightHelpers.getLatestResults(Constants.limeName);
       LimelightTarget_Fiducial[] fiducials = results.targets_Fiducials;
 
@@ -118,7 +118,7 @@ public class PoseEstimator extends SubsystemBase {
 
   @Override
   public void periodic() {
-    drivePoseEstimator.update(swerve.getPigeonAngle(), swerve.getSwervePoses());
+    drivePoseEstimator.update(mecanum.getPigeonAngle(), mecanum.getMecanumDriveWheelPositions());
     updatePose(drivePoseEstimator);
     SmartDashboard.putNumber("X", getPose().getX());
     SmartDashboard.putNumber("Y", getPose().getY());
