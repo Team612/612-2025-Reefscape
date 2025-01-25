@@ -50,9 +50,10 @@ public class TrajectoryConfiguration extends SubsystemBase {
     //         this // Reference to this subsystem to set requirements
     // );
     RobotConfig config;
+    System.out.println("Outside");
     try{
       config = RobotConfig.fromGUISettings();
-
+      System.out.println("TRY CATCH STATEMENT");
       AutoBuilder.configure(
             m_PoseEstimator::getPose, // Robot pose supplier
             m_PoseEstimator::setCurrentPose, // Method to reset odometry (will be called if your auto has a starting pose)
@@ -77,12 +78,15 @@ public class TrajectoryConfiguration extends SubsystemBase {
             this // Reference to this subsystem to set requirements
       );
     } catch (Exception e) {
+      
       // Handle exception as needed
+      System.out.println("-----------------------------------");
       e.printStackTrace();
     }
   }
 
   public static TrajectoryConfiguration getInstance(){
+    System.out.println("RUN");
     if (trajectoryConfig == null){
         trajectoryConfig = new TrajectoryConfiguration();
     }

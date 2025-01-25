@@ -16,6 +16,7 @@ import frc.robot.commands.RunOnTheFly;
 import frc.robot.commands.TrajectoryCreation;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.TrajectoryConfiguration;
 import frc.robot.subsystems.Vision;
 
 public class RobotContainer {
@@ -27,12 +28,14 @@ public class RobotContainer {
   private final DefaultDrive m_defaultDrive;
   private final FieldRelativeDrive m_FieldRelativeDrive;
   private final PoseEstimator m_poseEstimator;
+  private final TrajectoryConfiguration m_trajConfig;
   public RobotContainer() {
 
     m_drivetrain = Swerve.getInstance();
     m_poseEstimator = PoseEstimator.getPoseEstimatorInstance();
     m_vision = Vision.getVisionInstance();
     m_traj = new TrajectoryCreation();
+    m_trajConfig = TrajectoryConfiguration.getInstance();
     runOnTheFly = new RunOnTheFly(m_drivetrain, m_poseEstimator, m_traj, m_vision, 0);
 
     driverControls = new CommandXboxController(Constants.driverPort);
@@ -52,9 +55,9 @@ public class RobotContainer {
   private void configureBindings() {
     driverControls.b().toggleOnTrue(m_defaultDrive);
     driverControls.a().onTrue(runOnTheFly);
-    m_drivetrain.setDefaultCommand(m_FieldRelativeDrive);
+    m_drivetrain.setDefaultCommand(m_defaultDrive);
   }
-
+  
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
   }
