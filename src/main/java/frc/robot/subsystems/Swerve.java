@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.util.SwerveModule;
 
 import static edu.wpi.first.units.Units.Rotation;
-
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.revrobotics.RelativeEncoder;
@@ -86,6 +85,16 @@ public class Swerve extends SubsystemBase {
     }
   }
 
+  public void driveSpeeds(ChassisSpeeds speeds) {
+    SwerveModuleState[] swerveModuleStates =
+        Constants.swerveKinematics.toSwerveModuleStates(speeds);
+    
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.maxSpeed);
+
+    for (SwerveModule mod : modules) {
+      mod.setState(swerveModuleStates[mod.moduleNumber], false);
+    }
+  }
 
   public Rotation2d getPigeonAngle(){
     return gyro.getRotation2d();
@@ -98,6 +107,14 @@ public class Swerve extends SubsystemBase {
         mods[mod.moduleNumber] = mod.getPosition();
       }
       return mods;
+  }
+
+  public SwerveModuleState[] getStates() {
+    SwerveModuleState[] states = new SwerveModuleState[4];
+    for (SwerveModule mod : modules) {
+      states[mod.moduleNumber] = mod.getState();
+    }
+    return states;
   }
 
   public void zeroGyro() {
@@ -119,11 +136,14 @@ public class Swerve extends SubsystemBase {
     return swerveInstance;
   }
 
+  public ChassisSpeeds getChassisSpeeds() {
+    ChassisSpeeds result = Constants.swerveKinematics.toChassisSpeeds(getStates());
+    return result;
+  }
+
   private Rotation2d getAngle() {
     return Rotation2d.fromDegrees(gyro.getYaw().getValueAsDouble());
   }
-
-
   
   @Override
   public void periodic() {

@@ -26,6 +26,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -120,7 +121,8 @@ public void updatePoseEstimator() {
            Pose3d camPose;
            //Adding vision measurements from the center of the robot to the apriltag. Back camera should already be inverted
            // camPose = targetPose.transformBy(bestTarget.inverse().plus(visionSubsystem.getRobotToCam().inverse()));  //.plus(new Transform3d(robotToCam, new Rotation3d(0,0,0))); 
-           camPose = targetPose.transformBy(bestTarget.inverse().plus(new Transform3d(new Translation3d(0.0,0.0,0.0), new Rotation3d(0,Units.degreesToRadians(35),Math.PI))));  //.plus(new Transform3d(robotToCam, new Rotation3d(0,0,0))); 
+          //  camPose = targetPose.transformBy(bestTarget.inverse().plus(new Transform3d(new Translation3d(0.0,0.0,0.0), new Rotation3d(0,Units.degreesToRadians(35),Math.PI))));  //.plus(new Transform3d(robotToCam, new Rotation3d(0,0,0))); 
+           camPose = targetPose.transformBy(bestTarget.plus(new Transform3d(new Translation3d(Constants.trackWidth/2,0.0,0.0), new Rotation3d(0, 0, 0))));  //.plus(new Transform3d(robotToCam, new Rotation3d(0,0,0))); 
 
          //checking the tags ambiguity. The lower the ambiguity, the more accurate the pose is
            if (target.getPoseAmbiguity() <= .2) {
