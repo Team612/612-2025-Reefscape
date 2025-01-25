@@ -18,6 +18,6 @@ public class CANdleLights extends Command {
 
   @Override
   public void execute() {
-    
+    m_candle.setColor(255, 0, 0);
   }
 }
