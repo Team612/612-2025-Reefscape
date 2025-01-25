@@ -51,7 +51,8 @@ public class Constants {
     /* Open and Closed Ramp Rates */
     public static final double openLoopRate = 0.25;
     public static final double closedloopRate = 0;
-
+    public static final int canId = 0;
+    public static final int brightness = 1;
     /* Current Limits */
     public static final int driveCurrentLimit = 60;
     public static final int angleCurrentLimit = 60;
