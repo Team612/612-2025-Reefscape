@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DefaultDrive;
 import frc.robot.commands.FieldRelativeDrive;
-import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.Mecanum;
 
 public class RobotContainer {
@@ -18,10 +17,8 @@ public class RobotContainer {
   private final CommandXboxController driverControls;
   private final DefaultDrive m_defaultDrive;
   private final FieldRelativeDrive m_FieldRelativeDrive;
-  private final PoseEstimator Pose;
   public RobotContainer() {
     m_drivetrain = Mecanum.getInstance();
-    Pose = PoseEstimator.getPoseEstimatorInstance();
 
     driverControls = new CommandXboxController(Constants.driverPort);
     m_defaultDrive = new DefaultDrive( m_drivetrain,

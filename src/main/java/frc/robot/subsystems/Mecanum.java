@@ -65,7 +65,7 @@ public class Mecanum extends SubsystemBase {
     spark_fl.setInverted(false);
     spark_bl.setInverted(false);
 
-    gyro = new Pigeon2(Constants.pigeonID, "612Test");
+    gyro = new Pigeon2(Constants.pigeonID);
     gyro.getConfigurator().apply(new Pigeon2Configuration());
     gyro.setYaw(0);
     gyro.reset();

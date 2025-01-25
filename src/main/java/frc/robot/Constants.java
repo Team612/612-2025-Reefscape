@@ -91,10 +91,10 @@ public class Constants {
     public class DrivetrainConstants{
         // Starting from here we don't know the stuff
         // Get IDs from rev client
-        public static final int SPARK_FL = 0;
-        public static final int SPARK_BR = 1;
-        public static final int SPARK_BL = 2;
-        public static final int SPARK_FR = 3;
+        public static final int SPARK_FL = 2;
+        public static final int SPARK_BR = 4;
+        public static final int SPARK_BL = 3;
+        public static final int SPARK_FR = 1;
 
         // Need to get locations of wheels relative to center of robot
         public static final Translation2d m_frontLeftLocation = new Translation2d(0.381, 0.381);
