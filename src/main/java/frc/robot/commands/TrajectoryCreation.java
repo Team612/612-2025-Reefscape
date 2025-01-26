@@ -150,7 +150,7 @@ public class TrajectoryCreation {
             id = -1;
         }
 
-        double offset = Constants.trackWidth / 2;
+        double offset = Constants.trackWidth * 0;
         
         if(id == 1 || id == 2 || id == 15) {
             List<Waypoint> bezierPoints = PathPlannerPath.waypointsFromPoses(
@@ -209,7 +209,7 @@ public class TrajectoryCreation {
         } else if(id == 7 || id == 8 || id == 14) {
             List<Waypoint> bezierPoints = PathPlannerPath.waypointsFromPoses(
                 new Pose2d(x, y, angle),
-                new Pose2d(tagX + 1, tagY - offset, tagAngle)
+                new Pose2d(tagX + 0.5, tagY - offset, new Rotation2d(Math.PI))
             );
 
             // Create the path using the bezier points created above
@@ -217,7 +217,7 @@ public class TrajectoryCreation {
                 bezierPoints,
                 constraints,
                 null,
-                new GoalEndState(0.0, tagAngle) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+                new GoalEndState(0.0, new Rotation2d(Math.PI)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
             );
 
             // Prevent the path from being flipped if the coordinates are already correct
