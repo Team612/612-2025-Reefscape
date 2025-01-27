@@ -5,18 +5,15 @@ import java.util.List;
 
 import org.photonvision.targeting.PhotonPipelineResult;
 
-import com.pathplanner.lib.path.*;
-
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants;
-import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.Vision;
 
@@ -150,9 +147,9 @@ public class TrajectoryCreation {
             id = -1;
         }
 
-        double offset = Constants.trackWidth * 0;
+        double offset = Constants.trackWidth / 2;
         
-        if(id == 1 || id == 2 || id == 15) {
+        if(id == 9 || id == 19) {
             List<Waypoint> bezierPoints = PathPlannerPath.waypointsFromPoses(
                 new Pose2d(x, y, angle),
                 new Pose2d(tagX - 0.5, tagY + 0.866 + offset, tagAngle)
@@ -172,10 +169,10 @@ public class TrajectoryCreation {
             // Prevent the path from being flipped if the coordinates are already correct
             path.preventFlipping = true;
             return path;
-        } else if(id == 3 || id == 4 || id == 13) {
+        } else if(id == 5 || id == 4 || id == 21 || id == 7) {
             List<Waypoint> bezierPoints = PathPlannerPath.waypointsFromPoses(
                 new Pose2d(x, y, angle),
-                new Pose2d(tagX - 2, tagY + offset, tagAngle)
+                new Pose2d(tagX - 1, tagY + offset, tagAngle)
             );
 
             // Create the path using the bezier points created above
@@ -189,10 +186,27 @@ public class TrajectoryCreation {
             // Prevent the path from being flipped if the coordinates are already correct
             path.preventFlipping = true;
             return path;
-        } else if(id == 5 || id == 6) {
+        } else if(id == 3) {
+          List<Waypoint> bezierPoints = PathPlannerPath.waypointsFromPoses(
+              new Pose2d(x, y, angle),
+              new Pose2d(tagX - offset, tagY - 1, tagAngle)
+          );
+
+          // Create the path using the bezier points created above
+          PathPlannerPath path = new PathPlannerPath(
+              bezierPoints,
+              constraints,
+              null,
+              new GoalEndState(0.0, tagAngle) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+          );
+
+          // Prevent the path from being flipped if the coordinates are already correct
+          path.preventFlipping = true;
+          return path;
+      }else if(id == 16) {
             List<Waypoint> bezierPoints = PathPlannerPath.waypointsFromPoses(
                 new Pose2d(x, y, angle),
-                new Pose2d(tagX - offset, tagY - 1, tagAngle)
+                new Pose2d(tagX + offset, tagY + 1, tagAngle)
             );
 
             // Create the path using the bezier points created above
@@ -206,10 +220,10 @@ public class TrajectoryCreation {
             // Prevent the path from being flipped if the coordinates are already correct
             path.preventFlipping = true;
             return path;
-        } else if(id == 7 || id == 8 || id == 14) {
+        } else if(id == 15 || id == 14) {
             List<Waypoint> bezierPoints = PathPlannerPath.waypointsFromPoses(
                 new Pose2d(x, y, angle),
-                new Pose2d(tagX + 0.5, tagY - offset, new Rotation2d(Math.PI))
+                new Pose2d(tagX + 1, tagY - offset, new Rotation2d(Math.PI))
             );
 
             // Create the path using the bezier points created above
@@ -223,7 +237,7 @@ public class TrajectoryCreation {
             // Prevent the path from being flipped if the coordinates are already correct
             path.preventFlipping = true;
             return path;
-        } else if(id == 9 || id == 10 || id == 12) {
+        } else if(id == 8 || id == 20) {
             List<Waypoint> bezierPoints = PathPlannerPath.waypointsFromPoses(
                 new Pose2d(x, y, angle),
                 new Pose2d(tagX + 0.5, tagY + 0.866, tagAngle)
@@ -240,7 +254,7 @@ public class TrajectoryCreation {
             // Prevent the path from being flipped if the coordinates are already correct
             path.preventFlipping = true;
             return path;
-        } else if(id == 11) {
+        } else if(id == 6 || id == 22) {
             List<Waypoint> bezierPoints = PathPlannerPath.waypointsFromPoses(
                 new Pose2d(x, y, angle),
                 new Pose2d(tagX + 0.5, tagY - 0.866, tagAngle)
@@ -257,10 +271,10 @@ public class TrajectoryCreation {
             // Prevent the path from being flipped if the coordinates are already correct
             path.preventFlipping = true;
             return path;
-        } else if(id == 16) {
+        } else if(id == 11 || id == 17) {
             List<Waypoint> bezierPoints = PathPlannerPath.waypointsFromPoses(
                 new Pose2d(x, y, angle),
-                new Pose2d(tagX - 0.5 - 0.433, tagY - 0.866 + 0.25, tagAngle)
+                new Pose2d(tagX - 0.5, tagY - 0.866, tagAngle)
             );
 
             // Create the path using the bezier points created above
@@ -274,7 +288,92 @@ public class TrajectoryCreation {
             // Prevent the path from being flipped if the coordinates are already correct
             path.preventFlipping = true;
             return path;
-        } else {
+        } else if(id == 12) {
+          List<Waypoint> bezierPoints = PathPlannerPath.waypointsFromPoses(
+              new Pose2d(x, y, angle),
+              new Pose2d(tagX + Math.cos(Units.degreesToRadians(54)), tagY + Math.sin(Units.degreesToRadians(54)), tagAngle)
+          );
+
+          // Create the path using the bezier points created above
+          PathPlannerPath path = new PathPlannerPath(
+              bezierPoints,
+              constraints,
+              null,
+              new GoalEndState(0.0, tagAngle) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+          );
+
+          // Prevent the path from being flipped if the coordinates are already correct
+          path.preventFlipping = true;
+          return path;
+      }else if(id == 12) {
+          List<Waypoint> bezierPoints = PathPlannerPath.waypointsFromPoses(
+              new Pose2d(x, y, angle),
+              new Pose2d(tagX + Math.cos(Units.degreesToRadians(54)), tagY + Math.sin(Units.degreesToRadians(54)), tagAngle)
+          );
+
+          // Create the path using the bezier points created above
+          PathPlannerPath path = new PathPlannerPath(
+              bezierPoints,
+              constraints,
+              null,
+              new GoalEndState(0.0, tagAngle) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+          );
+
+          // Prevent the path from being flipped if the coordinates are already correct
+          path.preventFlipping = true;
+          return path;
+      } else if(id == 1) {
+          List<Waypoint> bezierPoints = PathPlannerPath.waypointsFromPoses(
+              new Pose2d(x, y, angle),
+              new Pose2d(tagX + Math.cos(Units.degreesToRadians(126)), tagY + Math.sin(Units.degreesToRadians(126)), tagAngle)
+          );
+
+          // Create the path using the bezier points created above
+          PathPlannerPath path = new PathPlannerPath(
+              bezierPoints,
+              constraints,
+              null,
+              new GoalEndState(0.0, tagAngle) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+          );
+
+          // Prevent the path from being flipped if the coordinates are already correct
+          path.preventFlipping = true;
+          return path;
+      } else if(id == 2) {
+          List<Waypoint> bezierPoints = PathPlannerPath.waypointsFromPoses(
+              new Pose2d(x, y, angle),
+              new Pose2d(tagX + Math.cos(Units.degreesToRadians(234)), tagY + Math.sin(Units.degreesToRadians(234)), tagAngle)
+          );
+
+          // Create the path using the bezier points created above
+          PathPlannerPath path = new PathPlannerPath(
+              bezierPoints,
+              constraints,
+              null,
+              new GoalEndState(0.0, tagAngle) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+          );
+
+          // Prevent the path from being flipped if the coordinates are already correct
+          path.preventFlipping = true;
+          return path;
+      } else if(id == 13) {
+          List<Waypoint> bezierPoints = PathPlannerPath.waypointsFromPoses(
+              new Pose2d(x, y, angle),
+              new Pose2d(tagX + Math.cos(Units.degreesToRadians(306)), tagY + Math.sin(Units.degreesToRadians(306)), tagAngle)
+          );
+
+          // Create the path using the bezier points created above
+          PathPlannerPath path = new PathPlannerPath(
+              bezierPoints,
+              constraints,
+              null,
+              new GoalEndState(0.0, tagAngle) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+          );
+
+          // Prevent the path from being flipped if the coordinates are already correct
+          path.preventFlipping = true;
+          return path;
+      }else {
             List<Waypoint> bezierPoints = PathPlannerPath.waypointsFromPoses(
                 new Pose2d(x, y, angle),
                 new Pose2d(tagX, tagY, angle)
