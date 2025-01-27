@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import com.revrobotics.*;
-import frc.robot.util.SparkConfigs;
 import com.revrobotics.spark.*;
 
 
@@ -15,13 +14,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 // import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 
@@ -30,6 +22,7 @@ import static edu.wpi.first.units.Units.Rotation;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.revrobotics.RelativeEncoder;
+import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
@@ -44,6 +37,8 @@ import com.revrobotics.RelativeEncoder;
 
 public class Mecanum extends SubsystemBase {
   private static Mecanum mechInstance;
+  private static MecanumDrive mech;
+
   public Pigeon2 gyro;
   // private AHRS navx;
   private final SparkMax spark_fl;
@@ -69,7 +64,7 @@ public class Mecanum extends SubsystemBase {
     gyro.getConfigurator().apply(new Pigeon2Configuration());
     gyro.setYaw(0);
     gyro.reset();
-
+    mech = new MecanumDrive(spark_fl, spark_bl, spark_fr, spark_br);
     //CHECK THIS LATER!!
     // navx = new AHRS(NavXComType.kMXP_SPI);
     // navx.setAngleAdjustment(Constants.navxAngleOffset);
@@ -121,5 +116,9 @@ public class Mecanum extends SubsystemBase {
   @Override
   public void periodic() {
 
+  }
+
+  public void RobotOrientedDrive(double x, double y, double z) {
+    mech.driveCartesian(y, x, z);
   }
 }

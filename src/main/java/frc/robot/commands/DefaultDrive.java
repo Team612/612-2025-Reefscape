@@ -12,56 +12,21 @@ import frc.robot.subsystems.Mecanum;
 import java.util.function.DoubleSupplier;
 
 public class DefaultDrive extends Command {
-  private Mecanum Mecanum;
-  private DoubleSupplier translationSup;
-  private DoubleSupplier strafeSup;
-  private DoubleSupplier rotationSup;
+  Mecanum m_mecanum;
+  DoubleSupplier translation;
+  DoubleSupplier strafe;
+  DoubleSupplier rotation;
 
-  private SlewRateLimiter translationLimiter = new SlewRateLimiter(3.0);
-  private SlewRateLimiter strafeLimiter = new SlewRateLimiter(3.0);
-  private SlewRateLimiter rotationLimiter = new SlewRateLimiter(3.0);
-
-  public DefaultDrive(
-      Mecanum drive,
-      DoubleSupplier translationSup,
-      DoubleSupplier strafeSup,
-      DoubleSupplier rotationSup) {
-    this.Mecanum = drive;
-    addRequirements(drive);
-
-    this.translationSup = translationSup;
-    this.strafeSup = strafeSup;
-    this.rotationSup = rotationSup;
+  public DefaultDrive(Mecanum m_drive, DoubleSupplier translation, DoubleSupplier strafe, DoubleSupplier rotation){
+    m_mecanum = m_drive;
+    addRequirements(m_mecanum);
+    translation = this.translation;
+    strafe = this.strafe;
+    rotation = this.rotation;
   }
 
   @Override
   public void execute() {
-
-    double translationVal =
-        translationLimiter.calculate(
-            MathUtil.applyDeadband(translationSup.getAsDouble(), Constants.stickDeadband));
-    double strafeVal =
-        strafeLimiter.calculate(
-            MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband));
-    double rotationVal =
-        rotationLimiter.calculate(
-            MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband));
-
-    MecanumDriveKinematics m_kinematics = new MecanumDriveKinematics(
-      Constants.DrivetrainConstants.m_frontLeftLocation, Constants.DrivetrainConstants.m_frontRightLocation, Constants.DrivetrainConstants.m_backLeftLocation, Constants.DrivetrainConstants.m_backRightLocation
-    );
-
-    ChassisSpeeds speeds = new ChassisSpeeds(translationVal, strafeVal, rotationVal);
-    // Convert to wheel speeds
-    MecanumDriveWheelSpeeds wheelSpeeds = m_kinematics.toWheelSpeeds(speeds);
-    // Get the individual wheel speeds
-    double frontLeft = wheelSpeeds.frontLeftMetersPerSecond;
-    double frontRight = wheelSpeeds.frontRightMetersPerSecond;
-    double backLeft = wheelSpeeds.rearLeftMetersPerSecond;
-    double backRight = wheelSpeeds.rearRightMetersPerSecond;
-
-
-    /* Drive */
-    Mecanum.driveMecanum(frontLeft, backLeft, frontRight, backRight);
+     m_mecanum.RobotOrientedDrive(-translation.getAsDouble(), strafe.getAsDouble(), rotation.getAsDouble());
   }
 }
