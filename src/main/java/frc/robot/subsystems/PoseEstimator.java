@@ -150,6 +150,7 @@ public void updatePoseEstimator() {
     //updatePose(drivePoseEstimator);
     SmartDashboard.putNumber("X", getPose().getX());
     SmartDashboard.putNumber("Y", getPose().getY());
+    SmartDashboard.putNumber("angle", getPose().getRotation().getDegrees());
     updatePoseEstimator();
     field.setRobotPose(getPose());
     //System.out.println(visionSubsystem.getPipelineResult());

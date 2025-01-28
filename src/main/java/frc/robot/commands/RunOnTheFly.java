@@ -40,8 +40,8 @@ public class RunOnTheFly extends Command {
   @Override
   public void initialize() {
 
-    PathPlannerPath path = m_traj.onthefly(poseEstimatorSystem, m_vision, translation);
-    
+   // PathPlannerPath path = m_traj.onthefly(poseEstimatorSystem, m_vision, translation);
+    PathPlannerPath path = m_traj.apriltagCentering(poseEstimatorSystem, m_vision);
     controllerCommand = AutoBuilder.followPath(path);
     controllerCommand.initialize();
   }

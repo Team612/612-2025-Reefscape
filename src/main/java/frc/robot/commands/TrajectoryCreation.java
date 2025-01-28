@@ -12,6 +12,7 @@ import com.pathplanner.lib.path.Waypoint;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.subsystems.PoseEstimator;
@@ -122,6 +123,38 @@ public class TrajectoryCreation {
         return path;
     }
 
+    public PathPlannerPath apriltagCentering(PoseEstimator estimation, Vision vision){
+        Pose2d estimatedPose = estimation.getPose();
+        double x = estimatedPose.getX();
+        double y = estimatedPose.getY();
+        Rotation2d angle = estimatedPose.getRotation();
+
+        PhotonPipelineResult result = vision.getApriltagCamera().getAllUnreadResults().get(0);
+
+        Translation3d tag = vision.return_tag_pose(result.getBestTarget().getFiducialId()).getTranslation();
+        double tagX = tag.getX();
+        double tagY = tag.getY();
+        Rotation2d tagAngle = vision.return_tag_pose(result.getBestTarget().getFiducialId()).getRotation().toRotation2d().rotateBy(new Rotation2d(Units.degreesToRadians(180)));
+        System.out.println(tagAngle.getDegrees());
+        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+            new Pose2d(x,y, angle),
+            new Pose2d(tagX - (Math.cos(tagAngle.getRadians())), tagY - (Math.sin(tagAngle.getRadians())), new Rotation2d())
+
+        );
+
+        // Create the path using the bezier points created above
+        PathPlannerPath path = new PathPlannerPath(
+            waypoints,
+            constraints,
+            null,
+            new GoalEndState(0.0, new Rotation2d()) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+        );
+
+        // Prevent the path from being flipped if the coordinates are already correct
+        path.preventFlipping = true;
+        return path;
+    }
+
     public PathPlannerPath onthefly(PoseEstimator estimation, Vision vision, double y_translation){
         Pose2d estimatedPose = estimation.getPose();
         double x = estimatedPose.getX();
@@ -141,7 +174,7 @@ public class TrajectoryCreation {
             Pose2d tagPose = vision.return_tag_pose(id).toPose2d();
             tagX = tagPose.getX();
             tagY = tagPose.getY();
-            tagAngle = new Rotation2d(-Units.degreesToRadians(180 - tagPose.getRotation().getDegrees()));
+            tagAngle = new Rotation2d(tagPose.getRotation().getDegrees());
         }
         else{
             id = -1;
@@ -172,7 +205,7 @@ public class TrajectoryCreation {
         } else if(id == 5 || id == 4 || id == 21 || id == 7) {
             List<Waypoint> bezierPoints = PathPlannerPath.waypointsFromPoses(
                 new Pose2d(x, y, angle),
-                new Pose2d(tagX - 1, tagY + offset, tagAngle)
+                new Pose2d(tagX - 1, tagY - offset, tagAngle)
             );
 
             // Create the path using the bezier points created above
