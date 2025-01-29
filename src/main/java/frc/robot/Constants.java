@@ -98,10 +98,10 @@ public class Constants {
         public static final int SPARK_FR = 1;
 
         // Need to get locations of wheels relative to center of robot
-        public static final Translation2d m_frontLeftLocation = new Translation2d(0.305, 0.305);
-        public static final Translation2d m_frontRightLocation = new Translation2d(0.305, -0.305);
-        public static final Translation2d m_backLeftLocation = new Translation2d(-0.305, 0.305);
-        public static final Translation2d m_backRightLocation = new Translation2d(-0.305, -0.305);
+        public static final Translation2d m_frontLeftLocation = new Translation2d(-0.305, 0.305);
+        public static final Translation2d m_frontRightLocation = new Translation2d(0.305, 0.305);
+        public static final Translation2d m_backLeftLocation = new Translation2d(-0.305, -0.305);
+        public static final Translation2d m_backRightLocation = new Translation2d(0.305, -0.305);
         // We know none of this
         public static final double kWheelBase =  Units.inchesToMeters(21.5); // width from center of back to front wheels (center of the wheel)
         public static final double kTrackWidth = Units.inchesToMeters(24); // width from right to left wheels (center of the wheel)
