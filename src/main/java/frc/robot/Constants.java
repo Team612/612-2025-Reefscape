@@ -85,7 +85,7 @@ public class Constants {
 
     /* navx angle offset */
     public static final double navxAngleOffset = 0;
-    public static final int pigeonID = 2;
+    public static final int pigeonID = 0;
  //Distance btwn centers of right and left wheels
 
     public class DrivetrainConstants{
