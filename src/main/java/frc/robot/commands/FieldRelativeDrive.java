@@ -47,21 +47,6 @@ public class FieldRelativeDrive extends Command {
         rotationLimiter.calculate(
             MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband));
 
-    MecanumDriveKinematics m_kinematics = new MecanumDriveKinematics(
-      Constants.DrivetrainConstants.m_frontLeftLocation, Constants.DrivetrainConstants.m_frontRightLocation, Constants.DrivetrainConstants.m_backLeftLocation, Constants.DrivetrainConstants.m_backRightLocation
-    );
-
-    ChassisSpeeds speeds = new ChassisSpeeds(translationVal, strafeVal, rotationVal);
-    // Convert to wheel speeds
-    MecanumDriveWheelSpeeds wheelSpeeds = m_kinematics.toWheelSpeeds(speeds);
-    // Get the individual wheel speeds
-    double frontLeft = wheelSpeeds.frontLeftMetersPerSecond;
-    double frontRight = wheelSpeeds.frontRightMetersPerSecond;
-    double backLeft = wheelSpeeds.rearLeftMetersPerSecond;
-    double backRight = wheelSpeeds.rearRightMetersPerSecond;
-
-
-    /* Drive */
-    Mecanum.driveMecanum(frontLeft, backLeft, frontRight, backRight);
+    Mecanum.RobotOrientedDrive(translationVal, strafeVal, rotationVal);
   }
 }
