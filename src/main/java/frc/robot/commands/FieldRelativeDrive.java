@@ -1,52 +1,25 @@
-package frc.robot.commands;
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
-import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
+package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.control.ControlMap;
 import frc.robot.subsystems.Mecanum;
-import java.util.function.DoubleSupplier;
 
 public class FieldRelativeDrive extends Command {
-  private Mecanum Mecanum;
-  private DoubleSupplier translationSup;
-  private DoubleSupplier strafeSup;
-  private DoubleSupplier rotationSup;
-
-  private SlewRateLimiter translationLimiter = new SlewRateLimiter(3.0);
-  private SlewRateLimiter strafeLimiter = new SlewRateLimiter(3.0);
-  private SlewRateLimiter rotationLimiter = new SlewRateLimiter(3.0);
-
-  public FieldRelativeDrive(
-      Mecanum drive,
-      DoubleSupplier translationSup,
-      DoubleSupplier strafeSup,
-      DoubleSupplier rotationSup) {
-    this.Mecanum = drive;
-    addRequirements(drive);
-
-    this.translationSup = translationSup;
-    this.strafeSup = strafeSup;
-    this.rotationSup = rotationSup;
+  /** Creates a new DefaultDrive. */
+  
+  Mecanum m_drivetrain;
+  Constants.DrivetrainConstants m_slowmo;
+  public FieldRelativeDrive(Mecanum drivetrain) {
+    m_drivetrain = drivetrain;
+    m_drivetrain.driveMecanum(0, 0, 0, 0);
   }
 
-  @Override
   public void execute() {
+    m_drivetrain.FieldOrientedDrive(-ControlMap.driver_joystick.getRawAxis(1), ControlMap.driver_joystick.getRawAxis(0), ControlMap.driver_joystick.getRawAxis(4));
 
-    double translationVal =
-        translationLimiter.calculate(
-            MathUtil.applyDeadband(translationSup.getAsDouble(), Constants.stickDeadband));
-    double strafeVal =
-        strafeLimiter.calculate(
-            MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband));
-    double rotationVal =
-        rotationLimiter.calculate(
-            MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband));
-
-    Mecanum.RobotOrientedDrive(translationVal, strafeVal, rotationVal);
   }
 }

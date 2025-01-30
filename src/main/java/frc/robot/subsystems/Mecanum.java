@@ -118,7 +118,13 @@ public class Mecanum extends SubsystemBase {
 
   }
 
-  public void RobotOrientedDrive(double x, double y, double z) {
-    mech.driveCartesian(x, y, z);
+
+  public void FieldOrientedDrive(double x, double y, double zRotation){
+    mech.driveCartesian(x, y, zRotation, getPigeonAngle().unaryMinus());
+  }
+  
+
+  public void RobotOrientedDrive(double y, double x, double zRot){
+    mech.driveCartesian(y, x, zRot);
   }
 }

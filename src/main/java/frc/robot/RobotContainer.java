@@ -22,22 +22,16 @@ public class RobotContainer {
     m_drivetrain = Mecanum.getInstance();
 
     driverControls = new CommandXboxController(Constants.driverPort);
-    m_defaultDrive = new DefaultDrive( m_drivetrain,
-            () -> -driverControls.getLeftY(),
-            () -> -driverControls.getLeftX(),
-            () -> -driverControls.getRightX());
+    m_defaultDrive = new DefaultDrive(m_drivetrain);
 
-    m_FieldRelativeDrive = new FieldRelativeDrive( m_drivetrain,
-            () -> -driverControls.getLeftY(),
-            () -> -driverControls.getLeftX(),
-            () -> -driverControls.getRightX());
+    m_FieldRelativeDrive = new FieldRelativeDrive(m_drivetrain);
 
     configureBindings();
   }
 
   private void configureBindings() {
-    driverControls.b().toggleOnTrue(m_defaultDrive);
-    m_drivetrain.setDefaultCommand(m_FieldRelativeDrive);
+    // driverControls.b().toggleOnTrue();
+    m_drivetrain.setDefaultCommand(m_defaultDrive);
   }
 
   public Command getAutonomousCommand() {
