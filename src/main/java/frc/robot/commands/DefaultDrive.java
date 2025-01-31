@@ -16,9 +16,10 @@ public class DefaultDrive extends Command {
   public DefaultDrive(Mecanum drivetrain) {
     m_drivetrain = drivetrain;
     m_drivetrain.driveMecanum(0, 0, 0, 0);
+    addRequirements(m_drivetrain);
   }
 
   public void execute() {
-    m_drivetrain.RobotOrientedDrive(-ControlMap.driver_joystick.getRawAxis(1), ControlMap.driver_joystick.getRawAxis(0), ControlMap.driver_joystick.getRawAxis(4));
+    m_drivetrain.RobotOrientedDrive(-ControlMap.driver_joystick.getRawAxis(1), -1*ControlMap.driver_joystick.getRawAxis(0), ControlMap.driver_joystick.getRawAxis(4));
   }
 }

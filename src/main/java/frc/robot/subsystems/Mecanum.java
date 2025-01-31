@@ -8,7 +8,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import com.revrobotics.*;
 import com.revrobotics.spark.*;
-
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -24,7 +25,12 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkBaseConfig;
+
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import static edu.wpi.first.units.Units.Rotation;
 
@@ -38,6 +44,7 @@ import com.revrobotics.RelativeEncoder;
 public class Mecanum extends SubsystemBase {
   private static Mecanum mechInstance;
   private static MecanumDrive mech;
+  private final double DEADZONE = 0.1;
 
   public Pigeon2 gyro;
   // private AHRS navx;
@@ -54,11 +61,12 @@ public class Mecanum extends SubsystemBase {
     spark_fr = new SparkMax(Constants.DrivetrainConstants.SPARK_FR,MotorType.kBrushless);
     spark_bl = new SparkMax(Constants.DrivetrainConstants.SPARK_BL,MotorType.kBrushless);
     spark_br = new SparkMax(Constants.DrivetrainConstants.SPARK_BR,MotorType.kBrushless);
-    
-    spark_fr.setInverted(true);
-    spark_br.setInverted(true);
-    spark_fl.setInverted(false);
-    spark_bl.setInverted(false);
+
+    SparkMaxConfig sp = new SparkMaxConfig();
+    spark_fr.configure(sp.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    spark_br.configure(sp.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    spark_fl.configure(sp.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    spark_bl.configure(sp.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     gyro = new Pigeon2(Constants.pigeonID);
     gyro.getConfigurator().apply(new Pigeon2Configuration());
@@ -93,7 +101,6 @@ public class Mecanum extends SubsystemBase {
   }
 
   public void zeroGyro() {
-    // navx.zeroYaw();
     gyro.reset();
   }
 
@@ -120,11 +127,17 @@ public class Mecanum extends SubsystemBase {
 
 
   public void FieldOrientedDrive(double x, double y, double zRotation){
-    mech.driveCartesian(x, y, zRotation, getPigeonAngle().unaryMinus());
+    if(Math.abs(x) < DEADZONE) x = 0;
+    if(Math.abs(y) < DEADZONE) y = 0;
+    if(Math.abs(zRotation) < DEADZONE) zRotation = 0;
+    mech.driveCartesian(x, y, zRotation, getPigeonAngle());
   }
   
 
   public void RobotOrientedDrive(double y, double x, double zRot){
+    if(Math.abs(x) < DEADZONE) x = 0;
+    if(Math.abs(y) < DEADZONE) y = 0;
+    if(Math.abs(zRot) < DEADZONE) zRot = 0;
     mech.driveCartesian(y, x, zRot);
   }
 }
