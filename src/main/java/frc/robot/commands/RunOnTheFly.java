@@ -5,11 +5,13 @@
 package frc.robot.commands;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.Swerve;
+import frc.robot.Constants;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.Vision;
 
@@ -19,6 +21,7 @@ public class RunOnTheFly extends Command {
   private final PoseEstimator poseEstimatorSystem;
   private final TrajectoryCreation m_traj;
   private final double translation;
+      private PathConstraints constraints;
 
   private Command controllerCommand = Commands.none();
 
@@ -32,6 +35,11 @@ public class RunOnTheFly extends Command {
     m_vision = v;
     translation = y;
 
+    constraints = new PathConstraints(Constants.maxSpeed,
+    Constants.maxAcceleration,
+     Constants.maxAngularVelocity,
+      Constants.maxAngularAcceleration);
+
 
     addRequirements(d, v, p);
   }
@@ -41,15 +49,29 @@ public class RunOnTheFly extends Command {
   public void initialize() {
 
    // PathPlannerPath path = m_traj.onthefly(poseEstimatorSystem, m_vision, translation);
-    PathPlannerPath path = m_traj.apriltagCentering(poseEstimatorSystem, m_vision);
-    controllerCommand = AutoBuilder.followPath(path);
-    controllerCommand.initialize();
+    //PathPlannerPath path = m_traj.apriltagCentering(poseEstimatorSystem, m_vision);
+    var path = m_traj.apriltagCentering(poseEstimatorSystem, m_vision);
+    if (path != null) {
+      controllerCommand = AutoBuilder.followPath(path);
+      controllerCommand.initialize();
+    }
+    else {
+      controllerCommand = new Command() {
+        @Override
+        public boolean isFinished() {
+          return true;
+        }
+      };
+    }
+    //controllerCommand = AutoBuilder.followPath(path);
   }
+
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    controllerCommand.execute();
+      controllerCommand.execute();
+    
   }
 
   // Called once the command ends or is interrupted.

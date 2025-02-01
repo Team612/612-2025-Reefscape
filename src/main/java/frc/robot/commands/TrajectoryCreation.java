@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.photonvision.targeting.PhotonPipelineResult;
 
+import com.fasterxml.jackson.annotation.ObjectIdGenerators.None;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -14,6 +15,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.Vision;
@@ -123,6 +125,26 @@ public class TrajectoryCreation {
         return path;
     }
 
+    public Pose2d getApriltagPose(PoseEstimator estimation, Vision vision){
+        var pipeline = vision.getApriltagCamera().getAllUnreadResults();
+        if(!pipeline.isEmpty()){
+            PhotonPipelineResult result = pipeline.get(0);
+
+
+            Translation3d tag = vision.return_tag_pose(result.getBestTarget().getFiducialId()).getTranslation();
+            double tagX = tag.getX();
+            double tagY = tag.getY();
+            Rotation2d tagAngle = vision.return_tag_pose(result.getBestTarget().getFiducialId()).getRotation().toRotation2d().rotateBy(new Rotation2d(Units.degreesToRadians(180)));
+    
+            return new Pose2d(tagX - (Math.cos(tagAngle.getRadians())), tagY - (Math.sin(tagAngle.getRadians())), tagAngle);
+        }
+
+        else{
+            System.out.println("TRUE");
+          return null;
+        }
+    }
+
     public PathPlannerPath apriltagCentering(PoseEstimator estimation, Vision vision){
         Pose2d estimatedPose = estimation.getPose();
         double x = estimatedPose.getX();
@@ -139,9 +161,9 @@ public class TrajectoryCreation {
         System.out.println("Robot angle" + angle.getDegrees());
         List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
             new Pose2d(x,y, angle),
-            //new Pose2d(tagX - (Math.cos(tagAngle.getRadians())), tagY - (Math.sin(tagAngle.getRadians())), angle)
+            new Pose2d(tagX - (Math.cos(tagAngle.getRadians())), tagY - (Math.sin(tagAngle.getRadians())), tagAngle)
             //new Pose2d((tagX - (tagX-x) / 2) + 0.5, tagY - (tagY-y) / 2, new Rotation2d((tagAngle.getRadians() - angle.getRadians())/2)),
-            new Pose2d(tagX + 1, tagY, tagAngle)
+            //new Pose2d(tagX + 1, tagY, tagAngle)
         );
 
         // Create the path using the bezier points created above
