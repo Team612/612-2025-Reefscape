@@ -102,6 +102,11 @@ public class Constants {
         public static final Translation2d m_frontRightLocation = new Translation2d(0.305, 0.305);
         public static final Translation2d m_backLeftLocation = new Translation2d(-0.305, -0.305);
         public static final Translation2d m_backRightLocation = new Translation2d(0.305, -0.305);
+
+        public static final MecanumDriveKinematics m_kinematics = new MecanumDriveKinematics(
+            m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation
+        );
+
         // We know none of this
         public static final double kWheelBase =  Units.inchesToMeters(21.5); // width from center of back to front wheels (center of the wheel)
         public static final double kTrackWidth = Units.inchesToMeters(24); // width from right to left wheels (center of the wheel)
