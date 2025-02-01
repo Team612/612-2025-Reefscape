@@ -84,5 +84,6 @@ public class RunOnTheFly extends Command {
   @Override
   public boolean isFinished() {
     return controllerCommand.isFinished();
+    
   }
 }
