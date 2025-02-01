@@ -135,11 +135,13 @@ public class TrajectoryCreation {
         double tagX = tag.getX();
         double tagY = tag.getY();
         Rotation2d tagAngle = vision.return_tag_pose(result.getBestTarget().getFiducialId()).getRotation().toRotation2d().rotateBy(new Rotation2d(Units.degreesToRadians(180)));
-        System.out.println(tagAngle.getDegrees());
+        System.out.println("Tag angle" + tagAngle.getDegrees());
+        System.out.println("Robot angle" + angle.getDegrees());
         List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
             new Pose2d(x,y, angle),
-            new Pose2d(tagX - (Math.cos(tagAngle.getRadians())), tagY - (Math.sin(tagAngle.getRadians())), new Rotation2d())
-
+            //new Pose2d(tagX - (Math.cos(tagAngle.getRadians())), tagY - (Math.sin(tagAngle.getRadians())), angle)
+            //new Pose2d((tagX - (tagX-x) / 2) + 0.5, tagY - (tagY-y) / 2, new Rotation2d((tagAngle.getRadians() - angle.getRadians())/2)),
+            new Pose2d(tagX + 1, tagY, tagAngle)
         );
 
         // Create the path using the bezier points created above
@@ -147,7 +149,7 @@ public class TrajectoryCreation {
             waypoints,
             constraints,
             null,
-            new GoalEndState(0.0, new Rotation2d()) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+            new GoalEndState(0.0, tagAngle) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
         );
 
         // Prevent the path from being flipped if the coordinates are already correct
@@ -174,7 +176,7 @@ public class TrajectoryCreation {
             Pose2d tagPose = vision.return_tag_pose(id).toPose2d();
             tagX = tagPose.getX();
             tagY = tagPose.getY();
-            tagAngle = new Rotation2d(tagPose.getRotation().getDegrees());
+            tagAngle = new Rotation2d(Math.PI - tagPose.getRotation().getRadians());
         }
         else{
             id = -1;

@@ -67,6 +67,10 @@ public class PoseEstimator extends SubsystemBase {
   public static final double FIELD_WIDTH_METERS = Units.inchesToMeters(323.25);
   private double previousPipelineTimestamp = 0;
   private Field2d field;
+  private Pose3d poseA;
+  private Pose3d poseB;
+  private StructPublisher<Pose3d> publisher;
+  private StructArrayPublisher<Pose3d> arrayPublisher;
 
   static PoseEstimator estimator = new PoseEstimator();
   
@@ -89,6 +93,15 @@ public class PoseEstimator extends SubsystemBase {
       new Pose2d()
     );
     photonEstimator = visionSubsystem.getVisionPose();
+
+
+    poseA = new Pose3d();
+    poseB = new Pose3d();
+
+     publisher = NetworkTableInstance.getDefault()
+      .getStructTopic("MyPose", Pose3d.struct).publish();
+     arrayPublisher = NetworkTableInstance.getDefault()
+      .getStructArrayTopic("MyPoseArray", Pose3d.struct).publish();
 }
 
   public static PoseEstimator getPoseEstimatorInstance() {
@@ -127,8 +140,8 @@ public void updatePoseEstimator() {
          //checking the tags ambiguity. The lower the ambiguity, the more accurate the pose is
            if (target.getPoseAmbiguity() <= .2) {
              previousPipelineTimestamp = estimatedRobotPose.timestampSeconds;
-             drivePoseEstimator.addVisionMeasurement(camPose.toPose2d(), estimatedRobotPose.timestampSeconds);
-           }
+             drivePoseEstimator.addVisionMeasurement(new Pose2d(estimatedPose.toPose2d().getTranslation(), new Rotation2d(estimatedPose.toPose2d().getRotation().getRadians())), estimatedRobotPose.timestampSeconds);
+            }
          }
        } 
      }
@@ -153,7 +166,11 @@ public void updatePoseEstimator() {
     SmartDashboard.putNumber("angle", getPose().getRotation().getDegrees());
     updatePoseEstimator();
     field.setRobotPose(getPose());
-    //System.out.println(visionSubsystem.getPipelineResult());
+    
+
+    poseA = new Pose3d(getPose());
+    publisher.set(poseA);
+    arrayPublisher.set(new Pose3d[] {poseA, poseB});
   }
 
 
