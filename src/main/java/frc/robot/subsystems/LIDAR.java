@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Timer;
@@ -28,5 +29,10 @@ public class LIDAR extends SubsystemBase {
       return -1;
     } 	
     return ((buffer[0] & 0xFF) << 8) | (buffer[1] & 0xFF);
+  }
+  @Override
+  public void setDefaultCommand(Command defaultCommand) {
+      // TODO Auto-generated method stub
+      super.setDefaultCommand(defaultCommand);
   }
 }
