@@ -85,7 +85,7 @@ public class Constants {
 
     /* navx angle offset */
     public static final double navxAngleOffset = 0;
-    public static final int pigeonID = 2;
+    public static final int pigeonID = 0;
  //Distance btwn centers of right and left wheels
 
     public class DrivetrainConstants{
@@ -98,10 +98,15 @@ public class Constants {
         public static final int SPARK_FR = 1;
 
         // Need to get locations of wheels relative to center of robot
-        public static final Translation2d m_frontLeftLocation = new Translation2d(0.305, 0.305);
-        public static final Translation2d m_frontRightLocation = new Translation2d(0.305, -0.305);
-        public static final Translation2d m_backLeftLocation = new Translation2d(-0.305, 0.305);
-        public static final Translation2d m_backRightLocation = new Translation2d(-0.305, -0.305);
+        public static final Translation2d m_frontLeftLocation = new Translation2d(-0.305, 0.305);
+        public static final Translation2d m_frontRightLocation = new Translation2d(0.305, 0.305);
+        public static final Translation2d m_backLeftLocation = new Translation2d(-0.305, -0.305);
+        public static final Translation2d m_backRightLocation = new Translation2d(0.305, -0.305);
+
+        public static final MecanumDriveKinematics m_kinematics = new MecanumDriveKinematics(
+            m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation
+        );
+
         // We know none of this
         public static final double kWheelBase =  Units.inchesToMeters(21.5); // width from center of back to front wheels (center of the wheel)
         public static final double kTrackWidth = Units.inchesToMeters(24); // width from right to left wheels (center of the wheel)
