@@ -1,6 +1,8 @@
 
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.Rotation;
+
 import java.util.List;
 
 import org.photonvision.targeting.PhotonPipelineResult;
@@ -159,13 +161,21 @@ public class TrajectoryCreation {
         //double tagY = tag.getY();
         double tagX = vision.return_tag_pose(result.getBestTarget().getFiducialId()).getX();
         double tagY = vision.return_tag_pose(result.getBestTarget().getFiducialId()).getY();
+        Rotation2d relativeAngle = new Translation2d(tagX - x, tagY - y).getAngle();
         Rotation2d tagAngle = vision.return_tag_pose(result.getBestTarget().getFiducialId()).getRotation().toRotation2d().rotateBy(new Rotation2d(Units.degreesToRadians(180)));
-        System.out.println("Tag angle" + tagAngle.getDegrees());
-        System.out.println("Robot angle" + angle.getDegrees());
-        Transform2d transform2d = new Transform2d(1, 0, vision.return_tag_pose(result.getBestTarget().getFiducialId()).getRotation().toRotation2d());
+        // System.out.println("Tag angle" + tagAngle.getDegrees());
+        // System.out.println("Robot angle" + angle.getDegrees());
+        //Pose2d finalPose = new Pose2d(tagX, tagY, relativeAngle).plus(new Transform2d(-1, 0, tagAngle));
+        Pose2d finalPose = new Pose2d(
+            new Transform2d(tagX, tagY, new Rotation2d()).plus(new Transform2d(1, 0, tagAngle)).getTranslation(),
+            tagAngle
+        );
+
+
+
         List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
-            new Pose2d(x,y, new Rotation2d()),
-            new Pose2d(tagX, tagY, vision.return_tag_pose(result.getBestTarget().getFiducialId()).getRotation().toRotation2d()).plus(transform2d)
+            new Pose2d(x,y, relativeAngle),
+            finalPose
         
         );
 
