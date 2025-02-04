@@ -40,7 +40,7 @@ public class Vision extends SubsystemBase {
   public Vision() {
     
     //creates camera instance
-    camera = new PhotonCamera("Limelight"); 
+    camera = new PhotonCamera("Comp_Cam"); 
 
     cameraOffset = new Transform3d(Constants.trackWidth/2,0,0,new Rotation3d());
 

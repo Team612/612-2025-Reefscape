@@ -99,7 +99,7 @@ public void updatePoseEstimator() {
     SmartDashboard.putNumber("angle", getPose().getRotation().getDegrees());
     
     field.setRobotPose(getPose());
-
+    SmartDashboard.putData(field);
   }
 
 

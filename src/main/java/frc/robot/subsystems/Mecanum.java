@@ -4,7 +4,9 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import com.revrobotics.*;
 import com.revrobotics.spark.*;
@@ -15,6 +17,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
+import edu.wpi.first.units.measure.MutDistance;
+import edu.wpi.first.units.measure.MutLinearVelocity;
+import edu.wpi.first.units.measure.MutVoltage;
 // import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 
@@ -23,6 +28,8 @@ import static edu.wpi.first.units.Units.Rotation;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.revrobotics.RelativeEncoder;
+
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
@@ -31,7 +38,9 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.units.Units.Rotation;
 
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
@@ -52,15 +61,54 @@ public class Mecanum extends SubsystemBase {
   private final SparkMax spark_fr;
   private final SparkMax spark_bl;
   private final SparkMax spark_br;
-
+  private final MutVoltage m_appliedVoltage = Volts.mutable(0);
+  private final MutDistance m_distance = Meters.mutable(0);
+  private final MutLinearVelocity m_velocity = MetersPerSecond.mutable(0);
+  private final SysIdRoutine routine;
 
   /** Creates a new Swerve. */
   public Mecanum() {
-
+// Creates a SysIdRoutine
     spark_fl = new SparkMax(Constants.DrivetrainConstants.SPARK_FL,MotorType.kBrushless);
     spark_fr = new SparkMax(Constants.DrivetrainConstants.SPARK_FR,MotorType.kBrushless);
     spark_bl = new SparkMax(Constants.DrivetrainConstants.SPARK_BL,MotorType.kBrushless);
     spark_br = new SparkMax(Constants.DrivetrainConstants.SPARK_BR,MotorType.kBrushless);
+    routine = new SysIdRoutine(
+        new SysIdRoutine.Config(),
+        new SysIdRoutine.Mechanism(voltage -> {
+                spark_fl.setVoltage(voltage);
+                spark_fr.setVoltage(voltage);
+                spark_bl.setVoltage(voltage);
+                spark_br.setVoltage(voltage);
+              },
+              // Tell SysId how to record a frame of data for each motor on the mechanism being
+              // characterized.
+              log -> {
+                // Record a frame for the left motors.  Since these share an encoder, we consider
+                // the entire group to be one motor.
+                log.motor("spark_fl")
+                    .voltage(
+                        m_appliedVoltage.mut_replace(
+                          spark_fl.getBusVoltage() * spark_fl.getAppliedOutput() * RobotController.getBatteryVoltage(), Volts))
+                    .linearPosition(m_distance.mut_replace(Constants.DrivetrainConstants.kEncoderDistancePerPulse*(spark_fl.getAbsoluteEncoder().getPosition()), Meters));
+                log.motor("spark_fr")
+                    .voltage(
+                        m_appliedVoltage.mut_replace(
+                          spark_fr.getBusVoltage() * spark_fr.getAppliedOutput() * RobotController.getBatteryVoltage(), Volts))
+                    .linearPosition(m_distance.mut_replace(Constants.DrivetrainConstants.kEncoderDistancePerPulse*(spark_fr.getAbsoluteEncoder().getPosition()), Meters));
+                log.motor("spark_bl")
+                    .voltage(
+                        m_appliedVoltage.mut_replace(
+                          spark_bl.getBusVoltage() * spark_bl.getAppliedOutput() * RobotController.getBatteryVoltage(), Volts))
+                    .linearPosition(m_distance.mut_replace(Constants.DrivetrainConstants.kEncoderDistancePerPulse*(spark_bl.getAbsoluteEncoder().getPosition()), Meters));
+                log.motor("spark_br")
+                    .voltage(
+                        m_appliedVoltage.mut_replace(
+                          spark_br.getBusVoltage() * spark_br.getAppliedOutput() * RobotController.getBatteryVoltage(), Volts))
+                    .linearPosition(m_distance.mut_replace(Constants.DrivetrainConstants.kEncoderDistancePerPulse*(spark_br.getAbsoluteEncoder().getPosition()), Meters));
+                  }, this)
+    );
+
 
     SparkMaxConfig sp = new SparkMaxConfig();
     spark_fr.configure(sp.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -84,7 +132,12 @@ public class Mecanum extends SubsystemBase {
       spark_fr.set(fr);
       spark_br.set(br);
     }
-
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return routine.quasistatic(direction);
+  }
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return routine.dynamic(direction);
+  }
 
   public Rotation2d getPigeonAngle(){
     return gyro.getRotation2d();
