@@ -4,19 +4,31 @@
 
 package frc.robot.subsystems;
 
-import java.io.IOException;
-import java.util.Optional;
-
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.proto.Photon;
+import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
-
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.apriltag.AprilTagFields;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Optional;
+import org.photonvision.EstimatedRobotPose;
+import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Quaternion;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // import frc.robot.Constants;
 import frc.robot.Constants;
@@ -24,13 +36,12 @@ public class Vision extends SubsystemBase {
   private static AprilTagFieldLayout aprilTagFieldLayout;
   private Mecanum driveSubsystem;
   private PhotonPoseEstimator photonPoseEstimator;
-  private static Vision visionInstance = null;
 
-  private Transform3d cameraOffset;
+  private static Vision visionInstance = null;
 
   PhotonCamera camera;
 
-
+  private Pose2d robotInTagPose;
   /**
    * Creates a new Vision.
    * 
@@ -39,24 +50,18 @@ public class Vision extends SubsystemBase {
 
   public Vision() {
     
-    //creates camera instance
-    camera = new PhotonCamera("Comp_Cam"); 
+    camera = new PhotonCamera("Comp_Cam"); //new camera instance
+    
 
-    cameraOffset = new Transform3d(Constants.trackWidth/2,0,0,new Rotation3d());
+    resetRobotPose();
 
-    //loads apriltag JSON file
-    aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape); 
+    aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape); //how to load the april tags from the field
 
-    //instantiates photon pose estimator
-    photonPoseEstimator = new PhotonPoseEstimator(
-      aprilTagFieldLayout,
-      PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-     cameraOffset); 
+    photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d()); //instantiates photon pose estimator
 
     driveSubsystem = Mecanum.getInstance();
 
-  
-
+    //m_PoseEstimatorFront.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
   }
 
@@ -67,32 +72,30 @@ public class Vision extends SubsystemBase {
     return visionInstance;
   }
 
+  //  public PhotonPoseEstimator getVisionPoseFront(){
+  //   return poseEstimatorFront;
+  // }
 
-  //return: the photon pose estimator
   public PhotonPoseEstimator getVisionPose(){
     return photonPoseEstimator;
   }
 
-  //return: photon camera
   public PhotonCamera getApriltagCamera(){
-    return camera; 
+    return camera; //there is only one camera
   }
 
-  //return: camera transformation
   public Transform3d getRobotToCam(){
-    return cameraOffset; //center of robot to camera transformation
+    return new Transform3d(); //center of robot to camera transformation
   }
 
-  //checks if camera is callibrated with the right coefficients
-  public boolean hasCalibration(){ 
+  public boolean hasCalibration(){ //checks if camera is callibrated with the right coefficients
     if (camera.getDistCoeffs().equals(Optional.empty())){
       return false;
     }
     return true;
   }
 
-  //returns true if an april tag is detect, false otherwise
-  public boolean hasTag(){ 
+  public boolean hasTag(){ //if it detects an april tag
     if (camera.getLatestResult().hasTargets()){
       if (camera.getLatestResult().getBestTarget().getFiducialId() >= 0){
         return true;
@@ -101,51 +104,78 @@ public class Vision extends SubsystemBase {
     return false;
   }
 
+  public int tagID(){ //returns the ID of the apriltag ift detects, only runs if hasTag and has targets
+     if (camera.getLatestResult().hasTargets()){
+      return camera.getLatestResult().getBestTarget().getFiducialId();
+    }
+    return -1;
+  }
+
+  public PhotonPipelineResult getPipelineResult() {
+    if (camera.getLatestResult().hasTargets()) {
+      return camera.getLatestResult();
+    }
+    return new PhotonPipelineResult();
+  }  
+
   
   // getting the vision pose from the april tags
-  // public Pose2d getTagPose() { //pose of the april tag detected
-  //   PhotonPipelineResult result = camera.getLatestResult();
-  //   if (result.hasTargets()) {
-  //     PhotonTrackedTarget bestTarget = result.getBestTarget();
+  public Pose2d getTagPose() { //pose of the april tag detected
+    PhotonPipelineResult result = camera.getLatestResult();
+    if (result.hasTargets()) {
+      PhotonTrackedTarget bestTarget = result.getBestTarget();
 
-  //     Transform3d tagSpace = bestTarget.getBestCameraToTarget();
+      Transform3d tagSpace = bestTarget.getBestCameraToTarget();
 
-  //     return new Pose2d(tagSpace.getX(), tagSpace.getY(), new Rotation2d( (bestTarget.getYaw()) * (Math.PI/180)) ); //imports the 3d transform to a 2d
-  //   }
-  //   return new Pose2d();
-  // }
+      return new Pose2d(tagSpace.getX(), tagSpace.getY(), new Rotation2d( (bestTarget.getYaw()) * (Math.PI/180)) ); //imports the 3d transform to a 2d
+    }
+    return new Pose2d();
+  }
 
+  public Pose2d getRobotPose(){
+    Pose2d tagPose = robotInTagPose;
+    return new Pose2d().transformBy(new Transform2d(tagPose.getTranslation(), tagPose.getRotation()));
+  }
 
-  // return: FIELD RELATIVE tag pose
+  public void resetRobotPose(){
+    robotInTagPose = getTagPose();
+  }
+
+  // return tag pose
   public Pose3d return_tag_pose(int id) {
     Optional<Pose3d> pose_of_tag = aprilTagFieldLayout.getTagPose(id);
     return pose_of_tag.get();
   }
 
-  //  return: estimated postion of the robot
-  public Pose3d return_camera_pose_tag(PhotonPipelineResult results) {
-    //return the fidual ID
-    if(results.hasTargets()){
-      int id = results.getBestTarget().getFiducialId();
-      //get the FIELD RELATIVE position of the tag
-      Optional<Pose3d> pose_of_tag = aprilTagFieldLayout.getTagPose(id);
-      Pose3d tag_pose = pose_of_tag.get();
-      //gets the ROBOT RELATIVE distance away from the tag
-      Transform3d cameraTransform = results.getBestTarget().getBestCameraToTarget();
-      //adds the ROBOT RELATIVE distance to the FIELD RELATIVE coordiantes, thus estimating robot position
-      return tag_pose.plus(cameraTransform.inverse());
-    }
-
-    return new Pose3d();
+  // self calculations
+  public Pose3d return_camera_pose_tag(int id, PhotonPipelineResult results) {
+    Optional<Pose3d> pose_of_tag = aprilTagFieldLayout.getTagPose(id);
+    Pose3d tag_pose = pose_of_tag.get();
+    Transform3d cameraTransform = results.getBestTarget().getBestCameraToTarget();
+    return tag_pose.plus(cameraTransform);
   }
 
+  // photonvision pose estimator
+  public Optional<EstimatedRobotPose> return_photon_pose(Pose2d latestPose) {
+    photonPoseEstimator.setReferencePose(latestPose);
+    return photonPoseEstimator.update(new PhotonPipelineResult());
+  }
 
 
   @Override
   public void periodic() {
-    if (camera.getDistCoeffs().equals(Optional.empty())){
-      System.out.println("NO CALIBRATION");
-    }
+    // if (cameraApriltagBack.getDistCoeffs().equals(Optional.empty())){
+    //   System.out.println("NO CALIBRATION");
+    // }
+    // if (hasTarget()){
+    //   SmartDashboard.putNumber("note x", getNoteSpace().getX());
+    //   SmartDashboard.putNumber("note y", getNoteSpace().getY());
+    // }
+    // SmartDashboard.putBoolean("Sees tag", cameraObject.getLatestResult().hasTargets());
+
+    // if (cameraObject != null && cameraObject.getLatestResult().hasTargets()){
+    //   SmartDashboard.putBoolean("has Object", cameraObject.getLatestResult().hasTargets());
+    // }
 
   }
 
