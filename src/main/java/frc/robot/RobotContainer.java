@@ -7,8 +7,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.LIDARCommand;
-import frc.robot.subsystems.LIDAR;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -18,12 +16,9 @@ import frc.robot.subsystems.LIDAR;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  final LIDAR lidar = new LIDAR();
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
-    final LIDARCommand cmd = new LIDARCommand(lidar);
-    configureButtonBindings(cmd, lidar);
   }
 
   /**
@@ -32,8 +27,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings(LIDARCommand cmd, LIDAR lidar) {
-    lidar.setDefaultCommand(cmd);
+  private void configureButtonBindings() {
   }
 
   /**
@@ -43,6 +37,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return new LIDARCommand(lidar);
+    return new Command() {
+      
+    };
   }
 }
