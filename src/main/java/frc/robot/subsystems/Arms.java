@@ -14,6 +14,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.LimitSwitchConfig;
 import com.revrobotics.spark.config.LimitSwitchConfig.Type;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -30,6 +31,7 @@ public class Arms extends SubsystemBase {
   public Arms(SparkMax arms_motor) {
     this.m_arms_motor = arms_motor;
     config = new SparkMaxConfig();
+    config.idleMode(IdleMode.kBrake);
     limitSwitches = new LimitSwitchConfig();
   }
 

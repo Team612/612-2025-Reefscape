@@ -11,6 +11,7 @@ import com.revrobotics.spark.config.LimitSwitchConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.LimitSwitchConfig.Type;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 
@@ -24,6 +25,7 @@ public class Pivot extends SubsystemBase {
   public Pivot(SparkMax pivot) {
     this.m_pivot = pivot;
     config = new SparkMaxConfig();
+    config.idleMode(IdleMode.kBrake);
     limitSwitches = new LimitSwitchConfig();
   }
 
