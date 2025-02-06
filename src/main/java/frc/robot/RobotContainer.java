@@ -7,10 +7,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.ArmsCommand;
-import frc.robot.commands.PivotCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -21,13 +17,7 @@ import frc.robot.commands.PivotCommand;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  private final CommandXboxController gunnerControls;
-  private final ArmsCommand m_ArmsCommand;
-  private final PivotCommand m_PivotCommand;
   public RobotContainer() {
-    gunnerControls = new CommandXboxController(1); // 1 = gunner port
-    m_ArmsCommand = new ArmsCommand();
-    m_PivotCommand = new PivotCommand();
     // Configure the button bindings
     configureBindings();
   }
@@ -39,7 +29,6 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureBindings() {
-    gunnerControls.a().toggleOnTrue(new SequentialCommandGroup(m_ArmsCommand, m_PivotCommand));
   }
 
   /**
