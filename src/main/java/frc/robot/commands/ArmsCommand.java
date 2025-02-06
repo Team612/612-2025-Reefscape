@@ -21,7 +21,11 @@ public class ArmsCommand extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
+  public void initialize() {}
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
     m_arms.setForwardLimitSwitch(false);
     m_arms.setReverseLimitSwitch(false);
     if (m_arms.getForwardLimitSwitchPressed()) {
@@ -31,10 +35,6 @@ public class ArmsCommand extends Command {
       m_arms.setVelocity(0);
     }
   }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override

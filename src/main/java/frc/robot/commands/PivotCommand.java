@@ -21,7 +21,11 @@ public class PivotCommand extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
+  public void initialize() {}
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
     m_pivot.setForwardLimitSwitch(false);
     m_pivot.setReverseLimitSwitch(false);
     if (m_pivot.getForwardLimitSwitchPressed()) {
@@ -31,10 +35,6 @@ public class PivotCommand extends Command {
       m_pivot.setVelocity(0);
     }
   }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
