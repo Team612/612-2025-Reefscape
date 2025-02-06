@@ -32,7 +32,6 @@ public class LIDAR extends SubsystemBase {
   }
   @Override
   public void setDefaultCommand(Command defaultCommand) {
-      // TODO Auto-generated method stub
       super.setDefaultCommand(defaultCommand);
   }
 }
