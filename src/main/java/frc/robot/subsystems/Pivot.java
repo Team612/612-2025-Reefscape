@@ -16,7 +16,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 
 public class Pivot extends SubsystemBase {
   /** Creates a new Pivot. */
-  private final SparkMax m_pivot;
+  private SparkMax m_pivot;
   private SparkBaseConfig config;
   private ResetMode resetMode;
   private PersistMode persistMode;

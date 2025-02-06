@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Arms extends SubsystemBase {
   /** Creates a new Arms. */
-  private final SparkMax m_arms_motor;
+  private SparkMax m_arms_motor;
   private SparkBaseConfig config;
   private ResetMode resetMode;
   private PersistMode persistMode;
