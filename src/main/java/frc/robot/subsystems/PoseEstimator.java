@@ -141,6 +141,7 @@ public void updatePoseEstimator() {
            if (target.getPoseAmbiguity() <= .2) {
              previousPipelineTimestamp = estimatedRobotPose.timestampSeconds;
              drivePoseEstimator.addVisionMeasurement(new Pose2d(estimatedPose.toPose2d().getTranslation(), new Rotation2d(estimatedPose.toPose2d().getRotation().getRadians())), estimatedRobotPose.timestampSeconds);
+            //  swerve.setGyro(estimatedPose.toPose2d().getRotation());
             }
          }
        } 
@@ -174,6 +175,7 @@ public void updatePoseEstimator() {
   }
 
 
+  
   public Pose2d getPose() {
     return drivePoseEstimator.getEstimatedPosition();
   }

@@ -57,7 +57,7 @@ public class Vision extends SubsystemBase {
 
     aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape); //how to load the april tags from the field
 
-    photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d()); //instantiates photon pose estimator
+    photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d(Constants.trackWidth/2,0,0,new Rotation3d())); //instantiates photon pose estimator
 
     driveSubsystem = Swerve.getInstance();
 

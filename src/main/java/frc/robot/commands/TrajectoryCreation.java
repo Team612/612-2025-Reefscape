@@ -16,6 +16,7 @@ import com.pathplanner.lib.path.Waypoint;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
@@ -166,10 +167,10 @@ public class TrajectoryCreation {
         // System.out.println("Tag angle" + tagAngle.getDegrees());
         // System.out.println("Robot angle" + angle.getDegrees());
         //Pose2d finalPose = new Pose2d(tagX, tagY, relativeAngle).plus(new Transform2d(-1, 0, tagAngle));
-        Pose2d finalPose = new Pose2d(
-            new Transform2d(tagX, tagY, new Rotation2d()).plus(new Transform2d(1, 0, tagAngle)).getTranslation(),
-            tagAngle
-        );
+        Pose2d finalPose = new Pose2d(tagX, tagY, relativeAngle).plus(new Transform2d(0,0,new Rotation2d()));
+        //.plus(new Transform2d(new Translation2d(-1,0),new Rotation2d()));
+        System.out.println((tagX - x) + " " + (tagY - y) + " " + tagAngle + " " + relativeAngle);
+        
 
 
 

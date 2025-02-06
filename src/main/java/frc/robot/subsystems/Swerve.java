@@ -19,6 +19,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.util.SwerveModule;
 
 import static edu.wpi.first.units.Units.Rotation;
+
+import com.ctre.phoenix6.configs.MountPoseConfigs;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.revrobotics.RelativeEncoder;
@@ -37,6 +39,7 @@ public class Swerve extends SubsystemBase {
   private SparkConfigs swerveModuleConfigs;
   private SwerveDriveOdometry odometry;
   public Pigeon2 gyro;
+  public Pigeon2Configuration configuration;
   // private AHRS navx;
 
 
@@ -50,9 +53,11 @@ public class Swerve extends SubsystemBase {
       new SwerveModule(2, Constants.Mod2.constants, swerveModuleConfigs),
       new SwerveModule(3, Constants.Mod3.constants, swerveModuleConfigs),
     };
-
+    configuration = new Pigeon2Configuration();
     gyro = new Pigeon2(Constants.pigeonID);
-    gyro.getConfigurator().apply(new Pigeon2Configuration());
+    configuration.withMountPose(new MountPoseConfigs().withMountPoseRoll(180));
+    
+    gyro.getConfigurator().apply(configuration);
     gyro.setYaw(0);
     gyro.reset();
 
@@ -120,6 +125,10 @@ public class Swerve extends SubsystemBase {
   public void zeroGyro() {
     // navx.zeroYaw();
     gyro.reset();
+  }
+
+  public void setGyro(Rotation2d angle){
+    gyro.setYaw(angle.getDegrees());
   }
 
 
