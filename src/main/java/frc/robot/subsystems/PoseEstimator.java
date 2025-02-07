@@ -164,7 +164,7 @@ public void updatePoseEstimator() {
     SmartDashboard.putNumber("X", getPose().getX());
     SmartDashboard.putNumber("Y", getPose().getY());
     SmartDashboard.putNumber("angle", getPose().getRotation().getDegrees());
-    System.out.println("HELLO");
+    // System.out.println("HELLO");
     updatePoseEstimator();
     field.setRobotPose(getPose());
     

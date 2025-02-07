@@ -9,29 +9,36 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import com.revrobotics.*;
+
 import com.revrobotics.spark.*;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
+import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.measure.MutDistance;
 import edu.wpi.first.units.measure.MutLinearVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
 // import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import static edu.wpi.first.units.Units.Rotation;
 
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.swerve.SwerveModule;
 import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
@@ -54,6 +61,8 @@ public class Mecanum extends SubsystemBase {
   private static Mecanum mechInstance;
   private static MecanumDrive mech;
   private final double DEADZONE = 0.1;
+  private boolean isCharacterizing = false;
+  private double characterizationVolts = 0.0;
 
   public Pigeon2 gyro;
   // private AHRS navx;
@@ -111,6 +120,14 @@ public class Mecanum extends SubsystemBase {
 
 
     SparkMaxConfig sp = new SparkMaxConfig();
+    sp.smartCurrentLimit(30);
+
+    EncoderConfig conf = new EncoderConfig();
+    conf.positionConversionFactor(Constants.DrivetrainConstants.kEncoderDistancePerPulse);
+    conf.velocityConversionFactor(Constants.DrivetrainConstants.kEncoderDistancePerPulse/60);
+
+    sp.apply(conf);
+    
     spark_fr.configure(sp.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     spark_br.configure(sp.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     spark_fl.configure(sp.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -132,6 +149,24 @@ public class Mecanum extends SubsystemBase {
       spark_fr.set(fr);
       spark_br.set(br);
     }
+
+
+    public void runCharacterizationVolts(double volts) {
+      isCharacterizing = true;
+      characterizationVolts = volts;
+    }
+  
+    /** Returns the average drive velocity in radians/sec. */
+    public double getCharacterizationVelocity() {
+      double driveVelocityAverage = 0.0;
+      driveVelocityAverage += spark_fr.getEncoder().getVelocity();
+      driveVelocityAverage += spark_fl.getEncoder().getVelocity();
+      driveVelocityAverage += spark_br.getEncoder().getVelocity();
+      driveVelocityAverage += spark_bl.getEncoder().getVelocity();
+
+      return driveVelocityAverage / 4.0;
+    }
+
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
     return routine.quasistatic(direction);
   }
@@ -158,11 +193,16 @@ public class Mecanum extends SubsystemBase {
   }
 
 
-  // public void resetAlignment() {
-  //   for(SwerveModule mod : modules) {
-  //     mod.resetToAbsolute();
-  //   }
-  // }
+  public ChassisSpeeds getChassisSpeeds() {
+    ChassisSpeeds result = Constants.DrivetrainConstants.m_kinematics.toChassisSpeeds(getSpeeds());
+    return result;
+  }
+
+
+  public MecanumDriveWheelSpeeds getSpeeds() {
+    var speeds = new MecanumDriveWheelSpeeds(spark_fr.get(),spark_br.get(),spark_bl.get(),spark_fl.get());
+    return speeds;
+  }
 
   public static Mecanum getInstance(){
     if (mechInstance == null){
@@ -175,8 +215,15 @@ public class Mecanum extends SubsystemBase {
   
   @Override
   public void periodic() {
-
+    SmartDashboard.putNumber("Pigeon",getPigeonAngle().getDegrees());
+    if (isCharacterizing){
+      spark_bl.setVoltage(characterizationVolts);
+      spark_fr.setVoltage(characterizationVolts);
+      spark_fl.setVoltage(characterizationVolts);
+      spark_br.setVoltage(characterizationVolts);
+    }
   }
+  
 
 
   public void FieldOrientedDrive(double x, double y, double zRotation){

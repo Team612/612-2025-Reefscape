@@ -111,6 +111,9 @@ public class Constants {
         public static final double kWheelBase =  Units.inchesToMeters(21.5); // width from center of back to front wheels (center of the wheel)
         public static final double kTrackWidth = Units.inchesToMeters(24); // width from right to left wheels (center of the wheel)
         public static final double kGearReduction = 16;
+        public static final double kS = 0.15950; 
+        public static final double kV = 4.6647;  
+        public static final double kA = 0;
 
         // this stuff we know
         public static final double kWheelDiameterMeters = 0.1524; 
