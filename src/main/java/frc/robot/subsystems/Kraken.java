@@ -8,6 +8,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Kraken extends SubsystemBase {
   /** Creates a new Kraken. */
@@ -39,11 +40,15 @@ public class Kraken extends SubsystemBase {
   public double getVoltage() {
     return kraken.getMotorVoltage().getValueAsDouble();
   }
+  public double getPosition() {
+    return kraken.getPosition().getValue().magnitude()*Constants.KrakenConversionFactor;
+  }
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Kraken velocity", this.getVelocity());
     SmartDashboard.putBoolean("Kraken alive", this.motorAlive());
     SmartDashboard.putBoolean("Kraken Safety", this.safetyEnabled());
+    SmartDashboard.putNumber("Kraken position", this.getPosition());
     // This method will be called once per scheduler run
   }
 }
