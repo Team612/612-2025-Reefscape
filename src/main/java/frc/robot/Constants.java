@@ -18,6 +18,9 @@ import edu.wpi.first.math.util.Units;
 
 /** Add your docs here. */
 public class Constants {
+    public static final int talonElevatorID = 0;
+    public static final int neoPivotID = 0;
+    
     public static final double trackWidth = Units.inchesToMeters(27);
     public static final double wheelBase = Units.inchesToMeters(27);
     public static final double wheelDiameter = Units.inchesToMeters(3.75);
@@ -106,6 +109,7 @@ public class Constants {
     public static final Rotation2d desiredAngle = Rotation2d.fromDegrees(0); 
     public static final SwerveModuleConstants constants =
         new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, desiredAngle);
+
 
     
         
