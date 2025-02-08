@@ -5,6 +5,8 @@
 package frc.robot;
 
 import frc.robot.subsystems.PoseEstimator;
+import frc.robot.subsystems.TrajectoryConfiguration;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -16,6 +18,8 @@ import frc.robot.commands.DefaultDrive;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
 import frc.robot.commands.FieldRelativeDrive;
+import frc.robot.commands.RunOnTheFly;
+import frc.robot.commands.TrajectoryCreation;
 import frc.robot.control.ControlMap;
 import frc.robot.subsystems.Mecanum;
 import frc.robot.subsystems.Vision;
@@ -27,13 +31,19 @@ public class RobotContainer {
   private final PoseEstimator m_pose;
   private final Vision m_vision;
   private final SendableChooser<Command> m_chooser = new SendableChooser<>();
+  private final RunOnTheFly m_runOnTheFly;
+  private final TrajectoryCreation trajCreat;
+  private final TrajectoryConfiguration trajConfig;
 
   public RobotContainer() {
     m_drivetrain = Mecanum.getInstance();
     m_defaultDrive = new DefaultDrive(m_drivetrain);
     m_pose = PoseEstimator.getPoseEstimatorInstance();
     m_vision = Vision.getVisionInstance();
+    trajConfig = TrajectoryConfiguration.getInstance();
+    trajCreat =new TrajectoryCreation();
     m_FieldRelativeDrive = new FieldRelativeDrive(m_drivetrain);
+    m_runOnTheFly = new RunOnTheFly(m_drivetrain, m_pose, trajCreat, m_vision, 0);
     configureBindings();
     configureShuffle();
   }
@@ -41,6 +51,8 @@ public class RobotContainer {
   private void configureBindings() {
     ControlMap.driver_joystick.leftBumper().onTrue(new InstantCommand(() -> m_drivetrain.zeroGyro()));
     m_drivetrain.setDefaultCommand(m_defaultDrive);
+
+    ControlMap.driver_joystick.a().onTrue(m_runOnTheFly);
 
     // m_drivetrain.con
     // ControlMap.driver_joystick.

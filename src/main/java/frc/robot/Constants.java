@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
@@ -115,6 +116,9 @@ public class Constants {
         public static final double kV = 4.6647;  
         public static final double kA = 0;
 
+        public static final SimpleMotorFeedforward kFeedforward =
+         new SimpleMotorFeedforward(Constants.DrivetrainConstants.kS, Constants.DrivetrainConstants.kV, Constants.DrivetrainConstants.kA);
+     
         // this stuff we know
         public static final double kWheelDiameterMeters = 0.1524; 
         public static final double kEncoderDistancePerPulse =

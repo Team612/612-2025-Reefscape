@@ -111,49 +111,50 @@ public class PoseEstimator extends SubsystemBase {
     return estimator;
   }
 
-public void updatePoseEstimator() {
-  if(visionSubsystem.getApriltagCamera().getLatestResult().hasTargets()) {
-    photonEstimator.update(visionSubsystem.getPipelineResult()).ifPresent(estimatedRobotPose -> {
-     var estimatedPose = estimatedRobotPose.estimatedPose;
-    
-
-     // m_DrivePoseEstimator.addVisionMeasurement(estimatedPose.toPose2d(), FIELD_LENGTH_METERS);
-    
-     // Make sure we have a new measurement, and that it's on the field
-     if (visionSubsystem.getApriltagCamera().getLatestResult().getBestTarget().getFiducialId() >= 0){
+  public void updatePoseEstimator() {
+    if(visionSubsystem.getApriltagCamera().getLatestResult().hasTargets()) {
+      photonEstimator.update(visionSubsystem.getPipelineResult()).ifPresent(estimatedRobotPose -> {
+       var estimatedPose = estimatedRobotPose.estimatedPose;
       
-     if (
-       estimatedRobotPose.timestampSeconds != previousPipelineTimestamp && 
-     estimatedPose.getX() >= 0.0 && estimatedPose.getX() <= FIELD_LENGTH_METERS
-     && estimatedPose.getY() >= 0.0 && estimatedPose.getY() <= FIELD_WIDTH_METERS) {
-       if (estimatedRobotPose.targetsUsed.size() >= 1) {
-       
-         for (PhotonTrackedTarget target : estimatedRobotPose.targetsUsed) {
-           Pose3d targetPose = visionSubsystem.return_tag_pose(target.getFiducialId());
-           Transform3d bestTarget = target.getBestCameraToTarget();
-           Pose3d camPose;
-           //Adding vision measurements from the center of the robot to the apriltag. Back camera should already be inverted
-           // camPose = targetPose.transformBy(bestTarget.inverse().plus(visionSubsystem.getRobotToCam().inverse()));  //.plus(new Transform3d(robotToCam, new Rotation3d(0,0,0))); 
-          //  camPose = targetPose.transformBy(bestTarget.inverse().plus(new Transform3d(new Translation3d(0.0,0.0,0.0), new Rotation3d(0,Units.degreesToRadians(35),Math.PI))));  //.plus(new Transform3d(robotToCam, new Rotation3d(0,0,0))); 
-           camPose = targetPose.transformBy(bestTarget.plus(new Transform3d(new Translation3d(Constants.trackWidth/2,0.0,0.0), new Rotation3d(0, 0, 0))));  //.plus(new Transform3d(robotToCam, new Rotation3d(0,0,0))); 
-
-         //checking the tags ambiguity. The lower the ambiguity, the more accurate the pose is
-           if (target.getPoseAmbiguity() <= .2) {
-             previousPipelineTimestamp = estimatedRobotPose.timestampSeconds;
-             drivePoseEstimator.addVisionMeasurement(new Pose2d(estimatedPose.toPose2d().getTranslation(), new Rotation2d(estimatedPose.toPose2d().getRotation().getRadians())), estimatedRobotPose.timestampSeconds);
-            }
-         }
-       } 
-     }
-
-       else {
-           previousPipelineTimestamp = estimatedRobotPose.timestampSeconds;
-           drivePoseEstimator.addVisionMeasurement(estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds);
+  
+       // m_DrivePoseEstimator.addVisionMeasurement(estimatedPose.toPose2d(), FIELD_LENGTH_METERS);
+      
+       // Make sure we have a new measurement, and that it's on the field
+       if (visionSubsystem.getApriltagCamera().getLatestResult().getBestTarget().getFiducialId() >= 0){
+        
+       if (
+         estimatedRobotPose.timestampSeconds != previousPipelineTimestamp && 
+       estimatedPose.getX() >= 0.0 && estimatedPose.getX() <= FIELD_LENGTH_METERS
+       && estimatedPose.getY() >= 0.0 && estimatedPose.getY() <= FIELD_WIDTH_METERS) {
+         if (estimatedRobotPose.targetsUsed.size() >= 1) {
+         
+           for (PhotonTrackedTarget target : estimatedRobotPose.targetsUsed) {
+             Pose3d targetPose = visionSubsystem.return_tag_pose(target.getFiducialId());
+             Transform3d bestTarget = target.getBestCameraToTarget();
+             Pose3d camPose;
+             //Adding vision measurements from the center of the robot to the apriltag. Back camera should already be inverted
+             // camPose = targetPose.transformBy(bestTarget.inverse().plus(visionSubsystem.getRobotToCam().inverse()));  //.plus(new Transform3d(robotToCam, new Rotation3d(0,0,0))); 
+            //  camPose = targetPose.transformBy(bestTarget.inverse().plus(new Transform3d(new Translation3d(0.0,0.0,0.0), new Rotation3d(0,Units.degreesToRadians(35),Math.PI))));  //.plus(new Transform3d(robotToCam, new Rotation3d(0,0,0))); 
+             camPose = targetPose.transformBy(bestTarget.plus(new Transform3d(new Translation3d(0,0.0,0.0), new Rotation3d(0, 0, 0))));  //.plus(new Transform3d(robotToCam, new Rotation3d(0,0,0))); 
+  
+           //checking the tags ambiguity. The lower the ambiguity, the more accurate the pose is
+             if (target.getPoseAmbiguity() <= .2) {
+               previousPipelineTimestamp = estimatedRobotPose.timestampSeconds;
+               drivePoseEstimator.addVisionMeasurement(new Pose2d(estimatedPose.toPose2d().getTranslation(), new Rotation2d(estimatedPose.toPose2d().getRotation().getRadians())), estimatedRobotPose.timestampSeconds);
+              //  swerve.setGyro(estimatedPose.toPose2d().getRotation());
+              }
+           }
+         } 
        }
+  
+         else {
+             previousPipelineTimestamp = estimatedRobotPose.timestampSeconds;
+             drivePoseEstimator.addVisionMeasurement(estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds);
+         }
+       }
+       }
+       );
      }
-     }
-     );
-   }
 
   }
 

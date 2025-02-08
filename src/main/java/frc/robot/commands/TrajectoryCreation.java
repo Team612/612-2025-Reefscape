@@ -86,8 +86,8 @@ public class TrajectoryCreation {
         Rotation2d angle = estimatedPose.getRotation();
 
         List<Waypoint> bezierPoints = PathPlannerPath.waypointsFromPoses(
-            new Pose2d(x, y, angle),
-            new Pose2d(x + 1, y, angle)
+            new Pose2d(x, y, new Rotation2d()),
+            new Pose2d(x, y, new Rotation2d()).transformBy(new Transform2d(new Translation2d(1,0),new Rotation2d()))
         );
 
         // Create the path using the bezier points created above
