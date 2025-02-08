@@ -34,6 +34,7 @@ public class ElevatorCommand extends Command {
       m_elevator.setVelocity(-1);
     } else {
       m_elevator.setVelocity(0);
+      this.end(true);
     }
   }
 
