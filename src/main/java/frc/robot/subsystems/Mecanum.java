@@ -200,7 +200,7 @@ public class Mecanum extends SubsystemBase {
 
 
   public MecanumDriveWheelSpeeds getSpeeds() {
-    var speeds = new MecanumDriveWheelSpeeds(spark_fr.get(),spark_br.get(),spark_bl.get(),spark_fl.get());
+    var speeds = new MecanumDriveWheelSpeeds(spark_fl.get(),spark_fr.get(),spark_bl.get(),spark_br.get());
     return speeds;
   }
 
@@ -234,10 +234,10 @@ public class Mecanum extends SubsystemBase {
   }
   
 
-  public void RobotOrientedDrive(double y, double x, double zRot){
+  public void RobotOrientedDrive(double x, double y, double zRot){
     if(Math.abs(x) < DEADZONE) x = 0;
     if(Math.abs(y) < DEADZONE) y = 0;
     if(Math.abs(zRot) < DEADZONE) zRot = 0;
-    mech.driveCartesian(y, x, zRot);
+    mech.driveCartesian(x, y, zRot);
   }
 }

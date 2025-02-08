@@ -99,10 +99,10 @@ public class Constants {
         public static final int SPARK_FR = 1;
 
         // Need to get locations of wheels relative to center of robot
-        public static final Translation2d m_frontLeftLocation = new Translation2d(-0.305, 0.305);
-        public static final Translation2d m_frontRightLocation = new Translation2d(0.305, 0.305);
-        public static final Translation2d m_backLeftLocation = new Translation2d(-0.305, -0.305);
-        public static final Translation2d m_backRightLocation = new Translation2d(0.305, -0.305);
+        public static final Translation2d m_frontLeftLocation = new Translation2d(0.305, 0.305);
+        public static final Translation2d m_frontRightLocation = new Translation2d(0.305, -0.305);
+        public static final Translation2d m_backLeftLocation = new Translation2d(-0.305, 0.305);
+        public static final Translation2d m_backRightLocation = new Translation2d(-0.305, -0.305);
 
         public static final MecanumDriveKinematics m_kinematics = new MecanumDriveKinematics(
             m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation

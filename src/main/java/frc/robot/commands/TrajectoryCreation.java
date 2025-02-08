@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants;
 import frc.robot.subsystems.PoseEstimator;
@@ -84,10 +85,11 @@ public class TrajectoryCreation {
         double x = estimatedPose.getX();
         double y = estimatedPose.getY();
         Rotation2d angle = estimatedPose.getRotation();
+        System.out.println();
 
         List<Waypoint> bezierPoints = PathPlannerPath.waypointsFromPoses(
-            new Pose2d(x, y, new Rotation2d()),
-            new Pose2d(x, y, new Rotation2d()).transformBy(new Transform2d(new Translation2d(1,0),new Rotation2d()))
+            new Pose2d(x, y, angle),
+            new Pose2d(x, y+1, angle)
         );
 
         // Create the path using the bezier points created above
@@ -112,8 +114,9 @@ public class TrajectoryCreation {
 
         List<Waypoint> bezierPoints = PathPlannerPath.waypointsFromPoses(
             new Pose2d(x, y, angle),
-            new Pose2d(x - 1, y, angle)
+            new Pose2d(x, y+1, angle)
         );
+        System.out.println(x + " " + y+1);
 
         // Create the path using the bezier points created above
         PathPlannerPath path = new PathPlannerPath(
@@ -149,6 +152,7 @@ public class TrajectoryCreation {
     }
 
     public PathPlannerPath apriltagCentering(PoseEstimator estimation, Vision vision){
+    
         Pose2d estimatedPose = estimation.getPose();
         double x = estimatedPose.getX();
         double y = estimatedPose.getY();
@@ -157,24 +161,25 @@ public class TrajectoryCreation {
         PhotonPipelineResult result = vision.getApriltagCamera().getAllUnreadResults().get(0);
 
         Translation3d tag = vision.return_tag_pose(result.getBestTarget().getFiducialId()).getTranslation();
-        //double tagX = tag.getX();
-        //double tagY = tag.getY();
         double tagX = vision.return_tag_pose(result.getBestTarget().getFiducialId()).getX();
         double tagY = vision.return_tag_pose(result.getBestTarget().getFiducialId()).getY();
-        Rotation2d relativeAngle = new Translation2d(tagX - x, tagY - y).getAngle();
+        SmartDashboard.putNumber("Y:", tagY);
+        SmartDashboard.putNumber("X", tagX);
+
+
+        //gets the angle RELATIVE to the field through polar coordinates
+        Rotation2d heading = new Translation2d(tagX - x, tagY - y).getAngle(); 
+        //gets the tag angle, flipped 180 for field relative
         Rotation2d tagAngle = vision.return_tag_pose(result.getBestTarget().getFiducialId()).getRotation().toRotation2d().rotateBy(new Rotation2d(Units.degreesToRadians(180)));
-        // System.out.println("Tag angle" + tagAngle.getDegrees());
-        // System.out.println("Robot angle" + angle.getDegrees());
-        //Pose2d finalPose = new Pose2d(tagX, tagY, relativeAngle).plus(new Transform2d(-1, 0, tagAngle));
-        Pose2d finalPose = new Pose2d(
-            new Transform2d(tagX, tagY, new Rotation2d()).plus(new Transform2d(1, 0, tagAngle)).getTranslation(),
-            tagAngle
-        );
+        //final pose is the tag pose transformed by a certain distance RELATIVE to the tag (with robot coordinates)
+        //note that the heading should be the tag angle so it faces outward. Putting the tag angle as the heading results in trajectory heading towards the tag, not infront
+        Pose2d finalPose = new Pose2d(tagX, tagY, tagAngle).transformBy(new Transform2d(new Translation2d(-1,0),new Rotation2d()));
+        
 
 
 
         List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
-            new Pose2d(x,y, relativeAngle),
+            new Pose2d(x,y, heading),
             finalPose
         
         );
@@ -217,7 +222,7 @@ public class TrajectoryCreation {
             id = -1;
         }
 
-        double offset = Constants.trackWidth / 2;
+        double offset =0;
         
         if(id == 9 || id == 19) {
             List<Waypoint> bezierPoints = PathPlannerPath.waypointsFromPoses(

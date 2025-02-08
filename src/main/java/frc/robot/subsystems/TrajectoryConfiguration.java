@@ -58,10 +58,10 @@ public class TrajectoryConfiguration extends SubsystemBase {
             m_PoseEstimator::getPose, // Robot pose supplier
             m_PoseEstimator::setCurrentPose, // Method to reset odometry (will be called if your auto has a starting pose)
             m_Drivetrain::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-            (speeds, feedforwards) -> m_Drivetrain.RobotOrientedDrive(speeds.vyMetersPerSecond,speeds.vxMetersPerSecond,speeds.omegaRadiansPerSecond), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+            (speeds, feedforwards) -> m_Drivetrain.RobotOrientedDrive(speeds.vxMetersPerSecond,speeds.vyMetersPerSecond,speeds.omegaRadiansPerSecond), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
             new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                    new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+                    new PIDConstants(0.0, 0.0, 0.0), // Translation PID constants
+                    new PIDConstants(0.0, 0.0, 0.0) // Rotation PID constants
             ),
             config, // The robot configuration
             () -> {

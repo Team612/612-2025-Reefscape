@@ -175,7 +175,16 @@ public class Vision extends SubsystemBase {
 
     // if (cameraObject != null && cameraObject.getLatestResult().hasTargets()){
     //   SmartDashboard.putBoolean("has Object", cameraObject.getLatestResult().hasTargets());
-    // }
+    // }        PhotonPipelineResult result = vision.getApriltagCamera().getAllUnreadResults().get(0);
+
+    // PhotonPipelineResult result = getVisionInstance().getApriltagCamera().getLatestResult();
+
+    // Translation3d tag = getVisionInstance().return_tag_pose(result.getBestTarget().getFiducialId()).getTranslation();
+    // double tagX = getVisionInstance().return_tag_pose(result.getBestTarget().getFiducialId()).getX();
+    // double tagY = getVisionInstance().return_tag_pose(result.getBestTarget().getFiducialId()).getY();
+    // SmartDashboard.putNumber("Y:", tagY);
+    // SmartDashboard.putNumber("X", tagX);
+
 
   }
 

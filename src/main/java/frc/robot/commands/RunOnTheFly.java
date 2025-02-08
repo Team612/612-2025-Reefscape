@@ -47,7 +47,6 @@ public class RunOnTheFly extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
    // PathPlannerPath path = m_traj.onthefly(poseEstimatorSystem, m_vision, translation);
     //PathPlannerPath path = m_traj.apriltagCentering(poseEstimatorSystem, m_vision);
     var path = m_traj.ForwardMeter(poseEstimatorSystem);
