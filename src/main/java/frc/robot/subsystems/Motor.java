@@ -14,30 +14,28 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class Elevator extends SubsystemBase {
-  /** Creates a new Elevator. */
-  private SparkMax elevator;
+public class Motor extends SubsystemBase {
+  /** Creates a new Motor. */
+  private SparkMax motor;
   private SparkBaseConfig config;
   private EncoderConfig encoderConfig;
-  public Elevator(SparkMax elevator) {
-    this.elevator = elevator;
+  public Motor(SparkMax motor) {
+    this.motor = motor;
     config = new SparkMaxConfig();
     config.idleMode(IdleMode.kBrake);
-    encoderConfig.velocityConversionFactor(Constants.ElevatorConversionFactor);
+    encoderConfig.velocityConversionFactor(Constants.MotorConversionFactor);
   }
   public double getVelocity() {
-    return elevator.getAbsoluteEncoder().getVelocity();
+    return motor.getAbsoluteEncoder().getVelocity();
   }
   public void setVelocity(double speed) {
-    elevator.set(speed);
+    motor.set(speed);
   }
   public double getPosition() {
-    return elevator.getAbsoluteEncoder().getPosition();
+    return motor.getAbsoluteEncoder().getPosition();
   }
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Elevator Velocity", this.getVelocity());
-    SmartDashboard.putNumber("Elevator position", this.getPosition());
     // This method will be called once per scheduler run
   }
 }

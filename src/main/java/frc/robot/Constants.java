@@ -6,9 +6,10 @@ package frc.robot;
 
 /** Add your docs here. */
 public class Constants {
-    public static final double ElevatorConversionFactor = 1.0; // placeholder value, must tune
-    public static final double KrakenConversionFactor = 1.0; // placeholder value, must tune
+    public static final double MotorConversionFactor = 1.0; // placeholder value, must tune
     public static final double L1 = 1.0; // placeholder value, must tune
     public static final double L2 = 1.0; // placeholder value, must tune
     public static final double L3 = 1.0; // placeholder value, must tune
+    public static final double shootingPosition = 1.0; // placeholder value, must tune
+    public static final double shootRestPosition = 1.0; // placeholder value, must tune
 }

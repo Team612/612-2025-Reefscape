@@ -4,40 +4,42 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
-import frc.robot.subsystems.Motor;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Motor;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ElevatorCommand extends Command {
-  /** Creates a new motorCommand. */
+public class ShootCommand extends Command {
+  /** Creates a new ShootCommand. */
   private final Motor m_motor;
-  private final int level;
-  public ElevatorCommand(Motor motor, int level) { // 0 = L1, 1 = L2, 2 = L3
+  private boolean ready;
+  private final long finish;
+  private long time;
+  public ShootCommand(Motor motor, boolean atLevel, int finish) {
     m_motor = motor;
-    this.level = level;
-    addRequirements(motor);
+    ready = atLevel;
+    this.finish = finish;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    SmartDashboard.putNumber("Elevator Velocity", m_motor.getVelocity());
-    SmartDashboard.putNumber("Elevator position", m_motor.getPosition());
-    double level = this.level == 0 ? Constants.L1 : this.level == 1 ? Constants.L2 : Constants.L3;
-    if (m_motor.getPosition() > Math.abs(level - 0.1)) {
+    SmartDashboard.putNumber("Shoot Velocity", m_motor.getVelocity());
+    SmartDashboard.putNumber("Shoot position", m_motor.getPosition());
+    if (ready && time == 0) {
+      time = System.currentTimeMillis();
       m_motor.setVelocity(1);
-    } else if (m_motor.getPosition() < Math.abs(level - 0.1)) {
-      m_motor.setVelocity(-1);
-    } else {
+    }
+    if (System.currentTimeMillis() - time >= finish) {
       m_motor.setVelocity(0);
-      this.end(true);
     }
   }
 

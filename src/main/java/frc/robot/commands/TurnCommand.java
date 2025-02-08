@@ -4,19 +4,17 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
-import frc.robot.subsystems.Motor;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Motor;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ElevatorCommand extends Command {
-  /** Creates a new motorCommand. */
+public class TurnCommand extends Command {
+  /** Creates a new TurnCommand. */
   private final Motor m_motor;
-  private final int level;
-  public ElevatorCommand(Motor motor, int level) { // 0 = L1, 1 = L2, 2 = L3
+  private boolean needed;
+  public TurnCommand(Motor motor, boolean needed) {
     m_motor = motor;
-    this.level = level;
     addRequirements(motor);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -28,16 +26,16 @@ public class ElevatorCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    SmartDashboard.putNumber("Elevator Velocity", m_motor.getVelocity());
-    SmartDashboard.putNumber("Elevator position", m_motor.getPosition());
-    double level = this.level == 0 ? Constants.L1 : this.level == 1 ? Constants.L2 : Constants.L3;
-    if (m_motor.getPosition() > Math.abs(level - 0.1)) {
-      m_motor.setVelocity(1);
-    } else if (m_motor.getPosition() < Math.abs(level - 0.1)) {
-      m_motor.setVelocity(-1);
-    } else {
-      m_motor.setVelocity(0);
-      this.end(true);
+    SmartDashboard.putNumber("Turn Motor Velocity", m_motor.getVelocity());
+    SmartDashboard.putNumber("Turn Motor position", m_motor.getPosition());
+    if (needed) {
+      if (m_motor.getPosition() > 10) {
+        m_motor.setVelocity(-0.1);
+      } else if (m_motor.getPosition() < 10) {
+        m_motor.setVelocity(0.1);
+      } else {
+        m_motor.setVelocity(0);
+      }
     }
   }
 
