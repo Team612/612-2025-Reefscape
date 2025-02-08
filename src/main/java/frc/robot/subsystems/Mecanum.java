@@ -11,6 +11,7 @@ import frc.robot.Constants;
 import com.revrobotics.*;
 
 import com.revrobotics.spark.*;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -64,6 +65,11 @@ public class Mecanum extends SubsystemBase {
   private boolean isCharacterizing = false;
   private double characterizationVolts = 0.0;
 
+private final SparkClosedLoopController driverControllerFL;
+private final SparkClosedLoopController driverControllerFR;
+private final SparkClosedLoopController driverControllerBL;
+private final SparkClosedLoopController driverControllerBR;
+  
   public Pigeon2 gyro;
   // private AHRS navx;
   private final SparkMax spark_fl;
@@ -118,9 +124,20 @@ public class Mecanum extends SubsystemBase {
                   }, this)
     );
 
+    driverControllerFL = spark_fl.getClosedLoopController();
+    driverControllerFR = spark_fr.getClosedLoopController();
+    driverControllerBL = spark_bl.getClosedLoopController();
+    driverControllerBR = spark_br.getClosedLoopController();
+
+
 
     SparkMaxConfig sp = new SparkMaxConfig();
     sp.smartCurrentLimit(30);
+    sp.closedLoop.p(Constants.DrivetrainConstants.kP);
+    sp.closedLoop.i(Constants.DrivetrainConstants.kI);
+    sp.closedLoop.d(Constants.DrivetrainConstants.kD);
+
+
 
     EncoderConfig conf = new EncoderConfig();
     conf.positionConversionFactor(Constants.DrivetrainConstants.kEncoderDistancePerPulse);
@@ -200,7 +217,7 @@ public class Mecanum extends SubsystemBase {
 
 
   public MecanumDriveWheelSpeeds getSpeeds() {
-    var speeds = new MecanumDriveWheelSpeeds(spark_fl.get(),spark_fr.get(),spark_bl.get(),spark_br.get());
+    var speeds = new MecanumDriveWheelSpeeds(spark_fl.getEncoder().getVelocity(),spark_fr.getEncoder().getVelocity(),spark_bl.getEncoder().getVelocity(),spark_br.getEncoder().getVelocity());
     return speeds;
   }
 
@@ -239,5 +256,27 @@ public class Mecanum extends SubsystemBase {
     if(Math.abs(y) < DEADZONE) y = 0;
     if(Math.abs(zRot) < DEADZONE) zRot = 0;
     mech.driveCartesian(x, y, zRot);
+  }
+
+  public void AutoDrive(ChassisSpeeds speeds){
+    // double xPercent = x / Constants.maxSpeed;
+    // double yPercent = y / Constants.maxSpeed;
+    // double zPercent = zRot / Constants.maxAngularVelocity;
+
+    // mech.driveCartesian(xPercent, yPercent, zPercent);
+
+    MecanumDriveWheelSpeeds wheelSpeeds = Constants.DrivetrainConstants.m_kinematics.toWheelSpeeds(speeds);
+    double frontleft = wheelSpeeds.frontLeftMetersPerSecond;
+    double frontright = wheelSpeeds.frontRightMetersPerSecond;
+    double backleft = wheelSpeeds.rearLeftMetersPerSecond;
+    double backright = wheelSpeeds.rearRightMetersPerSecond;
+
+    driverControllerFL.setReference(frontleft, ControlType.kVelocity, ClosedLoopSlot.kSlot0, Constants.DrivetrainConstants.kFeedforward.calculate(frontleft));
+    driverControllerFR.setReference(frontright, ControlType.kVelocity, ClosedLoopSlot.kSlot0, Constants.DrivetrainConstants.kFeedforward.calculate(frontright));
+    driverControllerBL.setReference(backleft, ControlType.kVelocity, ClosedLoopSlot.kSlot0, Constants.DrivetrainConstants.kFeedforward.calculate(backleft));
+    driverControllerBR.setReference(backright, ControlType.kVelocity, ClosedLoopSlot.kSlot0, Constants.DrivetrainConstants.kFeedforward.calculate(backright));
+
+
+
   }
 }

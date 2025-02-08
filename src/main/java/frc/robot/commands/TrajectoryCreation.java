@@ -89,7 +89,7 @@ public class TrajectoryCreation {
 
         List<Waypoint> bezierPoints = PathPlannerPath.waypointsFromPoses(
             new Pose2d(x, y, angle),
-            new Pose2d(x, y+1, angle)
+            new Pose2d(x, y-1, angle)
         );
 
         // Create the path using the bezier points created above
