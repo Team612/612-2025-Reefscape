@@ -72,6 +72,9 @@ public class PoseEstimator extends SubsystemBase {
   private StructPublisher<Pose3d> publisher;
   private StructArrayPublisher<Pose3d> arrayPublisher;
 
+  private static final Vector<N3> statesStdDev = VecBuilder.fill(0.05,0.05,0.01);
+  private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.5,0.5,1);
+
   static PoseEstimator estimator = new PoseEstimator();
   
   public PoseEstimator() {
@@ -90,7 +93,9 @@ public class PoseEstimator extends SubsystemBase {
       Constants.DrivetrainConstants.kDriveKinematics, 
       m_Mecanum.getPigeonAngle(), 
       m_Mecanum.getMecanumDriveWheelPositions(), 
-      new Pose2d()
+      new Pose2d(),
+      statesStdDev,
+      visionMeasurementStdDevs
     );
     photonEstimator = visionSubsystem.getVisionPose();
 

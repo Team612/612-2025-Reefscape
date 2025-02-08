@@ -49,7 +49,7 @@ public class RunOnTheFly extends Command {
   public void initialize() {
    // PathPlannerPath path = m_traj.onthefly(poseEstimatorSystem, m_vision, translation);
     //PathPlannerPath path = m_traj.apriltagCentering(poseEstimatorSystem, m_vision);
-    var path = m_traj.ForwardMeter(poseEstimatorSystem);
+    var path = m_traj.apriltagCentering(poseEstimatorSystem,m_vision);
     if (path != null) {
       controllerCommand = AutoBuilder.followPath(path);
       controllerCommand.initialize();

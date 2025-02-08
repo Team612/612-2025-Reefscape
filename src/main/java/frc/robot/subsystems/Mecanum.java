@@ -259,11 +259,11 @@ private final SparkClosedLoopController driverControllerBR;
   }
 
   public void AutoDrive(ChassisSpeeds speeds){
-    // double xPercent = x / Constants.maxSpeed;
-    // double yPercent = y / Constants.maxSpeed;
-    // double zPercent = zRot / Constants.maxAngularVelocity;
+    // double xPercent = speeds.vxMetersPerSecond;
+    // double yPercent = speeds.vyMetersPerSecond;
+    // double zPercent = speeds.omegaRadiansPerSecond;
 
-    // mech.driveCartesian(xPercent, yPercent, zPercent);
+    //  mech.driveCartesian(xPercent, yPercent, zPercent);
 
     MecanumDriveWheelSpeeds wheelSpeeds = Constants.DrivetrainConstants.m_kinematics.toWheelSpeeds(speeds);
     double frontleft = wheelSpeeds.frontLeftMetersPerSecond;
