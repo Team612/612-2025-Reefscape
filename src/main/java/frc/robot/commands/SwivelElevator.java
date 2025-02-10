@@ -5,8 +5,8 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.Controls.ControlMap;
 import frc.robot.subsystems.Payload;
-import frc.robot.subsystems.Swerve;
 import java.util.function.DoubleSupplier;
 
 public class SwivelElevator extends Command {
@@ -18,7 +18,6 @@ public class SwivelElevator extends Command {
 
   @Override
   public void execute() {
-    m_pay.elevate();
-    m_pay.pivot();
+    m_pay.setMotorSpeed(ControlMap.driver_joystick.getRawAxis(1));
   }
 }

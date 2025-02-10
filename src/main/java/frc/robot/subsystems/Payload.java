@@ -9,6 +9,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -17,34 +18,43 @@ import frc.robot.Constants;
 // import com.studica.frc.AHRS.NavXComType;
 
 public class Payload extends SubsystemBase {
-  private TalonFX elevator = new TalonFX(Constants.talonElevatorID);
-  private SparkMax neoPivot = new SparkMax(Constants.neoPivotID, MotorType.kBrushless);
+  private SparkMax elevator = new SparkMax(Constants.elevatorID, MotorType.kBrushless);
+  // private SparkMax neoPivot = new SparkMax(Constants.neoPivotID, MotorType.kBrushless);
   private static Payload payloadInstance;
+  DigitalInput toplimitSwitch = new DigitalInput(Constants.toplimitSwitchID);
+  DigitalInput bottomlimitSwitch = new DigitalInput(Constants.bottomlimitSwitchID);
 
   public Payload() {
     
   }
 
-  public void elevate(){
-    elevator.set(1.0);
-  }
+public void setMotorSpeed(double speed) {
+    if (speed > 0) {
+        if (toplimitSwitch.get()) {
+            elevator.set(0);
+        } else {
+            elevator.set(speed);
+        }
+    } else {
+        if (bottomlimitSwitch.get()) {
+            elevator.set(0);
+        } else {
+            elevator.set(speed);
+        }
+    }
+}
 
-  public void delevate(){
-    elevator.set(0.0);
+  // public void pivot(){
+  //   neoPivot.set(1.0);
 
-  }
+  // }
 
-  public void pivot(){
-    neoPivot.set(1.0);
-
-  }
-
-  public void depivot(){
-    neoPivot.set(0.0);
-  }
+  // public void depivot(){
+  //   neoPivot.set(0.0);
+  // }
 
   public double getPositiona() {
-    return elevator.getPosition().getValueAsDouble();
+    return elevator.getEncoder().getPosition();
   }
 
   public static Payload getInstance(){
