@@ -67,6 +67,7 @@ public void setMotorSpeed(double speed) {
 
   @Override
   public void periodic() {
-    System.out.println(getInstance().getPositiona());
+    SmartDashboard.putNumber("Elevator Velocity", elevator.getEncoder().getVelocity());
+    SmartDashboard.putNumber("Elevator position", elevator.getEncoder().getPosition());
   }
 }
