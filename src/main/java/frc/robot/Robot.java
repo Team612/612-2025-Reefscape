@@ -1,95 +1,217 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj.XboxController;
 
-/**
- * The VM is configured to automatically run this class, and to call the functions corresponding to
- * each mode, as described in the TimedRobot documentation. If you change the name of this class or
- * the package after creating this project, you must also update the build.gradle file in the
- * project.
- */
 public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
+  //CONSTANTS
+  // xbox port
+  private static final int XboxPortNumber = 0;
 
-  private RobotContainer m_robotContainer;
+  // sets the minimum controller request percent
+  private static final double Deadband = 0.05;
 
-  /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
-   */
+  // sets the proportional constant for the angle motor PID
+  private static final double kp = 0.5;
+
+  // this controls our desired m/s inputs from the controller
+  private static final double xMultiple = 2;
+  private static final double yMultiple = 2;
+  // this controls our desired rad/s inputs from the controller
+  private static final double zMultiple = 3;
+
+  // this is just a guess at how much motor percent it takes to travel 1 meter per second subject to changes
+  // I might replace this with a velocity control system that uses the drive motors built in encoders
+  private static final double metersPerSecondtoMotorPercentConstant = 0.25;
+
+  // used to instantiate swerve kinematics
+  private static final double trackWidth = Units.inchesToMeters(27);
+  private static final double wheelBase = Units.inchesToMeters(27);
+
+  // used to desaturate the wheel speeds if we request them to go over this limit
+  private static final double MAX_SPEED = 4.5; // m/s
+
+  // swerve module 0 constants, front left
+  // when the absolute encoder reads the 0.649 it is actually at 0
+  private static final double mod0EncoderOffset = 0.649;
+  private static final int mod0AngleMotorID = 5;
+  private static final int mod0DriveMotorID = 4;
+  private static final int mod0CANcoderID = 0;
+
+  // swerve module 1 constants, front right
+  // when the absolute encoder reads 0.02 it is actually at 0
+  private static final double mod1EncoderOffset = 0.02;
+  private static final int mod1AngleMotorID = 3;
+  private static final int mod1DriveMotorID = 2;
+  private static final int mod1CANcoderID = 1;
+
+  // swerve module 2 constants, back left
+  // when the absolute encoder reads 0.75 it is actually at 0
+  private static final double mod2EncoderOffset = 0.75;
+  private static final int mod2AngleMotorID = 7;
+  private static final int mod2DriveMotorID = 6;
+  private static final int mod2CANcoderID = 3;
+
+  // swerve module 3 constants, back right
+  // when the absolute encoder reads 0.994 it is actually at 0
+  private static final double mod3EncoderOffset = 0.994;
+  private static final int mod3AngleMotorID = 1;
+  private static final int mod3DriveMotorID = 8;
+  private static final int mod3CANcoderID = 2;
+
+  // These may be useful in the future for odometry or something
+  // private static final double wheelDiameter = Units.inchesToMeters(3.75);
+  // private static final double wheelCircumference = wheelDiameter * Math.PI;
+  // private static final double driveGearRatio = (6.75 / 1.0); // 6.75:1
+  // private static final double angleGearRatio = (150.0 / 7.0); // 12.8:1
+
+  // INSTANTIATING
+  // xbox controller
+  private XboxController controller = new XboxController(XboxPortNumber);
+
+  // instantiating Swerve Modules
+  private mySwerveModule mod0 = new mySwerveModule(mod0AngleMotorID,mod0DriveMotorID,mod0CANcoderID,mod0EncoderOffset);
+  private mySwerveModule mod1 = new mySwerveModule(mod1AngleMotorID,mod1DriveMotorID,mod1CANcoderID,mod1EncoderOffset);
+  private mySwerveModule mod2 = new mySwerveModule(mod2AngleMotorID,mod2DriveMotorID,mod2CANcoderID,mod2EncoderOffset);
+  private mySwerveModule mod3 = new mySwerveModule(mod3AngleMotorID,mod3DriveMotorID,mod3CANcoderID,mod3EncoderOffset);
+
+  // instantiating a Swerve Kinematics Object which will calculate our desired swerve module states
+  private static final SwerveDriveKinematics swerveKinematics =
+  new SwerveDriveKinematics(
+      new Translation2d(wheelBase / 2.0, trackWidth / 2.0),
+      new Translation2d(wheelBase / 2.0, -trackWidth / 2.0),
+      new Translation2d(-wheelBase / 2.0, trackWidth / 2.0),
+      new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0));
+
+  // instantiating a chassis speed object, this will hold the data of how we want the robot to move as a whole
+  private ChassisSpeeds chassisSpeed = new ChassisSpeeds();
+
+  public Robot() {}
+
   @Override
-  public void robotInit() {
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
+  public void robotPeriodic() {}
+
+  @Override
+  public void autonomousInit() {}
+
+  @Override
+  public void autonomousPeriodic() {}
+
+  @Override
+  public void teleopInit() {
   }
 
-  /**
-   * This function is called every robot packet, no matter the mode. Use this for items like
-   * diagnostics that you want ran during disabled, autonomous, teleoperated and test.
-   *
-   * <p>This runs after the mode specific periodic functions, but before LiveWindow and
-   * SmartDashboard integrated updating.
-   */
+  // Runs Periodically during the teleop phase of the match
   @Override
-  public void robotPeriodic() {
-    // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
-    // commands, running already-scheduled commands, removing finished or interrupted commands,
-    // and running subsystem periodic() methods.  This must be called from the robot's periodic
-    // block in order for anything in the Command-based framework to work.
-    CommandScheduler.getInstance().run();
+  public void teleopPeriodic() {
+    // m/s desired speed
+    double x = -controller.getRawAxis(1) * xMultiple;
+    double y = -controller.getRawAxis(0) * yMultiple;
+    double zRot = -controller.getRawAxis(4) * zMultiple;
+
+    // sets controller output to 0 if it is below the deadband threshold
+    // so the robot does not slowly drift when you let go of the controller
+    if (Math.abs(x) < Deadband) x = 0;
+    if (Math.abs(y) < Deadband) y = 0;
+    if (Math.abs(zRot) < Deadband) zRot = 0;
+
+    // updates the Chassis Object so we can plug it into the drive kinematics method
+    chassisSpeed.vxMetersPerSecond = x;
+    chassisSpeed.vyMetersPerSecond = y;
+    chassisSpeed.omegaRadiansPerSecond = zRot;
+    
+    // automatically calculates what swerve module state every swerve module has to be at and adds it to this array
+    SwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(chassisSpeed);
+
+    // slows down all of the motors by the same percent if a single motor goes over the max possible speed so we dont lose control
+    SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, MAX_SPEED);
+
+    // applies our swerve module states with our custom set method
+    mod0.setMySwerveState(moduleStates[0]);
+    mod1.setMySwerveState(moduleStates[1]);
+    mod2.setMySwerveState(moduleStates[2]);
+    mod3.setMySwerveState(moduleStates[3]);
   }
 
-  /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {}
 
   @Override
   public void disabledPeriodic() {}
 
-  /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
-  public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+  public void testInit() {}
 
-    // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
-  }
-
-  /** This function is called periodically during autonomous. */
-  @Override
-  public void autonomousPeriodic() {}
-
-  @Override
-  public void teleopInit() {
-    // This makes sure that the autonomous stops running when
-    // teleop starts running. If you want the autonomous to
-    // continue until interrupted by another command, remove
-    // this line or comment it out.
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
-    }
-  }
-
-  /** This function is called periodically during operator control. */
-  @Override
-  public void teleopPeriodic() {}
-
-  @Override
-  public void testInit() {
-    // Cancels all running commands at the start of test mode.
-    CommandScheduler.getInstance().cancelAll();
-  }
-
-  /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {}
+
+  @Override
+  public void simulationInit() {}
+
+  @Override
+  public void simulationPeriodic() {}
+
+  // nested class for swerve modules
+  public class mySwerveModule{
+    // data fields for each swerve module
+    private SparkMax angleMotor;
+    private SparkMax drivingMotor;
+    private CANcoder angleEncoder;
+    private double encoderOffset;
+    private PIDController turnPIDController = new PIDController(kp, 0, 0);
+
+    // constructor for the swerve module
+    @SuppressWarnings("deprecation")
+    public mySwerveModule(int angleMotorID, int drivingMotorID, int angleEncoderID, double encoderOffset){
+      angleMotor = new SparkMax(angleMotorID,MotorType.kBrushless);
+      drivingMotor = new SparkMax(drivingMotorID,MotorType.kBrushless);
+      angleEncoder = new CANcoder(angleEncoderID);
+      this.encoderOffset = encoderOffset;
+
+      // sets driving motors to inverse so positive motor values make the robot go forward
+      drivingMotor.setInverted(true);
+
+      // this important command allows the PID controller to determine the shortest way to reach a target
+      // for example if the PID controller knows the wheel is currently at 3rad and wants to get to -3rad
+      // it will just go forward the short way instead of backward the long way
+      turnPIDController.enableContinuousInput(-Math.PI, Math.PI);
+    }
+
+    // this method takes in desired swerve module states and turns them into reality with motor inputs
+    @SuppressWarnings("deprecation")
+    public void setMySwerveState(SwerveModuleState desiredState){
+      // this SwerveModuleState method changes the desired state allowing the robot to run the wheels in reverse
+      // for example if the front of the wheel is currently at pi/2 rad and it wants to get to -pi/2 rad
+      // this method will change the desired state to -pi/2 and run the motors in reverse using the back of the wheel
+      SwerveModuleState optimizedState = SwerveModuleState.optimize(desiredState, new Rotation2d(getCurrentAngle()));
+
+      // this transforms desired meters per second to motor percent output
+      drivingMotor.set(optimizedState.speedMetersPerSecond * metersPerSecondtoMotorPercentConstant);
+
+      // this sets the angle motor using pid control to ensure smooth turning
+      angleMotor.set(turnPIDController.calculate(getCurrentAngle(), optimizedState.angle.getRadians()));
+    }
+
+    // this returns the wheels current angle in the range (-pi,pi) from the CANcoder inputs
+    public double getCurrentAngle() {
+      double rotations = angleEncoder.getAbsolutePosition().getValueAsDouble() - encoderOffset;
+      if (rotations < 0)
+        rotations += 1;      
+      if (rotations < 0.5)
+        return rotations * 2 * Math.PI;
+      else
+        return (rotations-1) * 2 * Math.PI;
+    }
+  }
 }
