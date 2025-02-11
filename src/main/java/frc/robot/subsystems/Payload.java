@@ -52,7 +52,10 @@ public void setMotorSpeed(double speed) {
   // public void depivot(){
   //   neoPivot.set(0.0);
   // }
-
+  public void resetCount() {
+    elevator.getEncoder().setPosition(0);
+  }
+  
   public double getPositiona() {
     return elevator.getEncoder().getPosition();
   }
