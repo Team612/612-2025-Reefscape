@@ -11,10 +11,11 @@ import frc.robot.commands.CANdleLights;
 import frc.robot.commands.DefaultDrive;
 import frc.robot.commands.FieldRelativeDrive;
 import frc.robot.subsystems.CANdleSubsystem;
-import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.Mecanum;
+import frc.robot.subsystems.Mecanum;
 
 public class RobotContainer {
-  private final Swerve m_drivetrain;
+  private final Mecanum m_drivetrain;
   private final CANdleSubsystem m_candle;
   private final CommandXboxController driverControls;
   private final DefaultDrive m_defaultDrive;
@@ -22,19 +23,12 @@ public class RobotContainer {
   private final Command m_CANdleLights;
 
   public RobotContainer() {
-    m_drivetrain = Swerve.getInstance();
+    m_drivetrain = Mecanum.getInstance();
     m_candle = CANdleSubsystem.getInstance();
 
     driverControls = new CommandXboxController(Constants.driverPort);
-    m_defaultDrive = new DefaultDrive( m_drivetrain,
-            () -> -driverControls.getLeftY(),
-            () -> -driverControls.getLeftX(),
-            () -> -driverControls.getRightX());
-
-    m_FieldRelativeDrive = new FieldRelativeDrive( m_drivetrain,
-            () -> -driverControls.getLeftY(),
-            () -> -driverControls.getLeftX(),
-            () -> -driverControls.getRightX());
+    m_defaultDrive = new DefaultDrive( m_drivetrain);
+    m_FieldRelativeDrive = new FieldRelativeDrive( m_drivetrain);
 
     m_CANdleLights = new CANdleLights(m_candle);
     configureBindings();
