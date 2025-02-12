@@ -27,11 +27,16 @@ public class Robot extends TimedRobot {
 
   private CommandXboxController controller = new CommandXboxController(controllerPort);
 
+  // sets some motors to inverse so positive values mean forward
+  @SuppressWarnings("deprecation")
   public Robot() {
     cim1.setInverted(true);
     cim2.setInverted(true);
+    neo1.setInverted(true);
+    neo2.setInverted(true);
   }
 
+  // resets motors to zero to prevent robot from sustaining motor values after disabled
   public void resetMotors(){
     cim1.set(TalonSRXControlMode.PercentOutput,0);
     cim2.set(TalonSRXControlMode.PercentOutput,0);
@@ -58,24 +63,30 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    double speed = -controller.getRightY();
+    // left joycon controls speed
+    double speed = -controller.getLeftY();
+    // right joycon controls turn
     double turn = controller.getRightX();
+
+    // ensures that motor values stay under the maximum and deflate proportionally
     double deflator = 1;
     if (Math.abs(speed) + Math.abs(turn) > 1)
       deflator = 1/(Math.abs(speed) + Math.abs(turn));
 
+    // aplies inputs to wheels
     cim1.set(TalonSRXControlMode.PercentOutput,(speed + turn) * deflator);
     cim2.set(TalonSRXControlMode.PercentOutput,(speed + turn) * deflator);
     cim3.set(TalonSRXControlMode.PercentOutput,(speed - turn) * deflator);
     cim4.set(TalonSRXControlMode.PercentOutput,(speed - turn) * deflator);
 
-    double intakeSpeed = controller.getLeftTriggerAxis();
-    System.out.println(controller.getLeftTriggerAxis());
-    neo1.set(-intakeSpeed);
+    // ejects ball if it gets stuck in the middle
+    double ejectStuckBallSpeed = -controller.getLeftTriggerAxis();
+    neo1.set(ejectStuckBallSpeed);
 
-    double outtakeSpeed = controller.getRightTriggerAxis();
-    System.out.println(controller.getRightTriggerAxis());
-    neo2.set(-outtakeSpeed);
+    // combines intake and outTake with one trigger
+    double shootOutSpeed = controller.getRightTriggerAxis();
+    neo1.set(shootOutSpeed);
+    neo2.set(shootOutSpeed);
   }
 
   @Override
