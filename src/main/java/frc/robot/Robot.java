@@ -1,6 +1,7 @@
 package frc.robot;
 
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
@@ -18,6 +19,9 @@ public class Robot extends TimedRobot {
   //CONSTANTS
   // xbox port
   private static final int XboxPortNumber = 0;
+
+  // gyro port
+  private static final int gyroID = 0;
 
   // sets the minimum controller request percent
   private static final double Deadband = 0.05;
@@ -71,9 +75,9 @@ public class Robot extends TimedRobot {
   private static final int mod3CANcoderID = 2;
 
   // These may be useful in the future for odometry or something
-  // private static final double wheelDiameter = Units.inchesToMeters(3.75);
-  // private static final double wheelCircumference = wheelDiameter * Math.PI;
-  // private static final double driveGearRatio = (6.75 / 1.0); // 6.75:1
+  private static final double wheelDiameter = Units.inchesToMeters(3.75);
+  private static final double wheelCircumference = wheelDiameter * Math.PI;
+  private static final double driveGearRatio = (6.75 / 1.0); // 6.75:1
   // private static final double angleGearRatio = (150.0 / 7.0); // 12.8:1
 
   // INSTANTIATING
@@ -94,8 +98,8 @@ public class Robot extends TimedRobot {
       new Translation2d(-wheelBase / 2.0, trackWidth / 2.0),
       new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0));
 
-  // instantiating a chassis speed object, this will hold the data of how we want the robot to move as a whole
-  private ChassisSpeeds chassisSpeed = new ChassisSpeeds();
+  // instantiating a gyroscope so that our robot can drive in the field oriented mode
+  Pigeon2 gyro = new Pigeon2(gyroID);
 
   public Robot() {}
 
@@ -120,6 +124,10 @@ public class Robot extends TimedRobot {
     double y = -controller.getRawAxis(0) * yMultiple;
     double zRot = -controller.getRawAxis(4) * zMultiple;
 
+    // resets heading for gyroscope
+    if (controller.getAButtonPressed())
+      gyro.reset();
+
     // sets controller output to 0 if it is below the deadband threshold
     // so the robot does not slowly drift when you let go of the controller
     if (Math.abs(x) < Deadband) x = 0;
@@ -127,9 +135,12 @@ public class Robot extends TimedRobot {
     if (Math.abs(zRot) < Deadband) zRot = 0;
 
     // updates the Chassis Object so we can plug it into the drive kinematics method
-    chassisSpeed.vxMetersPerSecond = x;
-    chassisSpeed.vyMetersPerSecond = y;
-    chassisSpeed.omegaRadiansPerSecond = zRot;
+    // allows user to activate robot oriented by holding the right bumper 
+    ChassisSpeeds chassisSpeed;
+    if (controller.getRightBumperButton())
+      chassisSpeed = ChassisSpeeds.fromRobotRelativeSpeeds(x,y,zRot, gyro.getRotation2d());
+    else
+      chassisSpeed = new ChassisSpeeds(x,y,zRot);
     
     // automatically calculates what swerve module state every swerve module has to be at and adds it to this array
     SwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(chassisSpeed);
@@ -186,6 +197,12 @@ public class Robot extends TimedRobot {
       // for example if the PID controller knows the wheel is currently at 3rad and wants to get to -3rad
       // it will just go forward the short way instead of backward the long way
       turnPIDController.enableContinuousInput(-Math.PI, Math.PI);
+    }
+
+    // gets velocity of the wheel using the built in neo encoders
+    public double getVelocity(){
+      double metersPerSecond = (drivingMotor.getEncoder().getVelocity()*60*wheelCircumference)/driveGearRatio;
+      return metersPerSecond;
     }
 
     // this method takes in desired swerve module states and turns them into reality with motor inputs
