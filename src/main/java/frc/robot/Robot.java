@@ -81,12 +81,17 @@ public class Robot extends TimedRobot {
 
     // ejects ball if it gets stuck in the middle
     double ejectStuckBallSpeed = -controller.getLeftTriggerAxis();
-    neo1.set(ejectStuckBallSpeed);
-
     // combines intake and outTake with one trigger
     double shootOutSpeed = controller.getRightTriggerAxis();
-    neo1.set(shootOutSpeed);
-    neo2.set(shootOutSpeed);
+
+    if (shootOutSpeed > 0.05){
+      neo1.set(shootOutSpeed);
+      neo2.set(shootOutSpeed);
+    }
+    else{
+      neo1.set(0);
+      neo2.set(ejectStuckBallSpeed);
+    }
   }
 
   @Override
