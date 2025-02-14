@@ -167,7 +167,7 @@ public class TrajectoryCreation {
         Rotation2d tagAngle = vision.return_tag_pose(result.getBestTarget().getFiducialId()).getRotation().toRotation2d().rotateBy(new Rotation2d(Units.degreesToRadians(180)));
         //final pose is the tag pose transformed by a certain distance RELATIVE to the tag (with robot coordinates)
         //note that the heading should be the tag angle so it faces outward. Putting the tag angle as the heading results in trajectory heading towards the tag, not infront
-        Pose2d finalPose = new Pose2d(tagX, tagY, tagAngle).transformBy(new Transform2d(new Translation2d(-1,0),new Rotation2d()));
+        Pose2d finalPose = new Pose2d(tagX, tagY, tagAngle).transformBy(new Transform2d(new Translation2d(-0.762,0.1651),new Rotation2d()));
         
 
 
