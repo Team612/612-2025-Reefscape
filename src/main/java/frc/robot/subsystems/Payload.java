@@ -36,7 +36,6 @@ public class Payload extends SubsystemBase {
     sp.smartCurrentLimit(30);
     sp.idleMode(IdleMode.kBrake);
     elevator.configure(sp.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
   }
 
 public void setMotorSpeed(double speed) {
@@ -93,6 +92,7 @@ public void setMotorSpeed(double speed) {
     SmartDashboard.putNumber("Elevator 1 Velocity", elevator.getEncoder().getVelocity());
     SmartDashboard.putNumber("Elevator 1 position", elevator.getEncoder().getPosition());
     SmartDashboard.putNumber("Elevator Speed (Controller)", Constants.payspeed);
+    System.out.println(Constants.payspeed);
     // SmartDashboard.putNumber("Elevator 2 Velocity", elevator.getEncoder().getVelocity());
     // SmartDashboard.putNumber("Elevator 2 position", elevator.getEncoder().getPosition());
   }

@@ -21,8 +21,30 @@ public class Constants {
     public static final int elevatorID = 1;
     public static final int elevatorID2 = 2;
     public static double payspeed = 0;
+    public static double kPositionConversionFactor;
     public static final int toplimitSwitchID = 0;
     public static final int bottomlimitSwitchID = 0;
-
+    public final class ElevatorConstants {
+        public static final double kP = 0.1;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
+      }
+  
+      public final class ElevatorControllerVelocityGains {
+        public static final double kP = 0.0001;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
+    }
+    public final class ClimbConstants {
+        public static final double kP = 0.1;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
+      }
+  
+      public final class ClimbControllerVelocityGains {
+        public static final double kP = 0.0001;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
+    }
     // public static final int neoPivotID = 0;
 }
