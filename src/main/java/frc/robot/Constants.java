@@ -18,7 +18,9 @@ import edu.wpi.first.math.util.Units;
 
 /** Add your docs here. */
 public class Constants {
-    public static final int elevatorID = 0;
+    public static final int elevatorID = 1;
+    public static final int elevatorID2 = 2;
+    public static double payspeed = 0;
     public static final int toplimitSwitchID = 0;
     public static final int bottomlimitSwitchID = 0;
 

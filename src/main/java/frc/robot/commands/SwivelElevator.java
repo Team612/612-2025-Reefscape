@@ -11,6 +11,7 @@ import java.util.function.DoubleSupplier;
 
 public class SwivelElevator extends Command {
   private Payload m_pay;
+  private double DEADZONE = 0.1;
 
   public SwivelElevator(Payload pay) {
      m_pay = pay;
@@ -18,6 +19,11 @@ public class SwivelElevator extends Command {
 
   @Override
   public void execute() {
-    m_pay.setMotorSpeed(ControlMap.driver_joystick.getRawAxis(1));
+    if (Math.abs(ControlMap.driver_joystick.getRawAxis(0)) < DEADZONE){
+      m_pay.setMotorSpeed(Constants.payspeed);
+    }
+    else{
+      m_pay.setMotorSpeed(ControlMap.driver_joystick.getRawAxis(0)*0.5);
+    }
   }
 }

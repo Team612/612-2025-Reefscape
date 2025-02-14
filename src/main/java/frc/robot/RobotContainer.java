@@ -8,27 +8,35 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Controls.ControlMap;
+import frc.robot.commands.IncrementPay;
 import frc.robot.commands.Reset;
 import frc.robot.commands.SwivelElevator;
 import frc.robot.subsystems.Payload;
+import frc.robot.commands.IncrementPay;
 
 public class RobotContainer {
   private final Payload m_pay;
   private final Command m_movePay;
   private final Command m_resetPay;
+  private final Command m_incUp;
+  private final Command m_incDown;
   
   public RobotContainer() {
     m_pay = Payload.getInstance();
 
     m_movePay = new SwivelElevator(m_pay);
     m_resetPay = new Reset(m_pay);
-
+    m_incUp = new IncrementPay(0.05);
+    m_incDown = new IncrementPay(-0.05);
     configureBindings();
   }
 
   private void configureBindings() {
-    ControlMap.driver_joystick.a().toggleOnTrue(m_movePay);
-    ControlMap.driver_joystick.b().toggleOnTrue(m_resetPay);
+    m_pay.setDefaultCommand(m_movePay);
+    ControlMap.driver_joystick.b().onTrue(m_resetPay);
+    
+    ControlMap.driver_joystick.y().onTrue(m_incUp);
+    ControlMap.driver_joystick.a().onTrue(m_incDown);
   }
 
   public Command getAutonomousCommand() {
