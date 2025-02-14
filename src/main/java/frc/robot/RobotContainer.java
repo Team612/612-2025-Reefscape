@@ -8,11 +8,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Controls.ControlMap;
-import frc.robot.commands.IncrementPay;
+import frc.robot.commands.OutInTake;
 import frc.robot.commands.Reset;
-import frc.robot.commands.SwivelElevator;
+import frc.robot.commands.Pivot;
 import frc.robot.subsystems.Payload;
-import frc.robot.commands.IncrementPay;
+import frc.robot.commands.OutInTake;
 
 public class RobotContainer {
   private final Payload m_pay;
@@ -24,10 +24,10 @@ public class RobotContainer {
   public RobotContainer() {
     m_pay = Payload.getInstance();
 
-    m_movePay = new SwivelElevator(m_pay);
+    m_movePay = new Pivot(m_pay);
     m_resetPay = new Reset(m_pay);
-    m_incUp = new IncrementPay(0.05);
-    m_incDown = new IncrementPay(-0.05);
+    m_incUp = new OutInTake(0.05);
+    m_incDown = new OutInTake(-0.05);
     configureBindings();
   }
 

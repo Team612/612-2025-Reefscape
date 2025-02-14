@@ -9,8 +9,8 @@ import frc.robot.Controls.ControlMap;
 import frc.robot.subsystems.Payload;
 import java.util.function.DoubleSupplier;
 
-public class IncrementPay extends Command {
-  public IncrementPay(double num) {
+public class OutInTake extends Command {
+  public OutInTake(double num) {
      Constants.payspeed += num;
   }
 }
