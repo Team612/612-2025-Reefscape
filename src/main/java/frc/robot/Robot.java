@@ -75,9 +75,9 @@ public class Robot extends TimedRobot {
   private static final int mod3CANcoderID = 2;
 
   // These may be useful in the future for odometry or something
-  private static final double wheelDiameter = Units.inchesToMeters(3.75);
-  private static final double wheelCircumference = wheelDiameter * Math.PI;
-  private static final double driveGearRatio = (6.75 / 1.0); // 6.75:1
+  // private static final double wheelDiameter = Units.inchesToMeters(3.75);
+  // private static final double wheelCircumference = wheelDiameter * Math.PI;
+  // private static final double driveGearRatio = (6.75 / 1.0); // 6.75:1
   // private static final double angleGearRatio = (150.0 / 7.0); // 12.8:1
 
   // INSTANTIATING
@@ -114,6 +114,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    gyro.reset();
   }
 
   // Runs Periodically during the teleop phase of the match
@@ -137,10 +138,14 @@ public class Robot extends TimedRobot {
     // updates the Chassis Object so we can plug it into the drive kinematics method
     // allows user to activate robot oriented by holding the right bumper 
     ChassisSpeeds chassisSpeed;
-    if (controller.getRightBumperButton())
-      chassisSpeed = ChassisSpeeds.fromRobotRelativeSpeeds(x,y,zRot, gyro.getRotation2d());
-    else
+    if (!controller.getRightBumperButton()){
+      @SuppressWarnings("removal")
+      Rotation2d ourHeadingJustHowItWantsIt = Rotation2d.fromDegrees(Math.IEEEremainder(-gyro.getAngle(), 360));
+      chassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(x,y,zRot, ourHeadingJustHowItWantsIt);
+    }
+    else{
       chassisSpeed = new ChassisSpeeds(x,y,zRot);
+    }
     
     // automatically calculates what swerve module state every swerve module has to be at and adds it to this array
     SwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(chassisSpeed);
@@ -201,8 +206,7 @@ public class Robot extends TimedRobot {
 
     // gets velocity of the wheel using the built in neo encoders
     public double getVelocity(){
-      double metersPerSecond = (drivingMotor.getEncoder().getVelocity()*60*wheelCircumference)/driveGearRatio;
-      return metersPerSecond;
+      return drivingMotor.getEncoder().getVelocity();
     }
 
     // this method takes in desired swerve module states and turns them into reality with motor inputs
