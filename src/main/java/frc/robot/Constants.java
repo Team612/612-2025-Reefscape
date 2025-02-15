@@ -22,7 +22,9 @@ public class Constants {
     // public static final int elevatorID2 = 2;
     public static double payspeed = 0;
     public static double kPositionConversionFactor;
-    public static final int toplimitSwitchID = 0;
-    public static final int bottomlimitSwitchID = 0;
+
+    public static final int encB = 0;
+    public static final int encL1 = 10;
+    public static final int encL2 = 20;
     // public static final int neoPivotID = 0;
 }
