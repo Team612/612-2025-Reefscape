@@ -155,7 +155,7 @@ public class PoseEstimator extends SubsystemBase {
   
          else {
              previousPipelineTimestamp = estimatedRobotPose.timestampSeconds;
-             drivePoseEstimator.addVisionMeasurement(estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds);
+            //  drivePoseEstimator.addVisionMeasurement(estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds);
          }
        }
        }
