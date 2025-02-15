@@ -26,5 +26,7 @@ public class Constants {
     public static final int encB = 0;
     public static final int encL1 = 10;
     public static final int encL2 = 20;
+    
+    public static final double boreOffset = 0;
     // public static final int neoPivotID = 0;
 }
