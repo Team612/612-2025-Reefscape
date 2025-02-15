@@ -29,22 +29,22 @@ public class Robot extends TimedRobot {
   // sets the proportional constant for the angle motor PID
   private static final double kp = 0.5;
 
-  // this controls our desired m/s inputs from the controller
-  private static final double xMultiple = 2;
-  private static final double yMultiple = 2;
-  // this controls our desired rad/s inputs from the controller
-  private static final double zMultiple = 3;
-
   // this is just a guess at how much motor percent it takes to travel 1 meter per second subject to changes
   // I might replace this with a velocity control system that uses the drive motors built in encoders
   private static final double metersPerSecondtoMotorPercentConstant = 0.25;
 
+  // used to desaturate the wheel speeds if we request them to go over this limit
+  private static final double MAX_SPEED = 1/metersPerSecondtoMotorPercentConstant; // m/s
+
+  // this controls our desired m/s inputs from the controller
+  private static final double xMultiple = MAX_SPEED;
+  private static final double yMultiple = MAX_SPEED;
+  // this controls our desired rad/s inputs from the controller
+  private static final double zMultiple = 3;
+
   // used to instantiate swerve kinematics
   private static final double trackWidth = Units.inchesToMeters(27);
   private static final double wheelBase = Units.inchesToMeters(27);
-
-  // used to desaturate the wheel speeds if we request them to go over this limit
-  private static final double MAX_SPEED = 4.5; // m/s
 
   // swerve module 0 constants, front left
   // when the absolute encoder reads the 0.649 it is actually at 0
@@ -186,6 +186,7 @@ public class Robot extends TimedRobot {
     private CANcoder angleEncoder;
     private double encoderOffset;
     private PIDController turnPIDController = new PIDController(kp, 0, 0);
+  
 
     // constructor for the swerve module
     @SuppressWarnings("deprecation")
