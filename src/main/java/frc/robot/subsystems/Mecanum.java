@@ -152,7 +152,7 @@ private final SparkClosedLoopController driverControllerBR;
 
     gyro = new Pigeon2(Constants.pigeonID);
     gyro.getConfigurator().apply(new Pigeon2Configuration());
-    gyro.setYaw(0);
+    // gyro.setYaw(180);
     gyro.reset();
     mech = new MecanumDrive(spark_fl, spark_bl, spark_fr, spark_br);
     //CHECK THIS LATER!!

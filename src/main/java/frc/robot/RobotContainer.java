@@ -21,6 +21,7 @@ import frc.robot.commands.FieldRelativeDrive;
 import frc.robot.commands.RunOnTheFly;
 import frc.robot.commands.TrajectoryCreation;
 import frc.robot.control.ControlMap;
+import frc.robot.subsystems.CANdleSubsystem;
 import frc.robot.subsystems.Mecanum;
 import frc.robot.subsystems.Vision;
 
@@ -34,6 +35,7 @@ public class RobotContainer {
   private final RunOnTheFly m_runOnTheFly;
   private final TrajectoryCreation trajCreat;
   private final TrajectoryConfiguration trajConfig;
+  private final CANdleSubsystem m_can;
 
   public RobotContainer() {
     m_drivetrain = Mecanum.getInstance();
@@ -44,6 +46,7 @@ public class RobotContainer {
     trajCreat =new TrajectoryCreation();
     m_FieldRelativeDrive = new FieldRelativeDrive(m_drivetrain);
     m_runOnTheFly = new RunOnTheFly(m_drivetrain, m_pose, trajCreat, m_vision, 0);
+    m_can = CANdleSubsystem.getInstance();
     configureBindings();
     configureShuffle();
   }
@@ -51,7 +54,7 @@ public class RobotContainer {
   private void configureBindings() {
     ControlMap.driver_joystick.leftBumper().onTrue(new InstantCommand(() -> m_drivetrain.zeroGyro()));
     m_drivetrain.setDefaultCommand(m_defaultDrive);
-
+    m_can.setColor(255, 255, 255);
     ControlMap.driver_joystick.a().onTrue(m_runOnTheFly);
 
     // m_drivetrain.con

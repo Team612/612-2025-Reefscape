@@ -164,6 +164,9 @@ public class Vision extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("Tag X", getTagPose().getX());
+    SmartDashboard.putNumber("Tag Y", getTagPose().getY());
+
     // if (cameraApriltagBack.getDistCoeffs().equals(Optional.empty())){
     //   System.out.println("NO CALIBRATION");
     // }

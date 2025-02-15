@@ -18,6 +18,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -72,8 +73,8 @@ public class PoseEstimator extends SubsystemBase {
   private StructPublisher<Pose3d> publisher;
   private StructArrayPublisher<Pose3d> arrayPublisher;
 
-  private static final Vector<N3> statesStdDev = VecBuilder.fill(0.05,0.05,0.01);
-  private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.5,0.5,1);
+  private static final Vector<N3> statesStdDev = VecBuilder.fill(0.5,0.5,1);
+  private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.05,0.05,0.01);
 
   static PoseEstimator estimator = new PoseEstimator();
   
@@ -90,7 +91,7 @@ public class PoseEstimator extends SubsystemBase {
                 layout = null;
         }
     drivePoseEstimator = new MecanumDrivePoseEstimator(
-      Constants.DrivetrainConstants.kDriveKinematics, 
+      Constants.DrivetrainConstants.m_kinematics, 
       m_Mecanum.getPigeonAngle(), 
       m_Mecanum.getMecanumDriveWheelPositions(), 
       new Pose2d(),

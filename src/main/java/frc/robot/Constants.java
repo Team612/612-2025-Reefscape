@@ -25,16 +25,18 @@ public class Constants {
     public static final double maxAcceleration = 4.5;
     public static final double maxAngularAcceleration = Math.PI/6;
     public static final int pigeonID = 0;
+    public static final int canId = 1;
+    public static final int brightness = 1;
  //Distance btwn centers of right and left wheels
 
     public class DrivetrainConstants{
         // Starting from here we don't know the stuff
         // Get IDs from rev client
 
-        public static final int SPARK_FL = 2;
-        public static final int SPARK_BR = 4;
-        public static final int SPARK_BL = 3;
-        public static final int SPARK_FR = 1;
+        public static final int SPARK_FL = 3;
+        public static final int SPARK_BR = 1;
+        public static final int SPARK_BL = 2;
+        public static final int SPARK_FR = 4;
 
         public static final double kP = 0.01;
         public static final double kI = 0.0;
@@ -42,18 +44,18 @@ public class Constants {
         
 
         // Need to get locations of wheels relative to center of robot
-        public static final Translation2d m_frontLeftLocation = new Translation2d(0.305, 0.305);
-        public static final Translation2d m_frontRightLocation = new Translation2d(0.305, -0.305);
-        public static final Translation2d m_backLeftLocation = new Translation2d(-0.305, 0.305);
-        public static final Translation2d m_backRightLocation = new Translation2d(-0.305, -0.305);
+        public static final Translation2d m_frontLeftLocation = new Translation2d(0.267, 0.305);
+        public static final Translation2d m_frontRightLocation = new Translation2d(0.267, -0.305);
+        public static final Translation2d m_backLeftLocation = new Translation2d(-0.267, 0.305);
+        public static final Translation2d m_backRightLocation = new Translation2d(-0.267, -0.305);
 
         public static final MecanumDriveKinematics m_kinematics = new MecanumDriveKinematics(
             m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation
         );
 
         // We know none of this
-        public static final double kWheelBase =  Units.inchesToMeters(29); // width from center of back to front wheels (center of the wheel)
-        public static final double kTrackWidth = Units.inchesToMeters(29); // width from right to left wheels (center of the wheel)
+        public static final double kWheelBase =  Units.inchesToMeters(21); // width from center of back to front wheels (center of the wheel)
+        public static final double kTrackWidth = Units.inchesToMeters(24); // width from right to left wheels (center of the wheel)
         public static final double kGearReduction = 16;
         public static final double kS = 0.15950; 
         public static final double kV = 4.6647;  
@@ -66,13 +68,13 @@ public class Constants {
         public static final double kWheelDiameterMeters = 0.1524; 
         public static final double kEncoderDistancePerPulse =
             ((kWheelDiameterMeters * Math.PI)) / (kGearReduction);
-        public static final MecanumDriveKinematics kDriveKinematics =
-            new MecanumDriveKinematics(
-                new Translation2d(kWheelBase / 2, kTrackWidth / 2),
-                new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
-                new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
-                new Translation2d(-kWheelBase / 2, -kTrackWidth / 2)
-        );
+        // public static final MecanumDriveKinematics kDriveKinematics =
+        //     new MecanumDriveKinematics(
+        //         new Translation2d(kWheelBase / 2, kTrackWidth / 2),
+        //         new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
+        //         new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
+        //         new Translation2d(-kWheelBase / 2, -kTrackWidth / 2)
+        // );
     }
 
     /* driver gunner ports */
