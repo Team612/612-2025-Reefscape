@@ -9,57 +9,51 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Controls.ControlMap;
 import frc.robot.commands.BagIn;
 import frc.robot.commands.BagOut;
-import frc.robot.commands.GoToPos;
-import frc.robot.commands.IncrementPay;
 import frc.robot.commands.PivotIn;
 import frc.robot.commands.PivotOut;
-import frc.robot.commands.Reset;
-import frc.robot.commands.SwivelElevator;
+import frc.robot.commands.ElevatorCommands.ElevatorDown;
+import frc.robot.commands.ElevatorCommands.ElevatorUp;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Payload;
 
 public class RobotContainer {
   private final Payload m_pay;
-  private final Command m_movePay;
-  private final Command m_resetPay;
-  private final Command m_incUp;
-  private final Command m_incDown;
-  private final Command m_GoToPos;
   private final Intake m_intake;
   private final Command m_BagIn;
   private final Command m_BagOut;
   private final Command m_PivotIn;
   private final Command m_PivotOut;
+  private final Command m_ElevatorUp;
+  private final Command m_ElevatorDown;
 
   public RobotContainer() {
     m_pay = Payload.getInstance();
     m_intake = new Intake();
     m_BagIn = new BagIn(m_intake);
     m_BagOut =  new BagOut(m_intake);
-    m_movePay = new SwivelElevator(m_pay);
-    m_resetPay = new Reset(m_pay);
-    m_incUp = new IncrementPay(0.05);
-    m_incDown = new IncrementPay(-0.05);
-    m_GoToPos = new GoToPos(m_pay);
     m_PivotOut = new PivotOut(m_intake);
     m_PivotIn = new PivotIn(m_intake);
+    m_ElevatorUp = new ElevatorUp(m_pay);
+    m_ElevatorDown = new ElevatorDown(m_pay);
     configureBindings();
   }
 
   private void configureBindings() {
-    m_pay.setDefaultCommand(m_movePay);
-    ControlMap.driver_joystick.b().onTrue(m_resetPay);
+    // ControlMap.driver_joystick.b().onTrue(m_resetPay);
     
-    ControlMap.driver_joystick.y().onTrue(m_incUp);
-    ControlMap.driver_joystick.a().onTrue(m_incDown);
+    // ControlMap.driver_joystick.y().onTrue(m_incUp);
+    // ControlMap.driver_joystick.a().onTrue(m_incDown);
 
-    ControlMap.driver_joystick.x().onTrue(m_GoToPos);
+    // ControlMap.driver_joystick.x().onTrue(m_GoToPos);
 
-    ControlMap.driver_joystick.rightTrigger().whileTrue(m_BagIn);
-    ControlMap.driver_joystick.leftTrigger().whileTrue(m_BagOut);
+    ControlMap.gunner_joystick.a().whileTrue(m_ElevatorDown);
+    ControlMap.gunner_joystick.y().whileTrue(m_ElevatorUp);
 
-    ControlMap.driver_joystick.rightBumper().whileTrue(m_PivotIn);
-    ControlMap.driver_joystick.leftBumper().whileTrue(m_PivotOut);
+    ControlMap.gunner_joystick.rightTrigger().whileTrue(m_BagIn);
+    ControlMap.gunner_joystick.leftTrigger().whileTrue(m_BagOut);
+
+    ControlMap.gunner_joystick.rightBumper().whileTrue(m_PivotIn);
+    ControlMap.gunner_joystick.leftBumper().whileTrue(m_PivotOut);
   }
 
   public Command getAutonomousCommand() {

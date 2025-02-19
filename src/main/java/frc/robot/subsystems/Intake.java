@@ -4,18 +4,16 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -27,8 +25,8 @@ public class Intake extends SubsystemBase {
   private static Intake instance;
 
   public Intake() {
-    pivot = new SparkMax(0, MotorType.kBrushless);
-    bagMotors = new TalonFX(0);
+    pivot = new SparkMax(Constants.pivotID, MotorType.kBrushless);
+    bagMotors = new TalonFX(Constants.bagID);
 
     SparkMaxConfig sp = new SparkMaxConfig();
     TalonFXConfiguration tp = new TalonFXConfiguration();
@@ -38,7 +36,8 @@ public class Intake extends SubsystemBase {
     sp.idleMode(IdleMode.kBrake);
     pivot.configure(sp.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     bagMotors.getConfigurator().apply(tp);
-    
+    Preferences.initDouble("Pivot Speed", Constants.pivotspeed);
+    Preferences.initDouble("Bag Speed", Constants.bagspeed);
   }
 
   public boolean getIntakeLimitStateForward(){
@@ -56,6 +55,11 @@ public class Intake extends SubsystemBase {
   public TalonFX getBags(){
     return bagMotors;
   }
+
+  public void setBags(double speed){
+    bagMotors.set(speed);
+  }
+
   public void setPivotSpeed(double speed){
       if (speed > 0) {
         if (pivot.getForwardLimitSwitch().isPressed()){// || (pivot.getEncoder().getPosition()) >= 0.5) {
@@ -85,5 +89,7 @@ public class Intake extends SubsystemBase {
     SmartDashboard.putNumber("speed", 0);
     SmartDashboard.getNumber("speed", 0);
     // This method will be called once per scheduler run
+    Constants.pivotspeed = Preferences.getDouble("Pivot Speed", Constants.pivotspeed);
+    Constants.bagspeed = Preferences.getDouble("Bag Speed", Constants.bagspeed);
   }
 }

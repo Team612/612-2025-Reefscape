@@ -18,9 +18,13 @@ import edu.wpi.first.math.util.Units;
 
 /** Add your docs here. */
 public class Constants {
+    public static final int pivotID = 0;
+    public static final int bagID = 1; 
     public static final int elevatorID = 2;
     // public static final int elevatorID2 = 2;
     public static double payspeed = 0;
+    public static double pivotspeed = 0; 
+    public static double bagspeed = 0;
     public static double kPositionConversionFactor;
 
     public static final int encB = 0;
