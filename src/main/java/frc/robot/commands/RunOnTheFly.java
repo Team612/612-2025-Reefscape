@@ -81,7 +81,6 @@ public class RunOnTheFly extends Command {
       controllerCommand = AutoBuilder.followPath(path);
       controllerCommand.initialize();
     } else {
-    } else {
       controllerCommand = new Command() {
         @Override
         public boolean isFinished() {
