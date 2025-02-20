@@ -11,11 +11,14 @@ import org.json.simple.parser.ParseException;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
 import com.pathplanner.lib.util.FileVersionException;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -33,11 +36,13 @@ public class RunOnTheFly extends Command {
   private final double translation;
       private PathConstraints constraints;
   private final boolean bool;
+  private final boolean bool;
 
   private Command controllerCommand = Commands.none();
 
   /** Creates a new RunOnTheFly. */
   public RunOnTheFly(Mecanum d, PoseEstimator p, TrajectoryCreation traj, Vision v, 
+                    double y, boolean b) {
                     double y, boolean b) {
     // Use addRequirements() here to declare subsystem dependencies.
     driveSystem = d;
@@ -45,6 +50,7 @@ public class RunOnTheFly extends Command {
     m_traj = traj;
     m_vision = v;
     translation = y;
+    bool = b;
     bool = b;
 
     constraints = new PathConstraints(Constants.maxSpeed,
@@ -74,6 +80,7 @@ public class RunOnTheFly extends Command {
     if (path != null) {
       controllerCommand = AutoBuilder.followPath(path);
       controllerCommand.initialize();
+    } else {
     } else {
       controllerCommand = new Command() {
         @Override
