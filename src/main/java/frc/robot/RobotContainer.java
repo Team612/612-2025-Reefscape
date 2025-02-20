@@ -28,7 +28,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     m_pay = Payload.getInstance();
-    m_intake = new Intake();
+    m_intake = Intake.getInstance();
     m_BagIn = new BagIn(m_intake);
     m_BagOut =  new BagOut(m_intake);
     m_PivotOut = new PivotOut(m_intake);

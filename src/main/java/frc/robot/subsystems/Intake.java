@@ -17,79 +17,67 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.MotorConfigs;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
-  private SparkMax pivot;
-  private TalonFX bagMotors;
+  private SparkMax pivotMotor;
+  private TalonFX bagMotor;
   private static Intake instance;
 
   public Intake() {
-    pivot = new SparkMax(Constants.pivotID, MotorType.kBrushless);
-    bagMotors = new TalonFX(Constants.bagID);
+    pivotMotor = new SparkMax(Constants.PivotConstants.pivotID, MotorType.kBrushless);
+    bagMotor = new TalonFX(Constants.IntakeConstants.bagID);
 
-    SparkMaxConfig sp = new SparkMaxConfig();
-    TalonFXConfiguration tp = new TalonFXConfiguration();
-    tp.CurrentLimits.SupplyCurrentLimitEnable = true;
-    tp.CurrentLimits.SupplyCurrentLimit = 30;
-    sp.smartCurrentLimit(30);
-    sp.idleMode(IdleMode.kBrake);
-    pivot.configure(sp.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    bagMotors.getConfigurator().apply(tp);
-    Preferences.initDouble("Pivot Speed", Constants.pivotspeed);
-    Preferences.initDouble("Bag Speed", Constants.bagspeed);
+
+    pivotMotor.configure(MotorConfigs.spark_pivot_configs, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    bagMotor.getConfigurator().apply(MotorConfigs.talon_bag_configs);
+
+    Preferences.initDouble("Pivot Speed", Constants.PivotConstants.pivotspeed);
+    Preferences.initDouble("Bag Speed", Constants.IntakeConstants.bagspeed);
   }
 
   public boolean getIntakeLimitStateForward(){
-    return pivot.getForwardLimitSwitch().isPressed();
+    return pivotMotor.getForwardLimitSwitch().isPressed();
   }
 
   // return limit switch states
   public boolean getIntakeLimitStateReverse(){
-    return pivot.getReverseLimitSwitch().isPressed();
+    return pivotMotor.getReverseLimitSwitch().isPressed();
   }
 
   public SparkMax getPivot(){
-    return pivot;
+    return pivotMotor;
   }
   public TalonFX getBags(){
-    return bagMotors;
+    return bagMotor;
   }
 
   public void setBags(double speed){
-    bagMotors.set(speed);
+    bagMotor.set(speed);
   }
 
   public void setPivotSpeed(double speed){
-      if (speed > 0) {
-        if (pivot.getForwardLimitSwitch().isPressed()){// || (pivot.getEncoder().getPosition()) >= 0.5) {
-            pivot.set(0);
-            // elevator2.set(0);
-
-        } else {
-            pivot.set(speed);
-            // elevator2.set(speed);
-        }
-    } else {
-        if (pivot.getReverseLimitSwitch().isPressed()){// || (pivot.getEncoder().getPosition()) <= 0) {
-            pivot.set(0);
-            // elevator2.set(0);
-        } else {
-            pivot.set(speed);
-            // elevator2.set(speed);
-        }
-    }
+    pivotMotor.set(speed);
   }
 
   public double getPivotPosition(){
-    return pivot.getEncoder().getPosition() - Constants.boreOffset;
+    return pivotMotor.getEncoder().getPosition() - Constants.PivotConstants.boreOffset;
   }
+
+  public static Intake getInstance(){
+    if (instance == null){
+      instance = new Intake();
+    }
+    return instance;
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putNumber("speed", 0);
     SmartDashboard.getNumber("speed", 0);
     // This method will be called once per scheduler run
-    Constants.pivotspeed = Preferences.getDouble("Pivot Speed", Constants.pivotspeed);
-    Constants.bagspeed = Preferences.getDouble("Bag Speed", Constants.bagspeed);
+    Constants.PivotConstants.pivotspeed = Preferences.getDouble("Pivot Speed", Constants.PivotConstants.pivotspeed);
+    Constants.IntakeConstants.bagspeed = Preferences.getDouble("Bag Speed", Constants.IntakeConstants.bagspeed);
   }
 }

@@ -11,16 +11,17 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.Preferences;
-
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.MotorConfigs;
 
 // import com.studica.frc.AHRS;
 // import com.studica.frc.AHRS.NavXComType;
 
 public class Payload extends SubsystemBase {
-  private SparkMax elevator = new SparkMax(Constants.elevatorID, MotorType.kBrushless);
+  private SparkMax elevatorMotor = new SparkMax(Constants.ElevatorConstants.elevatorID, MotorType.kBrushless);
   // private SparkMax elevator2 = new SparkMax(Constants.elevatorID2, MotorType.kBrushless);
 
   // private SparkMax neoPivot = new SparkMax(Constants.neoPivotID, MotorType.kBrushless);
@@ -29,36 +30,16 @@ public class Payload extends SubsystemBase {
   // DigitalInput bottomlimitSwitch = new DigitalInput(Constants.bottomlimitSwitchID);
 
   public Payload() {
-     SparkMaxConfig sp = new SparkMaxConfig();
-    sp.smartCurrentLimit(30);
-    sp.idleMode(IdleMode.kBrake);
-    elevator.configure(sp.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    Preferences.initDouble("Pay Speed", Constants.payspeed);
+    elevatorMotor.configure(MotorConfigs.elevator_pivot_configs, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    Preferences.initDouble("Pay Speed", Constants.ElevatorConstants.payloadspeed);
   }
 
 public void setMotorSpeed(double speed) {
-    if (speed > 0) {
-        if (elevator.getForwardLimitSwitch().isPressed()) {
-            elevator.set(0);
-            // elevator2.set(0);
-
-        } else {
-            elevator.set(speed);
-            // elevator2.set(speed);
-        }
-    } else {
-        if (elevator.getReverseLimitSwitch().isPressed()) {
-            elevator.set(0);
-            // elevator2.set(0);
-        } else {
-            elevator.set(speed);
-            // elevator2.set(speed);
-        }
-    }
+  elevatorMotor.set(speed);
 }
 
 public void freezeMotors(){
-  elevator.set(0);
+  elevatorMotor.set(0);
   // elevator2.set(0);
 }
 
@@ -71,7 +52,7 @@ public void freezeMotors(){
   //   neoPivot.set(0.0);
   // }
   public void resetCount() {
-    elevator.getEncoder().setPosition(0);
+    elevatorMotor.getEncoder().setPosition(0);
     // elevator2.getEncoder().setPosition(0);
   }
   
@@ -81,8 +62,12 @@ public void freezeMotors(){
   //   positions[1] = elevator2.getEncoder().getPosition();
   //   return positions;
   // }
-  public double Pos(){
-    return elevator.getEncoder().getPosition();
+  public double getPosition(){
+    return elevatorMotor.getEncoder().getPosition();
+  }
+
+  public SparkMax getElevatorMotor() {
+    return elevatorMotor;
   }
 
   public static Payload getInstance(){
@@ -95,11 +80,11 @@ public void freezeMotors(){
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Elevator 1 Velocity", elevator.getEncoder().getVelocity());
-    SmartDashboard.putNumber("Elevator 1 position", elevator.getEncoder().getPosition());
-    SmartDashboard.putNumber("Elevator Speed (Controller)", Constants.payspeed);
-    System.out.println(Constants.payspeed);
-    Constants.payspeed = Preferences.getDouble("Pay Speed", Constants.payspeed);
+    SmartDashboard.putNumber("Elevator 1 Velocity", elevatorMotor.getEncoder().getVelocity());
+    SmartDashboard.putNumber("Elevator 1 position", elevatorMotor.getEncoder().getPosition());
+    SmartDashboard.putNumber("Elevator Speed (Controller)", Constants.ElevatorConstants.payloadspeed);
+    // System.out.println(Constants.ElevatorConstants.payloadspeed);
+    Constants.ElevatorConstants.payloadspeed = Preferences.getDouble("Pay Speed", Constants.ElevatorConstants.payloadspeed);
     // SmartDashboard.putNumber("Elevator 2 Velocity", elevator.getEncoder().getVelocity());
     // SmartDashboard.putNumber("Elevator 2 position", elevator.getEncoder().getPosition());
   }

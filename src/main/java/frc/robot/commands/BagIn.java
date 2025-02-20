@@ -27,7 +27,7 @@ public class BagIn extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intake.setBags(Constants.bagspeed);
+    m_intake.setBags(Constants.IntakeConstants.bagspeed);
   }
 
   // Called once the command ends or is interrupted.

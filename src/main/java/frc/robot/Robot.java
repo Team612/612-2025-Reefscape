@@ -20,7 +20,7 @@ public class Robot extends TimedRobot {
 
   public void robotInit() {
     if (!Preferences.containsKey("Pay Speed")){
-      Preferences.setDouble("Pay Speed", Constants.payspeed);
+      Preferences.setDouble("Pay Speed", Constants.ElevatorConstants.payloadspeed);
     }
   }
 
