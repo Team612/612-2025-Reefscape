@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.json.simple.parser.ParseException;
 
@@ -60,18 +61,17 @@ public class RunOnTheFly extends Command {
   public void initialize() {
    // PathPlannerPath path = m_traj.onthefly(poseEstimatorSystem, m_vision, translation);
     //PathPlannerPath path = m_traj.apriltagCentering(poseEstimatorSystem, m_vision);
-    var path = m_traj.apriltagCentering(poseEstimatorSystem, m_vision);
-    List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
-      new Pose2d(13.890498, 4.0259, Rotation2d.fromDegrees(0)),
-      new Pose2d(16.339, 4.0259, Rotation2d.fromDegrees(0))
-    );
-    PathConstraints constraints = new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI);
-    PathPlannerPath newpath = new PathPlannerPath(waypoints, constraints, null, new GoalEndState(0.0, Rotation2d.fromDegrees(0)));
-    newpath.preventFlipping = true;
-    if (bool && path != null) {
-      controllerCommand = AutoBuilder.followPath(newpath);
-      controllerCommand.initialize();
-    } else if (path != null) {
+
+    PathPlannerPath path = null;
+    try {
+      path = PathPlannerPath.fromPathFile("ToCoralStation");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    // var path = m_traj.apriltagCentering(poseEstimatorSystem, m_vision);\
+
+    path.preventFlipping = true;
+    if (path != null) {
       controllerCommand = AutoBuilder.followPath(path);
       controllerCommand.initialize();
     } else {
