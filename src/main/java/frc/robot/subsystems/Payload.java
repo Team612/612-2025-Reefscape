@@ -4,9 +4,12 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -21,7 +24,8 @@ import frc.robot.MotorConfigs;
 // import com.studica.frc.AHRS.NavXComType;
 
 public class Payload extends SubsystemBase {
-  private SparkMax elevatorMotor = new SparkMax(Constants.ElevatorConstants.elevatorID, MotorType.kBrushless);
+  private SparkMax elevatorMotor;
+  private SparkClosedLoopController controller;
   // private SparkMax elevator2 = new SparkMax(Constants.elevatorID2, MotorType.kBrushless);
 
   // private SparkMax neoPivot = new SparkMax(Constants.neoPivotID, MotorType.kBrushless);
@@ -30,7 +34,10 @@ public class Payload extends SubsystemBase {
   // DigitalInput bottomlimitSwitch = new DigitalInput(Constants.bottomlimitSwitchID);
 
   public Payload() {
+    elevatorMotor = new SparkMax(Constants.ElevatorConstants.elevatorID, MotorType.kBrushless);
     elevatorMotor.configure(MotorConfigs.elevator_pivot_configs, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    controller = elevatorMotor.getClosedLoopController();
     Preferences.initDouble("Pay Speed", Constants.ElevatorConstants.payloadspeed);
   }
 
@@ -38,44 +45,33 @@ public void setMotorSpeed(double speed) {
   elevatorMotor.set(speed);
 }
 
-public void freezeMotors(){
-  elevatorMotor.set(0);
-  // elevator2.set(0);
+public void setPosition(double position){
+  controller.setReference(position, ControlType.kPosition);
+  //controller.setReference(position, ControlType.kMAXMotionPositionControl);
 }
 
-  // public void pivot(){
-  //   neoPivot.set(1.0);
+public void freezeMotors(){
+  elevatorMotor.set(0);
+}
 
-  // }
+public void resetCount() {
+  elevatorMotor.getEncoder().setPosition(0);
+}
 
-  // public void depivot(){
-  //   neoPivot.set(0.0);
-  // }
-  public void resetCount() {
-    elevatorMotor.getEncoder().setPosition(0);
-    // elevator2.getEncoder().setPosition(0);
-  }
-  
-  // public double[] getPositiona() {
-  //   double[] positions = new double[2];
-  //   positions[0] = elevator.getEncoder().getPosition();
-  //   positions[1] = elevator2.getEncoder().getPosition();
-  //   return positions;
-  // }
-  public double getPosition(){
-    return elevatorMotor.getEncoder().getPosition();
-  }
+public double getPosition(){
+  return elevatorMotor.getEncoder().getPosition();
+}
 
-  public SparkMax getElevatorMotor() {
-    return elevatorMotor;
-  }
+public SparkMax getElevatorMotor() {
+  return elevatorMotor;
+}
 
-  public static Payload getInstance(){
-    if (payloadInstance == null){
-      payloadInstance = new Payload();
-    }
-    return payloadInstance;
+public static Payload getInstance(){
+  if (payloadInstance == null){
+    payloadInstance = new Payload();
   }
+  return payloadInstance;
+}
 
 
   @Override

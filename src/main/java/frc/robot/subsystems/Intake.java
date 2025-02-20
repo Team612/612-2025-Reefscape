@@ -6,9 +6,12 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -22,6 +25,7 @@ import frc.robot.MotorConfigs;
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   private SparkMax pivotMotor;
+  private SparkClosedLoopController controller;
   private TalonFX bagMotor;
   private static Intake instance;
 
@@ -29,14 +33,30 @@ public class Intake extends SubsystemBase {
     pivotMotor = new SparkMax(Constants.PivotConstants.pivotID, MotorType.kBrushless);
     bagMotor = new TalonFX(Constants.IntakeConstants.bagID);
 
-
     pivotMotor.configure(MotorConfigs.spark_pivot_configs, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     bagMotor.getConfigurator().apply(MotorConfigs.talon_bag_configs);
+
+    controller = pivotMotor.getClosedLoopController();
 
     Preferences.initDouble("Pivot Speed", Constants.PivotConstants.pivotspeed);
     Preferences.initDouble("Bag Speed", Constants.IntakeConstants.bagspeed);
   }
 
+
+  public void setBags(double speed){
+    bagMotor.set(speed);
+  }
+
+  public void setPivotSpeed(double speed){
+    pivotMotor.set(speed);
+  }
+
+  public void setPivotPosition(double position) {
+    controller.setReference(position, ControlType.kPosition);
+  }
+
+
+  
   public boolean getIntakeLimitStateForward(){
     return pivotMotor.getForwardLimitSwitch().isPressed();
   }
@@ -51,14 +71,6 @@ public class Intake extends SubsystemBase {
   }
   public TalonFX getBags(){
     return bagMotor;
-  }
-
-  public void setBags(double speed){
-    bagMotor.set(speed);
-  }
-
-  public void setPivotSpeed(double speed){
-    pivotMotor.set(speed);
   }
 
   public double getPivotPosition(){
