@@ -9,10 +9,14 @@ import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
 import com.pathplanner.lib.util.FileVersionException;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants;
@@ -27,18 +31,20 @@ public class RunOnTheFly extends Command {
   private final TrajectoryCreation m_traj;
   private final double translation;
       private PathConstraints constraints;
+  private final boolean bool;
 
   private Command controllerCommand = Commands.none();
 
   /** Creates a new RunOnTheFly. */
   public RunOnTheFly(Mecanum d, PoseEstimator p, TrajectoryCreation traj, Vision v, 
-                    double y) {
+                    double y, boolean b) {
     // Use addRequirements() here to declare subsystem dependencies.
     driveSystem = d;
     poseEstimatorSystem = p;
     m_traj = traj;
     m_vision = v;
     translation = y;
+    bool = b;
 
     constraints = new PathConstraints(Constants.maxSpeed,
     Constants.maxAcceleration,
@@ -52,31 +58,23 @@ public class RunOnTheFly extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    PathPlannerPath path = null;
-
-   // path = m_traj.onthefly(poseEstimatorSystem, m_vision, translation);
-    // path = m_traj.apriltagCentering(poseEstimatorSystem, m_vision);
-
-    
-    try {
-      path = PathPlannerPath.fromPathFile("ToCoralStation");
-      path.preventFlipping = true;
-    } 
-    catch (FileVersionException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    } catch (ParseException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-
-    if (path != null) {
+   // PathPlannerPath path = m_traj.onthefly(poseEstimatorSystem, m_vision, translation);
+    //PathPlannerPath path = m_traj.apriltagCentering(poseEstimatorSystem, m_vision);
+    var path = m_traj.apriltagCentering(poseEstimatorSystem, m_vision);
+    List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+      new Pose2d(13.890498, 4.0259, Rotation2d.fromDegrees(0)),
+      new Pose2d(16.339, 4.0259, Rotation2d.fromDegrees(0))
+    );
+    PathConstraints constraints = new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI);
+    PathPlannerPath newpath = new PathPlannerPath(waypoints, constraints, null, new GoalEndState(0.0, Rotation2d.fromDegrees(0)));
+    newpath.preventFlipping = true;
+    if (bool && path != null) {
+      controllerCommand = AutoBuilder.followPath(newpath);
+      controllerCommand.initialize();
+    } else if (path != null) {
       controllerCommand = AutoBuilder.followPath(path);
       controllerCommand.initialize();
-    }
-    else {
+    } else {
       controllerCommand = new Command() {
         @Override
         public boolean isFinished() {

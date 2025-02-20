@@ -45,7 +45,7 @@ public class RobotContainer {
     trajConfig = TrajectoryConfiguration.getInstance();
     trajCreat =new TrajectoryCreation();
     m_FieldRelativeDrive = new FieldRelativeDrive(m_drivetrain);
-    m_runOnTheFly = new RunOnTheFly(m_drivetrain, m_pose, trajCreat, m_vision, 0);
+    m_runOnTheFly = new RunOnTheFly(m_drivetrain, m_pose, trajCreat, m_vision, 0, true);
     m_can = CANdleSubsystem.getInstance();
     configureBindings();
     configureShuffle();
