@@ -4,9 +4,14 @@
 
 package frc.robot.commands;
 
+import java.io.IOException;
+
+import org.json.simple.parser.ParseException;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.FileVersionException;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -47,9 +52,26 @@ public class RunOnTheFly extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-   // PathPlannerPath path = m_traj.onthefly(poseEstimatorSystem, m_vision, translation);
-    //PathPlannerPath path = m_traj.apriltagCentering(poseEstimatorSystem, m_vision);
-    var path = m_traj.apriltagCentering(poseEstimatorSystem, m_vision);
+    PathPlannerPath path = null;
+
+   // path = m_traj.onthefly(poseEstimatorSystem, m_vision, translation);
+    // path = m_traj.apriltagCentering(poseEstimatorSystem, m_vision);
+
+    
+    try {
+      path = PathPlannerPath.fromPathFile("ToCoralStation");
+      path.preventFlipping = true;
+    } 
+    catch (FileVersionException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (ParseException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+
     if (path != null) {
       controllerCommand = AutoBuilder.followPath(path);
       controllerCommand.initialize();
