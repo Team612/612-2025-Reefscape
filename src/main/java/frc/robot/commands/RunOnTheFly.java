@@ -36,13 +36,11 @@ public class RunOnTheFly extends Command {
   private final double translation;
       private PathConstraints constraints;
   private final boolean bool;
-  private final boolean bool;
 
   private Command controllerCommand = Commands.none();
 
   /** Creates a new RunOnTheFly. */
   public RunOnTheFly(Mecanum d, PoseEstimator p, TrajectoryCreation traj, Vision v, 
-                    double y, boolean b) {
                     double y, boolean b) {
     // Use addRequirements() here to declare subsystem dependencies.
     driveSystem = d;
@@ -50,7 +48,6 @@ public class RunOnTheFly extends Command {
     m_traj = traj;
     m_vision = v;
     translation = y;
-    bool = b;
     bool = b;
 
     constraints = new PathConstraints(Constants.maxSpeed,
