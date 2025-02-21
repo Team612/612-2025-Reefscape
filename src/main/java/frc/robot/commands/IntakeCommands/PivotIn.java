@@ -27,7 +27,7 @@ public class PivotIn extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intake.setPivotSpeed(-Constants.PivotConstants.pivotspeed);
+    m_intake.setPivotSpeed(-Constants.IntakeConstants.pivotspeed);
   }
 
   // Called once the command ends or is interrupted.

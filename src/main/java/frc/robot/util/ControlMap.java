@@ -1,11 +1,12 @@
-package frc.robot.Controls;
+package frc.robot.util;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants;
+
 
 public class ControlMap{
-    private static int DRIVER_PORT = 0;
-    private static int GUNNER_PORT = 1;
+    private static int DRIVER_PORT = Constants.DriverConstants.driverPort;
+    private static int GUNNER_PORT = Constants.DriverConstants.gunnerPort;
     private static int DRIVER_PORT_BUTTONS = 2;
     private static int GUNNER_PORT_BUTTONS = 3;
     

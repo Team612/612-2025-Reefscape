@@ -4,20 +4,18 @@
 
 package frc.robot.commands.ElevatorCommands;
 
-import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.Controls.ControlMap;
 import frc.robot.subsystems.Payload;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ElevatorDown extends Command {
   /** Creates a new ElevatorManual. */
-  private Payload m_payload = new Payload();
+  private Payload m_payload;
     public ElevatorDown(Payload payload) {
       m_payload = payload;
-    addRequirements(payload);
-    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(m_payload);
+    // Use addRequirements() here to declare subsysstem dependencies.
   }
 
   // Called when the command is initially scheduled.

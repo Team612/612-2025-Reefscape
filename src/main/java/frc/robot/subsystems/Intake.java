@@ -4,23 +4,19 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.MotorConfigs;
+import frc.robot.util.MotorConfigs;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
@@ -30,7 +26,7 @@ public class Intake extends SubsystemBase {
   private static Intake instance;
 
   public Intake() {
-    pivotMotor = new SparkMax(Constants.PivotConstants.pivotID, MotorType.kBrushless);
+    pivotMotor = new SparkMax(Constants.IntakeConstants.pivotID, MotorType.kBrushless);
     bagMotor = new TalonFX(Constants.IntakeConstants.bagID);
 
     pivotMotor.configure(MotorConfigs.spark_pivot_configs, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -38,7 +34,7 @@ public class Intake extends SubsystemBase {
 
     controller = pivotMotor.getClosedLoopController();
 
-    Preferences.initDouble("Pivot Speed", Constants.PivotConstants.pivotspeed);
+    Preferences.initDouble("Pivot Speed", Constants.IntakeConstants.pivotspeed);
     Preferences.initDouble("Bag Speed", Constants.IntakeConstants.bagspeed);
   }
 
@@ -74,7 +70,7 @@ public class Intake extends SubsystemBase {
   }
 
   public double getPivotPosition(){
-    return pivotMotor.getEncoder().getPosition() - Constants.PivotConstants.boreOffset;
+    return pivotMotor.getEncoder().getPosition() - Constants.IntakeConstants.boreOffset;
   }
 
   public static Intake getInstance(){
@@ -89,7 +85,7 @@ public class Intake extends SubsystemBase {
     SmartDashboard.putNumber("speed", 0);
     SmartDashboard.getNumber("speed", 0);
     // This method will be called once per scheduler run
-    Constants.PivotConstants.pivotspeed = Preferences.getDouble("Pivot Speed", Constants.PivotConstants.pivotspeed);
+    Constants.IntakeConstants.pivotspeed = Preferences.getDouble("Pivot Speed", Constants.IntakeConstants.pivotspeed);
     Constants.IntakeConstants.bagspeed = Preferences.getDouble("Bag Speed", Constants.IntakeConstants.bagspeed);
   }
 }
