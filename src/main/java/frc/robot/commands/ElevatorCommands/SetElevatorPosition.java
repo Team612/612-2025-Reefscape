@@ -46,6 +46,5 @@ public class SetElevatorPosition extends Command {
     else {
       return (m_payload.getPosition() - position) <= 0;
     }
-    
   }
 }
