@@ -26,10 +26,10 @@ public class Constants {
 
         public static final int pigeonID = 0;
 
-        public static final int SPARK_FL = 3;
-        public static final int SPARK_BR = 1;
-        public static final int SPARK_BL = 2;
-        public static final int SPARK_FR = 4;
+        public static final int SPARK_FL = 2;
+        public static final int SPARK_BR = 4;
+        public static final int SPARK_BL = 3;
+        public static final int SPARK_FR = 1;
 
         public static final double kP = 0.01;
         public static final double kI = 0.0;
@@ -64,13 +64,13 @@ public class Constants {
     }
 
     public class IntakeConstants {
-        public static final int pivotID = 5;
+        public static final int pivotID = 6;
         public static final boolean pivotInverted = true;
         public static final int pivotCurrentLimit = 30;
         public static final double boreOffset = 0;
         public static final IdleMode idleMode = IdleMode.kBrake;
 
-        public static final int bagID = 1; 
+        public static final int bagID = 7; 
         public static double bagspeed = 0;
 
         public static final int bagCurrentLimit = 30;
@@ -88,7 +88,7 @@ public class Constants {
     }
 
     public class ElevatorConstants {
-        public static final int elevatorID = 6;
+        public static final int elevatorID = 5;
         public static final boolean elevatorInverted = true;
         public static final int elevatorCurrentLimit = 30;
         public static final IdleMode idleMode = IdleMode.kBrake;
@@ -118,7 +118,7 @@ public class Constants {
 
     public class ClimbConstants {
         public static final int servoID = 0;
-        public static final int pivotID = 7;
+        public static final int pivotID = 8;
         public static final int climbCurrentLimit = 30;
         public static final boolean inverted = false;
         public static final IdleMode idleMode = IdleMode.kBrake;

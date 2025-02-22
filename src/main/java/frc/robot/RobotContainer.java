@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.subsystems.PoseEstimator;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -123,6 +124,7 @@ public class RobotContainer {
     m_chooser.addOption("Auto L3", m_autoL3);
 
     m_chooser.setDefaultOption("Nothing Selected", null);
+    SmartDashboard.putData(m_chooser);
   }
 
 

@@ -98,7 +98,7 @@ public class PoseEstimator extends SubsystemBase {
       statesStdDev,
       visionMeasurementStdDevs
     );
-    photonEstimator = visionSubsystem.getVisionPose();
+    photonEstimator = visionSubsystem.getFrontVisionEstimator();
 
 
     poseA = new Pose3d();
@@ -118,15 +118,15 @@ public class PoseEstimator extends SubsystemBase {
   }
 
   public void updatePoseEstimator() {
-    if(visionSubsystem.getApriltagCamera().getLatestResult().hasTargets()) {
-      photonEstimator.update(visionSubsystem.getPipelineResult()).ifPresent(estimatedRobotPose -> {
+    if(visionSubsystem.getFrontApriltagCamera().getLatestResult().hasTargets()) {
+      photonEstimator.update(visionSubsystem.getFrontPipelineResult()).ifPresent(estimatedRobotPose -> {
        var estimatedPose = estimatedRobotPose.estimatedPose;
       
   
        // m_DrivePoseEstimator.addVisionMeasurement(estimatedPose.toPose2d(), FIELD_LENGTH_METERS);
       
        // Make sure we have a new measurement, and that it's on the field
-       if (visionSubsystem.getApriltagCamera().getLatestResult().getBestTarget().getFiducialId() >= 0){
+       if (visionSubsystem.getFrontApriltagCamera().getLatestResult().getBestTarget().getFiducialId() >= 0){
         
        if (
          estimatedRobotPose.timestampSeconds != previousPipelineTimestamp && 

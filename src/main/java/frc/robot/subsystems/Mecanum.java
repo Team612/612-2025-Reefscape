@@ -84,26 +84,16 @@ private final SparkClosedLoopController driverControllerBR;
               log -> {
                 // Record a frame for the left motors.  Since these share an encoder, we consider
                 // the entire group to be one motor.
-                log.motor("spark_fl")
+                log.motor("drive_left")
                     .voltage(
                         m_appliedVoltage.mut_replace(
-                          spark_fl.getBusVoltage() * spark_fl.getAppliedOutput() * RobotController.getBatteryVoltage(), Volts))
-                    .linearPosition(m_distance.mut_replace(Constants.DrivetrainConstants.kEncoderDistancePerPulse*(spark_fl.getAbsoluteEncoder().getPosition()), Meters));
-                log.motor("spark_fr")
+                          ((spark_fl.getBusVoltage() + spark_bl.getBusVoltage())/2)* ((spark_fl.getAppliedOutput() + spark_bl.getAppliedOutput())/2) * RobotController.getBatteryVoltage(), Volts))
+                    .linearPosition(m_distance.mut_replace(Constants.DrivetrainConstants.kEncoderDistancePerPulse*(((spark_fl.getAbsoluteEncoder().getPosition() + spark_bl.getAbsoluteEncoder().getPosition())/2)), Meters));
+                log.motor("drive_right")
                     .voltage(
                         m_appliedVoltage.mut_replace(
-                          spark_fr.getBusVoltage() * spark_fr.getAppliedOutput() * RobotController.getBatteryVoltage(), Volts))
-                    .linearPosition(m_distance.mut_replace(Constants.DrivetrainConstants.kEncoderDistancePerPulse*(spark_fr.getAbsoluteEncoder().getPosition()), Meters));
-                log.motor("spark_bl")
-                    .voltage(
-                        m_appliedVoltage.mut_replace(
-                          spark_bl.getBusVoltage() * spark_bl.getAppliedOutput() * RobotController.getBatteryVoltage(), Volts))
-                    .linearPosition(m_distance.mut_replace(Constants.DrivetrainConstants.kEncoderDistancePerPulse*(spark_bl.getAbsoluteEncoder().getPosition()), Meters));
-                log.motor("spark_br")
-                    .voltage(
-                        m_appliedVoltage.mut_replace(
-                          spark_br.getBusVoltage() * spark_br.getAppliedOutput() * RobotController.getBatteryVoltage(), Volts))
-                    .linearPosition(m_distance.mut_replace(Constants.DrivetrainConstants.kEncoderDistancePerPulse*(spark_br.getAbsoluteEncoder().getPosition()), Meters));
+                          ((spark_fr.getBusVoltage() + spark_br.getBusVoltage())/2) * ((spark_fr.getAppliedOutput() + spark_br.getAppliedOutput())/2) * RobotController.getBatteryVoltage(), Volts))
+                    .linearPosition(m_distance.mut_replace(Constants.DrivetrainConstants.kEncoderDistancePerPulse*((spark_fr.getAbsoluteEncoder().getPosition() + spark_br.getAbsoluteEncoder().getPosition())/2), Meters));
                   }, this)
     );
 

@@ -133,7 +133,7 @@ public class TrajectoryCreation {
     }
 
     public Pose2d getApriltagPose(PoseEstimator estimation, Vision vision){
-        var pipeline = vision.getApriltagCamera().getAllUnreadResults();
+        var pipeline = vision.getFrontApriltagCamera().getAllUnreadResults();
         if(!pipeline.isEmpty()){
             PhotonPipelineResult result = pipeline.get(0);
 
@@ -159,7 +159,7 @@ public class TrajectoryCreation {
         double y = estimatedPose.getY();
         Rotation2d angle = estimatedPose.getRotation();
 
-        PhotonPipelineResult result = vision.getApriltagCamera().getAllUnreadResults().get(0);
+        PhotonPipelineResult result = vision.getFrontApriltagCamera().getAllUnreadResults().get(0);
 
         Translation3d tag = vision.return_tag_pose(result.getBestTarget().getFiducialId()).getTranslation();
         double tagX = vision.return_tag_pose(result.getBestTarget().getFiducialId()).getX();
