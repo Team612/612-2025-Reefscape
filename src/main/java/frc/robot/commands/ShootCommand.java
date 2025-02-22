@@ -15,9 +15,11 @@ public class ShootCommand extends Command {
   private boolean ready;
   private final long finish;
   private long time;
-  public ShootCommand(Motor motor, boolean atLevel, int finish) {
+  private int level;
+  public ShootCommand(Motor motor, boolean atLevel, int finish, int level) { // 1 = L1, 2 = L2, 3 = L3
     m_motor = motor;
     ready = atLevel;
+    this.level = level;
     this.finish = finish;
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -33,10 +35,11 @@ public class ShootCommand extends Command {
   public void execute() {
     if (ready && time == 0) {
       time = System.currentTimeMillis();
-      m_motor.setVelocity(1);
+      m_motor.setVelocity(level == 3 ? 0.7 : level == 2 ? 0.5 : 0.275);
     }
     if (System.currentTimeMillis() - time >= finish) {
       m_motor.setVelocity(0);
+      this.end(true);
     }
   }
 

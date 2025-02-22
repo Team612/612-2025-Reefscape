@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.PivotCommand;
 import frc.robot.commands.ShootCommand;
@@ -24,12 +25,10 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   // private PivotCommand pivotCommand;
-  private ShootCommand shootCommand;
   private final CommandXboxController gunnerControls;
   public RobotContainer() {
     gunnerControls = new CommandXboxController(1); // 1 = gunner port
     // pivotCommand = new PivotCommand(new Motor(new TalonSRX(0)), 1);
-    shootCommand = new ShootCommand(new Motor(new TalonSRX(0)), true, 500);
     // Configure the button bindings
     configureBindings();
   }
@@ -41,10 +40,9 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureBindings() {
-    gunnerControls.rightTrigger().whileTrue(shootCommand);
-    gunnerControls.a().onTrue(new PivotCommand(new Motor(new TalonSRX(0)), 0));
-    gunnerControls.b().onTrue(new PivotCommand(new Motor(new TalonSRX(0)), 1));
-    gunnerControls.x().onTrue(new PivotCommand(new Motor(new TalonSRX(0)), 2));
+    gunnerControls.a().onTrue(new SequentialCommandGroup(new PivotCommand(new Motor(new TalonSRX(0)), 0), new ShootCommand(new Motor(new TalonSRX(0)), true, 1000, 1)));
+    gunnerControls.b().onTrue(new SequentialCommandGroup(new PivotCommand(new Motor(new TalonSRX(0)), 1), new ShootCommand(new Motor(new TalonSRX(0)), true, 1000, 2)));
+    gunnerControls.x().onTrue(new SequentialCommandGroup(new PivotCommand(new Motor(new TalonSRX(0)), 2), new ShootCommand(new Motor(new TalonSRX(0)), true, 1000, 3)));
     gunnerControls.y().onTrue(new PivotCommand(new Motor(new TalonSRX(0)), 3));
   }
 
