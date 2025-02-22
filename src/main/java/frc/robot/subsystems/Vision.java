@@ -14,6 +14,8 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import com.ctre.phoenix.led.CANdle;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -23,6 +25,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 public class Vision extends SubsystemBase {
   private static AprilTagFieldLayout aprilTagFieldLayout;
   private Mecanum driveSubsystem;
@@ -34,6 +37,8 @@ public class Vision extends SubsystemBase {
   PhotonCamera frontCamera;
   PhotonCamera backCamera;
 
+  CANdle m_candle;
+
   private Pose2d robotInTagPose;
   /**
    * Creates a new Vision.
@@ -43,6 +48,7 @@ public class Vision extends SubsystemBase {
 
   public Vision() {
     
+    m_candle = new CANdle(Constants.LedConstants.candleID);
     frontCamera = new PhotonCamera("FrontCamera"); //new camera instance
     backCamera = new PhotonCamera("BackCamera");
     
@@ -57,6 +63,9 @@ public class Vision extends SubsystemBase {
     //m_PoseEstimatorFront.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
   }
+  //  public PhotonPoseEstimator getVisionPoseFront(){
+  //   return poseEstimatorFront;
+  // }
 
   public static Vision getVisionInstance() {
     if (visionInstance == null) {
@@ -65,9 +74,9 @@ public class Vision extends SubsystemBase {
     return visionInstance;
   }
 
-  //  public PhotonPoseEstimator getVisionPoseFront(){
-  //   return poseEstimatorFront;
-  // }
+  public void setColor(int red, int green, int blue){
+      m_candle.setLEDs(red, green, blue);
+  }
 
   public PhotonPoseEstimator getFrontVisionEstimator(){
     return photonFrontPoseEstimator;

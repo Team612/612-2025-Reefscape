@@ -142,6 +142,10 @@ public class Constants {
         public static final double pivotInAngle = 0;
     }
 
+    public class LedConstants {
+        public static final int candleID = 0;
+    }
+
     public class DriverConstants {
         public static final int driverPort = 0;
         public static final int gunnerPort = 1;
