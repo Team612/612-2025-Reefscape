@@ -4,17 +4,14 @@
 
 package frc.robot;
 
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.ElevatorCommand;
+import frc.robot.commands.PivotCommand;
 import frc.robot.commands.ShootCommand;
-import frc.robot.commands.TurnCommand;
 import frc.robot.subsystems.Motor;
 
 /**
@@ -26,15 +23,13 @@ import frc.robot.subsystems.Motor;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  private ElevatorCommand elevatorCommand;
+  // private PivotCommand pivotCommand;
   private ShootCommand shootCommand;
-  private TurnCommand turnCommand;
   private final CommandXboxController gunnerControls;
   public RobotContainer() {
     gunnerControls = new CommandXboxController(1); // 1 = gunner port
-    elevatorCommand = new ElevatorCommand(new Motor(new SparkMax(0, MotorType.kBrushless)), 1);
-    shootCommand = new ShootCommand(new Motor(new SparkMax(0, MotorType.kBrushless)), true, 500);
-    turnCommand = new TurnCommand(new Motor(new SparkMax(0, MotorType.kBrushless)), false);
+    // pivotCommand = new PivotCommand(new Motor(new TalonSRX(0)), 1);
+    shootCommand = new ShootCommand(new Motor(new TalonSRX(0)), true, 500);
     // Configure the button bindings
     configureBindings();
   }
@@ -46,7 +41,11 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureBindings() {
-    gunnerControls.rightTrigger().whileTrue(new SequentialCommandGroup(elevatorCommand, turnCommand, shootCommand));
+    gunnerControls.rightTrigger().whileTrue(shootCommand);
+    gunnerControls.a().onTrue(new PivotCommand(new Motor(new TalonSRX(0)), 0));
+    gunnerControls.b().onTrue(new PivotCommand(new Motor(new TalonSRX(0)), 1));
+    gunnerControls.x().onTrue(new PivotCommand(new Motor(new TalonSRX(0)), 2));
+    gunnerControls.y().onTrue(new PivotCommand(new Motor(new TalonSRX(0)), 3));
   }
 
   /**

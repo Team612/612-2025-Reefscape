@@ -4,38 +4,40 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.EncoderConfig;
-import com.revrobotics.spark.config.SparkBaseConfig;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 
 public class Motor extends SubsystemBase {
   /** Creates a new Motor. */
-  private SparkMax motor;
-  private SparkBaseConfig config;
-  private EncoderConfig encoderConfig;
-  public Motor(SparkMax motor) {
+  private TalonSRX motor;
+  private static int counter = 0;
+  public Motor(TalonSRX motor) {
     this.motor = motor;
-    config = new SparkMaxConfig();
-    config.idleMode(IdleMode.kBrake);
-    encoderConfig.velocityConversionFactor(Constants.MotorConversionFactor);
   }
   public double getVelocity() {
-    return motor.getAbsoluteEncoder().getVelocity();
+    return motor.getActiveTrajectoryVelocity();
   }
   public void setVelocity(double speed) {
-    motor.set(speed);
+    motor.set(TalonSRXControlMode.Velocity, speed);
   }
   public double getPosition() {
-    return motor.getAbsoluteEncoder().getPosition();
+    return motor.getActiveTrajectoryPosition();
+  }
+  private double getSelectedSensorVelocity() {
+    return motor.getSelectedSensorVelocity();
+  }
+  private double getSelectedSensorPosition() {
+    return motor.getSelectedSensorPosition();
   }
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("Active trajectory pos " + counter, this.getPosition());
+    SmartDashboard.putNumber("Active trajectory velocity " + counter, this.getVelocity());
+    SmartDashboard.putNumber("Selected trajectory pos " + counter, this.getSelectedSensorPosition());
+    SmartDashboard.putNumber("Selected trajectory velocity " + counter, this.getSelectedSensorVelocity());
     // This method will be called once per scheduler run
   }
 }

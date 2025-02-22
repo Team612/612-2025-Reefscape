@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Motor;
 
@@ -32,8 +31,6 @@ public class ShootCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    SmartDashboard.putNumber("Shoot Velocity", m_motor.getVelocity());
-    SmartDashboard.putNumber("Shoot position", m_motor.getPosition());
     if (ready && time == 0) {
       time = System.currentTimeMillis();
       m_motor.setVelocity(1);
