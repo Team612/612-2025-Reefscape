@@ -7,9 +7,10 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -35,6 +36,9 @@ public class Payload extends SubsystemBase {
 
     controller = elevatorMotor.getClosedLoopController();
     Preferences.initDouble("Pay Speed", Constants.ElevatorConstants.payloadspeed);
+    Preferences.initDouble("Elevator kI", Constants.ElevatorConstants.kI);
+    Preferences.initDouble("Elevator kP", Constants.ElevatorConstants.kP);
+    Preferences.initDouble("Elevator kD", Constants.ElevatorConstants.kD);
   }
 
 public void setMotorSpeed(double speed) {
@@ -77,7 +81,11 @@ public static Payload getInstance(){
     SmartDashboard.putNumber("Elevator Speed (Controller)", Constants.ElevatorConstants.payloadspeed);
     // System.out.println(Constants.ElevatorConstants.payloadspeed);
     Constants.ElevatorConstants.payloadspeed = Preferences.getDouble("Pay Speed", Constants.ElevatorConstants.payloadspeed);
+   
     // SmartDashboard.putNumber("Elevator 2 Velocity", elevator.getEncoder().getVelocity());
     // SmartDashboard.putNumber("Elevator 2 position", elevator.getEncoder().getPosition());
+    Constants.ElevatorConstants.kP = Preferences.getDouble("Elevator Pivot kP", Constants.ElevatorConstants.kP);
+    Constants.ElevatorConstants.kI = Preferences.getDouble("Elevator Pivot kI", Constants.ElevatorConstants.kI);
+    Constants.ElevatorConstants.kD = Preferences.getDouble("Elevator Pivot kD", Constants.ElevatorConstants.kD);
   }
 }

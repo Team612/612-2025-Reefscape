@@ -22,6 +22,30 @@ public class Robot extends TimedRobot {
     if (!Preferences.containsKey("Pay Speed")){
       Preferences.setDouble("Pay Speed", Constants.ElevatorConstants.payloadspeed);
     }
+    if (!Preferences.containsKey("Pivot Speed")){
+      Preferences.setDouble("Pivot Speed", Constants.IntakeConstants.pivotspeed);
+    }
+    if (!Preferences.containsKey("Bag Speed")){
+      Preferences.setDouble("Bag Speed", Constants.IntakeConstants.bagspeed);
+    }
+    if (!Preferences.containsKey("Intake Pivot kP")){
+      Preferences.setDouble("Intake Pivot kP", Constants.IntakeConstants.kP);
+    }
+    if (!Preferences.containsKey("Intake Pivot kI")){
+      Preferences.setDouble("Intake Pivot kI", Constants.IntakeConstants.kI);
+    }
+    if (!Preferences.containsKey("Intake Pivot kD")){
+      Preferences.setDouble("Intake Pivot kD", Constants.IntakeConstants.kD);
+    }
+    if (!Preferences.containsKey("Elevator kP")){
+      Preferences.setDouble("Elevator kP", Constants.ElevatorConstants.kP);
+    }
+    if (!Preferences.containsKey("Elevator kI")){
+      Preferences.setDouble("Elevator kI", Constants.ElevatorConstants.kI);
+    }
+    if (!Preferences.containsKey("Elevator kD")){
+      Preferences.setDouble("Elevator kD", Constants.ElevatorConstants.kD);
+    }
   }
 
   @Override

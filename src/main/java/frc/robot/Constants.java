@@ -76,9 +76,9 @@ public class Constants {
         public static final int bagCurrentLimit = 30;
         public static final boolean bagCurrentLimitEnable = true;
 
-        public static final double kP = 0;
-        public static final double kI = 0;
-        public static final double kD = 0;
+        public static double kP = 0;
+        public static double kI = 0;
+        public static double kD = 0;
 
         public static double pivotspeed = 0; 
         public static final double L1Position = 0;
@@ -104,9 +104,9 @@ public class Constants {
         public static final double kPositionConversionFactor = (kSprocketPitchDiameter * Math.PI) / kGearRatio; //meters per revolutions
         public static final double kVelocityConversionFactor = kPositionConversionFactor / 60.0; // meters per rotations seconds
 
-        public static final double kP = 0;
-        public static final double kI = 0;
-        public static final double kD = 0;
+        public static double kP = 0;
+        public static double kI = 0;
+        public static double kD = 0;
 
             
     public static final double basePosition = 0;

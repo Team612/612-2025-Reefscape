@@ -8,8 +8,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj.Preferences;
@@ -36,6 +36,9 @@ public class Intake extends SubsystemBase {
 
     Preferences.initDouble("Pivot Speed", Constants.IntakeConstants.pivotspeed);
     Preferences.initDouble("Bag Speed", Constants.IntakeConstants.bagspeed);
+    Preferences.initDouble("Intake Pivot kI", Constants.IntakeConstants.kI);
+    Preferences.initDouble("Intake Pivot kP", Constants.IntakeConstants.kP);
+    Preferences.initDouble("Intake Pivot kD", Constants.IntakeConstants.kD);
   }
 
 
@@ -85,5 +88,8 @@ public class Intake extends SubsystemBase {
     // This method will be called once per scheduler run
     Constants.IntakeConstants.pivotspeed = Preferences.getDouble("Pivot Speed", Constants.IntakeConstants.pivotspeed);
     Constants.IntakeConstants.bagspeed = Preferences.getDouble("Bag Speed", Constants.IntakeConstants.bagspeed);
+    Constants.IntakeConstants.kP = Preferences.getDouble("Intake Pivot kP", Constants.IntakeConstants.kP);
+    Constants.IntakeConstants.kI = Preferences.getDouble("Intake Pivot kI", Constants.IntakeConstants.kI);
+    Constants.IntakeConstants.kD = Preferences.getDouble("Intake Pivot kD", Constants.IntakeConstants.kD);
   }
 }
