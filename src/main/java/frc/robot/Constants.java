@@ -81,6 +81,9 @@ public class Constants {
         public static final double kD = 0;
 
         public static double pivotspeed = 0; 
+        public static final double L1Position = 0;
+        public static final double L2Position = 0;
+        public static final double L3Position = 0;
 
     }
 
@@ -106,9 +109,10 @@ public class Constants {
         public static final double kD = 0;
 
             
-    public static final int basePosition = 0;
-    public static final int L1Position = 10;
-    public static final int L2Position = 20;
+    public static final double basePosition = 0;
+    public static final double L1Position = 0;
+    public static final double L2Position = 0;
+    public static final double L3Position = 0;
 
     }
 

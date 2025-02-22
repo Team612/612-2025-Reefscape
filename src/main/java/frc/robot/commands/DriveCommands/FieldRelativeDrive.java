@@ -20,7 +20,7 @@ public class FieldRelativeDrive extends Command {
   }
 
   public void execute() {
-    m_drivetrain.FieldOrientedDrive(-1*ControlMap.driver_joystick.getRawAxis(1), -1*ControlMap.driver_joystick.getRawAxis(0), ControlMap.driver_joystick.getRawAxis(4));
+    m_drivetrain.FieldOrientedDrive(-ControlMap.driver_joystick.getRawAxis(1), ControlMap.driver_joystick.getRawAxis(0), ControlMap.driver_joystick.getRawAxis(4));
 
   }
 }

@@ -5,22 +5,25 @@
 package frc.robot;
 
 import frc.robot.subsystems.PoseEstimator;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.IntakeCommands.BagIn;
 import frc.robot.commands.IntakeCommands.BagOut;
-import frc.robot.commands.IntakeCommands.ManualPivotControl;
 import frc.robot.commands.IntakeCommands.PivotIn;
 import frc.robot.commands.IntakeCommands.PivotOut;
+import frc.robot.commands.IntakeCommands.SetPivotPosition;
+import frc.robot.commands.AutoCommands.DriverCommands.ApriltagAlign;
+import frc.robot.commands.AutoCommands.GunnerCommands.SetBagSpeedTimed;
 import frc.robot.commands.ClimbCommands.CloseServo;
 import frc.robot.commands.ClimbCommands.OpenServo;
 import frc.robot.commands.DriveCommands.DefaultDrive;
 import frc.robot.commands.DriveCommands.FieldRelativeDrive;
-import frc.robot.commands.DriveCommands.AutoCommands.ApriltagAlign;
 import frc.robot.commands.ElevatorCommands.ElevatorDown;
 import frc.robot.commands.ElevatorCommands.ElevatorUp;
 import frc.robot.commands.ElevatorCommands.ManualElevatorControl;
+import frc.robot.commands.ElevatorCommands.SetElevatorPosition;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Mecanum;
@@ -30,6 +33,7 @@ import frc.robot.util.ControlMap;
 import frc.robot.util.MotorConfigs;
 import frc.robot.util.TrajectoryConfiguration;
 import frc.robot.util.TrajectoryCreation;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class RobotContainer {
   private Payload m_payload;
@@ -41,6 +45,8 @@ public class RobotContainer {
   private TrajectoryConfiguration m_trajConfigs;
   private TrajectoryCreation m_trajCreation;
   private MotorConfigs m_motorConfigs = new MotorConfigs();
+
+  private SendableChooser<Command> m_chooser;
   
   
   
@@ -58,6 +64,9 @@ public class RobotContainer {
   private Command m_openServo;
   private Command m_pivotIn;
   private Command m_pivotOut;
+  private SequentialCommandGroup m_autoL1;
+  private SequentialCommandGroup m_autoL2;
+  private SequentialCommandGroup m_autoL3;
 
 
   public RobotContainer() {
@@ -69,6 +78,8 @@ public class RobotContainer {
     m_vision = Vision.getVisionInstance();
     m_trajConfigs = TrajectoryConfiguration.getInstance();
     m_trajCreation = TrajectoryCreation.getInstance();
+    
+    m_chooser = new SendableChooser<>();
 
     m_BagIn = new BagIn(m_intake);
     m_BagOut =  new BagOut(m_intake);
@@ -77,7 +88,6 @@ public class RobotContainer {
     m_ElevatorUp = new ElevatorUp(m_payload);
     m_ElevatorDown = new ElevatorDown(m_payload);
     m_defaultElevatorCommand = new ManualElevatorControl(m_payload);
-    m_defaultIntakeCommand = new ManualPivotControl(m_intake);
 
     m_defaultDrive = new DefaultDrive(m_drivetrain);
     m_fieldRelativeDrive = new FieldRelativeDrive(m_drivetrain);
@@ -87,9 +97,35 @@ public class RobotContainer {
     m_pivotIn = new PivotIn(m_intake);
     m_pivotOut = new PivotOut(m_intake);
 
-  
+    configureCommands();
     configureBindings();
+  
   }
+
+  private void configureCommands(){
+    m_autoL1 = new SequentialCommandGroup(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.L1Position))
+    .andThen(new SetPivotPosition(m_intake, Constants.IntakeConstants.L1Position))
+    .andThen(new SetBagSpeedTimed(m_intake))
+    .andThen(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.basePosition));
+
+    m_autoL2 = new SequentialCommandGroup(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.L2Position))
+    .andThen(new SetPivotPosition(m_intake, Constants.IntakeConstants.L2Position))
+    .andThen(new SetBagSpeedTimed(m_intake))
+    .andThen(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.basePosition));
+
+    m_autoL3 = new SequentialCommandGroup(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.L3Position))
+    .andThen(new SetPivotPosition(m_intake, Constants.IntakeConstants.L3Position))
+    .andThen(new SetBagSpeedTimed(m_intake))
+    .andThen(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.basePosition));
+
+    m_chooser.addOption("Auto L1", m_autoL1);
+    m_chooser.addOption("Auto L2", m_autoL2);
+    m_chooser.addOption("Auto L3", m_autoL3);
+
+    m_chooser.setDefaultOption("Nothing Selected", null);
+  }
+
+
 
   private void configureBindings() {
     ControlMap.driver_joystick.leftBumper().onTrue(new InstantCommand(() -> m_drivetrain.zeroGyro()));
@@ -120,16 +156,18 @@ public class RobotContainer {
 
     ControlMap.gunner_joystick.rightBumper().whileTrue(m_PivotIn);
     ControlMap.gunner_joystick.leftBumper().whileTrue(m_PivotOut);
+
+
+    // ControlMap.gunner_buttons.getRawButton(0);
   }
 
   public void configureDefaultCommand(){
     m_drivetrain.setDefaultCommand(m_fieldRelativeDrive);
     m_payload.setDefaultCommand(m_defaultElevatorCommand);
     m_intake.setDefaultCommand(m_defaultIntakeCommand);
-    
   }
 
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    return (m_chooser.getSelected() != null) ? m_chooser.getSelected() : Commands.print("No autonomous command configured");
   }
 }
