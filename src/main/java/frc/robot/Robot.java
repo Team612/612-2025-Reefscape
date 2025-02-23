@@ -11,12 +11,23 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 
 public class Robot extends TimedRobot {
   //CONSTANTS
+  // used to instantiate swerve kinematics and calculate how to offset swerve kinematics
+  private static final double trackWidth = 0.48;
+  private static final double wheelBase = 0.48;
+  
+  // these are the max motor percent desired to be allocated to a certain dirrection or rotation, this works for any motor with a percent output 0-1
+  private static final double xPercent = 1;
+  private static final double yPercent = 1;
+  private static final double zPercent = 0.25;
+
+  // the swerve kinematics object only takes in radians per second and this will ofset those calculations for it to take in motor percent
+  private static final double zNecessaryOffset = (zPercent)/(Math.sqrt((trackWidth/2)*(trackWidth/2)+(wheelBase/2)*(wheelBase/2)));
+
   // xbox port
   private static final int XboxPortNumber = 0;
 
@@ -28,23 +39,6 @@ public class Robot extends TimedRobot {
 
   // sets the proportional constant for the angle motor PID
   private static final double kp = 0.5;
-
-  // this is just a guess at how much motor percent it takes to travel 1 meter per second subject to changes
-  // I might replace this with a velocity control system that uses the drive motors built in encoders
-  private static final double metersPerSecondtoMotorPercentConstant = 0.25;
-
-  // used to desaturate the wheel speeds if we request them to go over this limit
-  private static final double MAX_SPEED = 1/metersPerSecondtoMotorPercentConstant; // m/s
-
-  // this controls our desired m/s inputs from the controller
-  private static final double xMultiple = MAX_SPEED;
-  private static final double yMultiple = MAX_SPEED;
-  // this controls our desired rad/s inputs from the controller
-  private static final double zMultiple = 3;
-
-  // used to instantiate swerve kinematics
-  private static final double trackWidth = Units.inchesToMeters(27);
-  private static final double wheelBase = Units.inchesToMeters(27);
 
   // swerve module 0 constants, front left
   // when the absolute encoder reads the 0.649 it is actually at 0
@@ -73,12 +67,6 @@ public class Robot extends TimedRobot {
   private static final int mod3AngleMotorID = 1;
   private static final int mod3DriveMotorID = 8;
   private static final int mod3CANcoderID = 2;
-
-  // These may be useful in the future for odometry or something
-  // private static final double wheelDiameter = Units.inchesToMeters(3.75);
-  // private static final double wheelCircumference = wheelDiameter * Math.PI;
-  // private static final double driveGearRatio = (6.75 / 1.0); // 6.75:1
-  // private static final double angleGearRatio = (150.0 / 7.0); // 12.8:1
 
   // INSTANTIATING
   // xbox controller
@@ -121,9 +109,9 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     // m/s desired speed
-    double x = -controller.getRawAxis(1) * xMultiple;
-    double y = -controller.getRawAxis(0) * yMultiple;
-    double zRot = -controller.getRawAxis(4) * zMultiple;
+    double x = -controller.getRawAxis(1) * xPercent;
+    double y = -controller.getRawAxis(0) * yPercent;
+    double zRot = -controller.getRawAxis(4) * zNecessaryOffset;
 
     // resets heading for gyroscope
     if (controller.getAButtonPressed())
@@ -150,8 +138,8 @@ public class Robot extends TimedRobot {
     // automatically calculates what swerve module state every swerve module has to be at and adds it to this array
     SwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(chassisSpeed);
 
-    // slows down all of the motors by the same percent if a single motor goes over the max possible speed so we dont lose control
-    SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, MAX_SPEED);
+    // slows down all of the motors by the same percent if a single motor goes over the max possible speed. so we dont lose control
+    SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, 1);
 
     // applies our swerve module states with our custom set method
     mod0.setMySwerveState(moduleStates[0]);
@@ -211,18 +199,17 @@ public class Robot extends TimedRobot {
     }
 
     // this method takes in desired swerve module states and turns them into reality with motor inputs
-    @SuppressWarnings("deprecation")
     public void setMySwerveState(SwerveModuleState desiredState){
       // this SwerveModuleState method changes the desired state allowing the robot to run the wheels in reverse
       // for example if the front of the wheel is currently at pi/2 rad and it wants to get to -pi/2 rad
       // this method will change the desired state to -pi/2 and run the motors in reverse using the back of the wheel
-      SwerveModuleState optimizedState = SwerveModuleState.optimize(desiredState, new Rotation2d(getCurrentAngle()));
+      desiredState.optimize(new Rotation2d(getCurrentAngle()));
 
       // this transforms desired meters per second to motor percent output
-      drivingMotor.set(optimizedState.speedMetersPerSecond * metersPerSecondtoMotorPercentConstant);
+      drivingMotor.set(desiredState.speedMetersPerSecond);
 
       // this sets the angle motor using pid control to ensure smooth turning
-      angleMotor.set(turnPIDController.calculate(getCurrentAngle(), optimizedState.angle.getRadians()));
+      angleMotor.set(turnPIDController.calculate(getCurrentAngle(), desiredState.angle.getRadians()));
     }
 
     // this returns the wheels current angle in the range (-pi,pi) from the CANcoder inputs
