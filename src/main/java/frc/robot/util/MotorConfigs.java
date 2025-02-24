@@ -1,16 +1,11 @@
 package frc.robot.util;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.revrobotics.spark.ClosedLoopSlot;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
 
 import frc.robot.Constants;
-import frc.robot.Constants.ClimbConstants;
-import frc.robot.Constants.ElevatorConstants;
-import frc.robot.Constants.IntakeConstants;
+
 
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -19,12 +14,14 @@ public class MotorConfigs {
     public static TalonFXConfiguration talon_bag_configs;
     public static SparkMaxConfig elevator_pivot_configs;
     public static SparkMaxConfig climb_pivot_configs;
+    public static SparkMaxConfig drivetrain_configs;
 
 
     public MotorConfigs(){
         configureIntake();
         configureClimb();
         configureElevator();
+        configureDrivetrain();
                    
     }
 
@@ -112,6 +109,30 @@ public class MotorConfigs {
             .absoluteEncoder
                 .positionConversionFactor(Constants.ClimbConstants.kAngularPositionConversionFactor);
                 
+    }
+
+    public static void configureDrivetrain(){
+        drivetrain_configs = new SparkMaxConfig();
+        drivetrain_configs
+            .smartCurrentLimit(Constants.DrivetrainConstants.currentLimit);
+        
+        drivetrain_configs
+            .encoder
+                .positionConversionFactor(Constants.DrivetrainConstants.kPositionConversionFactor)
+                .velocityConversionFactor(Constants.DrivetrainConstants.kVelocityConversionFactor);
+        
+        drivetrain_configs
+            .absoluteEncoder
+                .positionConversionFactor(Constants.DrivetrainConstants.kPositionConversionFactor)
+                .velocityConversionFactor(Constants.DrivetrainConstants.kVelocityConversionFactor);
+        drivetrain_configs
+            .closedLoop
+                .p(Constants.DrivetrainConstants.kP)
+                .i(Constants.DrivetrainConstants.kI)
+                .d(Constants.DrivetrainConstants.kD);
+        
+
+            
     }
 
     

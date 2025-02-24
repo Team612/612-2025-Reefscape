@@ -9,10 +9,10 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Climb;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class PivotIn extends Command {
+public class PivotClimbIn extends Command {
   /** Creates a new PivotIn. */
   Climb m_climb;
-  public PivotIn(Climb c) {
+  public PivotClimbIn(Climb c) {
     m_climb = c;
     addRequirements(m_climb);
   }

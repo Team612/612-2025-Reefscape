@@ -13,7 +13,6 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj.Preferences;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.MotorConfigs;
@@ -74,6 +73,14 @@ public class Intake extends SubsystemBase {
 
   public double getPivotPosition(){
     return pivotMotor.getEncoder().getPosition() - Constants.IntakeConstants.boreOffset;
+  }
+
+  public double getPivotSpeed(){
+    return pivotMotor.getEncoder().getVelocity();
+  }
+
+  public double getBagSpeed(){
+    return bagMotor.get();
   }
 
   public static Intake getInstance(){

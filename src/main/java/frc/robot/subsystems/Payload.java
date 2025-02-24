@@ -62,6 +62,10 @@ public double getPosition(){
   return elevatorMotor.getEncoder().getPosition();
 }
 
+public double getVelocity(){
+  return elevatorMotor.getEncoder().getVelocity();
+}
+
 public SparkMax getElevatorMotor() {
   return elevatorMotor;
 }
@@ -76,14 +80,11 @@ public static Payload getInstance(){
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Elevator 1 Velocity", elevatorMotor.getEncoder().getVelocity());
-    SmartDashboard.putNumber("Elevator 1 position", elevatorMotor.getEncoder().getPosition());
-    SmartDashboard.putNumber("Elevator Speed (Controller)", Constants.ElevatorConstants.payloadspeed);
-    // System.out.println(Constants.ElevatorConstants.payloadspeed);
-    Constants.ElevatorConstants.payloadspeed = Preferences.getDouble("Pay Speed", Constants.ElevatorConstants.payloadspeed);
+
+    // Constants.ElevatorConstants.payloadspeed = Preferences.getDouble("Pay Speed", Constants.ElevatorConstants.payloadspeed);
    
-    // SmartDashboard.putNumber("Elevator 2 Velocity", elevator.getEncoder().getVelocity());
-    // SmartDashboard.putNumber("Elevator 2 position", elevator.getEncoder().getPosition());
+    // // SmartDashboard.putNumber("Elevator 2 Velocity", elevator.getEncoder().getVelocity());
+    // // SmartDashboard.putNumber("Elevator 2 position", elevator.getEncoder().getPosition());
     Constants.ElevatorConstants.kP = Preferences.getDouble("Elevator Pivot kP", Constants.ElevatorConstants.kP);
     Constants.ElevatorConstants.kI = Preferences.getDouble("Elevator Pivot kI", Constants.ElevatorConstants.kI);
     Constants.ElevatorConstants.kD = Preferences.getDouble("Elevator Pivot kD", Constants.ElevatorConstants.kD);

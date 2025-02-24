@@ -3,20 +3,11 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-
-import com.ctre.phoenix6.swerve.SwerveModule;
-
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
 /** Add your docs here. */
@@ -46,20 +37,24 @@ public class Constants {
             m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation
         );
 
-        // We know none of this
+  
         public static final double kWheelBase =  Units.inchesToMeters(21); // width from center of back to front wheels (center of the wheel)
         public static final double kTrackWidth = Units.inchesToMeters(24); // width from right to left wheels (center of the wheel)
         public static final double kGearReduction = 16;
         public static final double kS = 0.15950; 
         public static final double kV = 4.6647;  
         public static final double kA = 0;
+        public static final int currentLimit = 30;
 
         public static final SimpleMotorFeedforward kFeedforward =
          new SimpleMotorFeedforward(Constants.DrivetrainConstants.kS, Constants.DrivetrainConstants.kV, Constants.DrivetrainConstants.kA);
      
         public static final double kWheelDiameterMeters = 0.1524; 
-        public static final double kEncoderDistancePerPulse =
+        public static final double kPositionConversionFactor =
             ((kWheelDiameterMeters * Math.PI)) / (kGearReduction);
+
+        public static final double kVelocityConversionFactor =
+            kPositionConversionFactor / 60.0;
 
     }
 
@@ -84,6 +79,11 @@ public class Constants {
         public static final double L1Position = 0;
         public static final double L2Position = 0;
         public static final double L3Position = 0;
+        public static final double CoralStationPosition = 0;
+        public static final double maxPivotInAngleL2L3 = 0;
+        public static final double maxPivotInAngleL1 = 0;
+        public static final double maxPivotOutAngle = 0;
+        public static final double pivotThreshold = 0.5;
 
     }
 
@@ -113,6 +113,9 @@ public class Constants {
     public static final double L1Position = 0;
     public static final double L2Position = 0;
     public static final double L3Position = 0;
+    public static final double CoralStationPosition = 0;
+    public static final double elevatorThreshold = 0.5;
+
 
     }
 
@@ -120,7 +123,7 @@ public class Constants {
         public static final int servoID = 0;
         public static final int pivotID = 8;
         public static final int climbCurrentLimit = 30;
-        public static final boolean inverted = false;
+        public static final boolean inverted = true;
         public static final IdleMode idleMode = IdleMode.kBrake;
 
         public static final double kGearRatio = (245 / 1.0);
@@ -140,6 +143,9 @@ public class Constants {
 
         public static final double pivotOutAngle = 0;
         public static final double pivotInAngle = 0;
+        public static final double pivotSpeed = 1;
+        
+
     }
 
     public class LedConstants {
@@ -153,6 +159,8 @@ public class Constants {
     }
 
     public class AutoConstants {
+        public static final String frontCamera = "FrontCamera";
+        public static final String backCamera = "BackCamera";
         public static final double maxVelocity = 4.5;
         public static final double maxAcceleration = 1;
         public static final double maxAngularVelocity = Math.PI;

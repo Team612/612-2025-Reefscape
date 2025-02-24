@@ -7,14 +7,17 @@ package frc.robot.commands.IntakeCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Payload;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class PivotOut extends Command {
+public class PivotIntakeIn extends Command {
   /** Creates a new BagIn. */
   private Intake m_intake;
-  public PivotOut(Intake intake) {
+  private Payload m_payload;
+  public PivotIntakeIn(Intake intake, Payload p) {
     m_intake = intake;
-    addRequirements(intake);
+    m_payload = p;
+    addRequirements(m_intake,m_payload);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -27,7 +30,7 @@ public class PivotOut extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intake.setPivotSpeed(Constants.IntakeConstants.pivotspeed);
+    m_intake.setPivotSpeed(-Constants.IntakeConstants.pivotspeed);
   }
 
   // Called once the command ends or is interrupted.
@@ -39,6 +42,10 @@ public class PivotOut extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_intake.getIntakeLimitStateForward();
+    if(m_payload.getPosition() < Constants.ElevatorConstants.CoralStationPosition){
+      return m_intake.getPivotPosition() < Constants.IntakeConstants.maxPivotInAngleL1;
+    }
+
+    return m_intake.getIntakeLimitStateReverse() || m_intake.getPivotPosition() < Constants.IntakeConstants.maxPivotInAngleL2L3;
   }
 }

@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators.None;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
@@ -52,6 +51,10 @@ public class Climb extends SubsystemBase {
 
   public double getPivotPosition(){
     return m_pivot.getEncoder().getPosition();
+  }
+
+  public double getPivotVelocity(){
+    return m_pivot.getEncoder().getVelocity();
   }
 
   public Servo getServoMotor(){

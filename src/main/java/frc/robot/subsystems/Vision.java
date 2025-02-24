@@ -28,7 +28,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 public class Vision extends SubsystemBase {
   private static AprilTagFieldLayout aprilTagFieldLayout;
-  private Mecanum driveSubsystem;
   private PhotonPoseEstimator photonFrontPoseEstimator;
   private PhotonPoseEstimator photonBackPoseEstimator;
 
@@ -49,8 +48,8 @@ public class Vision extends SubsystemBase {
   public Vision() {
     
     m_candle = new CANdle(Constants.LedConstants.candleID);
-    frontCamera = new PhotonCamera("FrontCamera"); //new camera instance
-    backCamera = new PhotonCamera("BackCamera");
+    frontCamera = new PhotonCamera(Constants.AutoConstants.frontCamera); 
+    backCamera = new PhotonCamera(Constants.AutoConstants.backCamera);
     
 
     aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark); //how to load the april tags from the field
@@ -58,7 +57,6 @@ public class Vision extends SubsystemBase {
     photonFrontPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d()); //instantiates photon pose estimator
     photonBackPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d());
 
-    driveSubsystem = Mecanum.getInstance();
 
     //m_PoseEstimatorFront.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
@@ -136,7 +134,7 @@ public class Vision extends SubsystemBase {
     if (frontCamera.getLatestResult().hasTargets()) {
       return frontCamera.getLatestResult();
     }
-    return new PhotonPipelineResult();
+    return null;
   }  
 
   public PhotonPipelineResult getBackPipelineResult() {
@@ -190,8 +188,6 @@ public class Vision extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Tag X", getTagPose(frontCamera.getLatestResult()).getX());
-    SmartDashboard.putNumber("Tag Y", getTagPose(frontCamera.getLatestResult()).getY());
 
     // if (cameraApriltagBack.getDistCoeffs().equals(Optional.empty())){
     //   System.out.println("NO CALIBRATION");

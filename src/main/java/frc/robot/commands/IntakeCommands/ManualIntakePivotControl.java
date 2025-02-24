@@ -7,15 +7,16 @@ package frc.robot.commands.IntakeCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Payload;
+import frc.robot.util.ControlMap;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class PivotIn extends Command {
-  /** Creates a new BagIn. */
+public class ManualIntakePivotControl extends Command {
   private Intake m_intake;
-  public PivotIn(Intake intake) {
-    m_intake = intake;
-    addRequirements(intake);
-    // Use addRequirements() here to declare subsystem dependencies.
+  /** Creates a new ManualElevatorControl. */
+  public ManualIntakePivotControl(Intake i) {
+    m_intake = i;
+    addRequirements(m_intake);
+
   }
 
   // Called when the command is initially scheduled.
@@ -27,7 +28,7 @@ public class PivotIn extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intake.setPivotSpeed(-Constants.IntakeConstants.pivotspeed);
+    m_intake.setPivotSpeed(ControlMap.gunner_controls.getRawAxis(0) * Constants.IntakeConstants.pivotspeed);
   }
 
   // Called once the command ends or is interrupted.
@@ -39,6 +40,6 @@ public class PivotIn extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_intake.getIntakeLimitStateReverse();
+    return false;
   }
 }

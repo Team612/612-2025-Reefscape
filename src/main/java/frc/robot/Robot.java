@@ -8,17 +8,21 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.util.Telemetry;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
+  private Telemetry m_telemetry;
 
   private final RobotContainer m_robotContainer;
 
   public Robot() {
     m_robotContainer = new RobotContainer();
+    m_telemetry = new Telemetry();
   }
 
   public void robotInit() {
+    m_telemetry.initData();
     if (!Preferences.containsKey("Pay Speed")){
       Preferences.setDouble("Pay Speed", Constants.ElevatorConstants.payloadspeed);
     }
@@ -50,6 +54,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
+    m_telemetry.updateData();
     CommandScheduler.getInstance().run();
   }
 
