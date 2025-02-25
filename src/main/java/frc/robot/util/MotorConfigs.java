@@ -11,7 +11,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 public class MotorConfigs {
     public static SparkMaxConfig spark_pivot_configs;
-    public static TalonFXConfiguration talon_bag_configs;
+    public static SparkMaxConfig spark_bag_configs;
     public static SparkMaxConfig elevator_pivot_configs;
     public static SparkMaxConfig climb_pivot_configs;
     public static SparkMaxConfig drivetrain_configs;
@@ -40,14 +40,17 @@ public class MotorConfigs {
                 .d(Constants.IntakeConstants.kD);
 
         //intake/outtake motor
-        talon_bag_configs = new TalonFXConfiguration();
-        talon_bag_configs
-        .CurrentLimits
-            .SupplyCurrentLimitEnable = Constants.IntakeConstants.bagCurrentLimitEnable;
-        
-        talon_bag_configs
-        .CurrentLimits
-            .SupplyCurrentLimit = Constants.IntakeConstants.bagCurrentLimit;
+        spark_bag_configs = new SparkMaxConfig();
+        spark_bag_configs
+            .inverted(Constants.IntakeConstants.bagInverted)
+            .smartCurrentLimit(Constants.IntakeConstants.bagCurrentLimit)
+            .idleMode(Constants.IntakeConstants.idleMode);
+
+        spark_bag_configs
+            .closedLoop
+                .p(Constants.IntakeConstants.kP)
+                .i(Constants.IntakeConstants.kI)
+                .d(Constants.IntakeConstants.kD);
     }
 
     public static void configureElevator(){

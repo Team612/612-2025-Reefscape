@@ -60,13 +60,14 @@ public class Constants {
 
     public class IntakeConstants {
         public static final int pivotID = 6;
-        public static final boolean pivotInverted = true;
+        public static final boolean pivotInverted = false;
         public static final int pivotCurrentLimit = 30;
         public static final double boreOffset = 0;
         public static final IdleMode idleMode = IdleMode.kBrake;
+        public static final boolean bagInverted = false;
 
         public static final int bagID = 7; 
-        public static double bagspeed = 0;
+        public static final double bagspeed = 0.30;
 
         public static final int bagCurrentLimit = 30;
         public static final boolean bagCurrentLimitEnable = true;
@@ -75,7 +76,7 @@ public class Constants {
         public static double kI = 0;
         public static double kD = 0;
 
-        public static double pivotspeed = 0; 
+        public static final double pivotspeed = 0.30; 
         public static final double L1Position = 0;
         public static final double L2Position = 0;
         public static final double L3Position = 0;
@@ -92,7 +93,7 @@ public class Constants {
         public static final boolean elevatorInverted = true;
         public static final int elevatorCurrentLimit = 30;
         public static final IdleMode idleMode = IdleMode.kBrake;
-        public static double payloadspeed = 0;
+        public static final double payloadspeed = 0.30;
 
         public static final MAXMotionPositionMode positionMode = MAXMotionPositionMode.kMAXMotionTrapezoidal;
         public static final double maxElevatorSpeed = 4.0; //default units: revolutions per minutes (converted with the velocityConversionFactor)
@@ -138,12 +139,12 @@ public class Constants {
         public static final double kD = 0;
 
 
-        public static final int servoOpenPosition = 1;
-        public static final int servoClosePosition = 0;
+        public static final double servoOpenPosition = 0; // 1
+        public static final double servoClosePosition = 1; // 0
 
         public static final double pivotOutAngle = 0;
         public static final double pivotInAngle = 0;
-        public static final double pivotSpeed = 1;
+        public static final double pivotSpeed = 0.5;
         
 
     }

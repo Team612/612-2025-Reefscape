@@ -27,7 +27,7 @@ public class ManualElevatorControl extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_payload.setMotorSpeed(ControlMap.gunner_controls.getRawAxis(1) * Constants.ElevatorConstants.payloadspeed);
+    m_payload.setMotorSpeed(ControlMap.gunner_controls.getRawAxis(0) * Constants.ElevatorConstants.payloadspeed);
   }
 
   // Called once the command ends or is interrupted.

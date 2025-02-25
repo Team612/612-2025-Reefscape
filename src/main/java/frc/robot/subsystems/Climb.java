@@ -24,7 +24,7 @@ public class Climb extends SubsystemBase {
    
   /** Creates a new Climb. */
   public Climb() {
-    m_servo = new Servo(Constants.ClimbConstants.pivotID);
+    m_servo = new Servo(Constants.ClimbConstants.servoID);
     m_pivot = new SparkMax(Constants.ClimbConstants.pivotID, MotorType.kBrushless);
     
     m_pivot.configure(MotorConfigs.climb_pivot_configs, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -44,8 +44,9 @@ public class Climb extends SubsystemBase {
 
   
 
-  public void setClawPosition(double position){
-    m_servo.setPosition(position);
+  public void setClawPosition(double position){ // position
+    m_servo.set(position); // setPosition
+    //m_servo.setSpeed(position);
   }
     
 

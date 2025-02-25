@@ -5,8 +5,8 @@ import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Mecanum;
 import frc.robot.subsystems.Payload;
-import frc.robot.subsystems.PoseEstimator;
-import frc.robot.subsystems.Vision;
+// import frc.robot.subsystems.PoseEstimator;
+// import frc.robot.subsystems.Vision;
 
 import edu.wpi.first.networktables.GenericEntry;
 
@@ -15,8 +15,8 @@ public class Telemetry {
     Intake m_intake;
     Payload m_payload;
     Climb m_climb;
-    PoseEstimator m_poseEstimator;
-    Vision m_vision;
+    // PoseEstimator m_poseEstimator;
+    // Vision m_vision;
 
     ShuffleboardTab drivetrainTab;
     ShuffleboardTab payloadTab; //elevator + intake
@@ -66,8 +66,8 @@ public class Telemetry {
         m_climb = Climb.getInstance();
         m_intake = Intake.getInstance();
         m_payload = Payload.getInstance();
-        m_poseEstimator = PoseEstimator.getPoseEstimatorInstance();
-        m_vision = Vision.getVisionInstance();
+        // m_poseEstimator = PoseEstimator.getPoseEstimatorInstance();
+        // m_vision = Vision.getVisionInstance();
 
         drivetrainTab = Shuffleboard.getTab("Drivetrain");
         payloadTab = Shuffleboard.getTab("Payload");
@@ -115,12 +115,12 @@ public class Telemetry {
         climbPivotVelocity.setDouble(m_climb.getPivotVelocity());
         servoPosition.setDouble(m_climb.getServoPosition());
 
-        poseX.setDouble(m_poseEstimator.getPose().getX());
-        poseY.setDouble(m_poseEstimator.getPose().getY());
-        poseAngle.setDouble(m_poseEstimator.getPose().getRotation().getDegrees());
-        seeAprilTag.setBoolean(m_vision.frontHasTag());
-        apriltagAmbiguity.setDouble((m_vision.frontHasTag()) ? m_vision.getFrontPipelineResult().getBestTarget().getPoseAmbiguity() : 0.0);
-        apriltagX.setDouble((m_vision.frontHasTag()) ? m_vision.getFrontPipelineResult().getBestTarget().getBestCameraToTarget().getX() : 0.0);
-        apriltagY.setDouble((m_vision.frontHasTag()) ? m_vision.getFrontPipelineResult().getBestTarget().getBestCameraToTarget().getY() : 0.0);
+        // poseX.setDouble(m_poseEstimator.getPose().getX());
+        // poseY.setDouble(m_poseEstimator.getPose().getY());
+        // poseAngle.setDouble(m_poseEstimator.getPose().getRotation().getDegrees());
+        // seeAprilTag.setBoolean(m_vision.frontHasTag());
+        // apriltagAmbiguity.setDouble((m_vision.frontHasTag()) ? m_vision.getFrontPipelineResult().getBestTarget().getPoseAmbiguity() : 0.0);
+        // apriltagX.setDouble((m_vision.frontHasTag()) ? m_vision.getFrontPipelineResult().getBestTarget().getBestCameraToTarget().getX() : 0.0);
+        // apriltagY.setDouble((m_vision.frontHasTag()) ? m_vision.getFrontPipelineResult().getBestTarget().getBestCameraToTarget().getY() : 0.0);
     }
 }

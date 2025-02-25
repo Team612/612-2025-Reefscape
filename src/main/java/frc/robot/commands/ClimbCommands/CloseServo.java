@@ -24,6 +24,7 @@ public class CloseServo extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    System.out.println(Constants.ClimbConstants.servoClosePosition);
     m_climb.setClawPosition(Constants.ClimbConstants.servoClosePosition);
   }
 

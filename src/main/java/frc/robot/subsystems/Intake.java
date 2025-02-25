@@ -21,15 +21,15 @@ public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   private SparkMax pivotMotor;
   private SparkClosedLoopController controller;
-  private TalonFX bagMotor;
+  private SparkMax bagMotor;
   private static Intake instance;
 
   public Intake() {
     pivotMotor = new SparkMax(Constants.IntakeConstants.pivotID, MotorType.kBrushless);
-    bagMotor = new TalonFX(Constants.IntakeConstants.bagID);
+    bagMotor = new SparkMax(Constants.IntakeConstants.bagID, MotorType.kBrushed);
 
     pivotMotor.configure(MotorConfigs.spark_pivot_configs, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    bagMotor.getConfigurator().apply(MotorConfigs.talon_bag_configs);
+    bagMotor.configure(MotorConfigs.spark_bag_configs, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     controller = pivotMotor.getClosedLoopController();
 
@@ -67,7 +67,7 @@ public class Intake extends SubsystemBase {
   public SparkMax getPivot(){
     return pivotMotor;
   }
-  public TalonFX getBags(){
+  public SparkMax getBags(){
     return bagMotor;
   }
 
@@ -93,10 +93,10 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    Constants.IntakeConstants.pivotspeed = Preferences.getDouble("Pivot Speed", Constants.IntakeConstants.pivotspeed);
-    Constants.IntakeConstants.bagspeed = Preferences.getDouble("Bag Speed", Constants.IntakeConstants.bagspeed);
-    Constants.IntakeConstants.kP = Preferences.getDouble("Intake Pivot kP", Constants.IntakeConstants.kP);
-    Constants.IntakeConstants.kI = Preferences.getDouble("Intake Pivot kI", Constants.IntakeConstants.kI);
-    Constants.IntakeConstants.kD = Preferences.getDouble("Intake Pivot kD", Constants.IntakeConstants.kD);
+    // Constants.IntakeConstants.pivotspeed = Preferences.getDouble("Pivot Speed", Constants.IntakeConstants.pivotspeed);
+    // Constants.IntakeConstants.bagspeed = Preferences.getDouble("Bag Speed", Constants.IntakeConstants.bagspeed);
+    // Constants.IntakeConstants.kP = Preferences.getDouble("Intake Pivot kP", Constants.IntakeConstants.kP);
+    // Constants.IntakeConstants.kI = Preferences.getDouble("Intake Pivot kI", Constants.IntakeConstants.kI);
+    // Constants.IntakeConstants.kD = Preferences.getDouble("Intake Pivot kD", Constants.IntakeConstants.kD);
   }
 }
