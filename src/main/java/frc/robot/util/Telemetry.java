@@ -1,12 +1,18 @@
 package frc.robot.util;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.WidgetType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Mecanum;
 import frc.robot.subsystems.Payload;
 // import frc.robot.subsystems.PoseEstimator;
 // import frc.robot.subsystems.Vision;
+
+import java.util.Map;
 
 import edu.wpi.first.networktables.GenericEntry;
 
@@ -33,21 +39,25 @@ public class Telemetry {
     //payload values
     GenericEntry elevatorVelocity;
     GenericEntry elevatorPosition;
+    GenericEntry elevatorCurrentSetSpeed;
     GenericEntry elevatorkP;
     GenericEntry elevatorkI;
     GenericEntry elevatorkD;
     
     GenericEntry intakePivotVelocity;
     GenericEntry intakePivotPosition;
+    GenericEntry intakeCurrentSetSpeed;
     GenericEntry intakekP;
     GenericEntry intakekI;
     GenericEntry intakekD;
 
-    GenericEntry bagSpeed;
+    GenericEntry bagCurrentSetSpeed;
+    GenericEntry bagVelocity;
 
     //climb values
     GenericEntry climbPivotVelocity;
     GenericEntry climbPivotPositon;
+    GenericEntry climbCurrentSetSpeed;
 
     GenericEntry servoPosition;
 
@@ -74,20 +84,35 @@ public class Telemetry {
         climbTab = Shuffleboard.getTab("Climb");
         autonTab = Shuffleboard.getTab("Autonomous");
 
-        pigeonAngle = drivetrainTab.add("Robot Angle (degrees)", 0.0).getEntry();
-        sparkFlVelocity = drivetrainTab.add("FL Velocity (m/s)",0.0).getEntry();
-        sparkFrVelocity = drivetrainTab.add("Fr Velocity (m/s)",0.0).getEntry();
-        sparkBlVelocity = drivetrainTab.add("Bl Velocity (m/s)",0.0).getEntry();
-        sparkBrVelocity = drivetrainTab.add("Br Velocity (m/s)",0.0).getEntry();
 
-        elevatorVelocity = payloadTab.add("Elevator Velocity (m)",0.0).getEntry();
-        elevatorPosition = payloadTab.add("Elevator Position (m)",0.0).getEntry();
-        intakePivotPosition = payloadTab.add("Intake Position (degrees)",0.0).getEntry();
-        bagSpeed = payloadTab.add("Bag Speed (m/s)",0.0).getEntry();
+        pigeonAngle = drivetrainTab.add("Robot Angle", 0.0).getEntry();
+        sparkFlVelocity = drivetrainTab.add("FL Velocity",0.0).getEntry();
+        sparkFrVelocity = drivetrainTab.add("Fr Velocity",0.0).getEntry();
+        sparkBlVelocity = drivetrainTab.add("Bl Velocity",0.0).getEntry();
+        sparkBrVelocity = drivetrainTab.add("Br Velocity",0.0).getEntry();
+        elevatorCurrentSetSpeed = payloadTab.add("Elevator Current Set Speed",Constants.ElevatorConstants.payloadspeed)
+        .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", -1, "max", 1))
+        .getEntry();
 
-        climbPivotPositon = climbTab.add("Climb Position (degrees)",0.0).getEntry();
+        elevatorVelocity = payloadTab.add("Elevator Velocity",0.0).getEntry();
+        elevatorPosition = payloadTab.add("Elevator Position",0.0).getEntry();
+
+        intakePivotPosition = payloadTab.add("Intake Position",0.0).getEntry();
+        intakeCurrentSetSpeed = payloadTab.add("Intake Current Set Speed",Constants.IntakeConstants.pivotspeed)
+        .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", -1, "max", 1))
+        .getEntry();
+        bagCurrentSetSpeed = payloadTab.add("Bag Current Set Speed",0.0)
+        .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", -1, "max", 1))
+        .getEntry();
+        bagVelocity = payloadTab.add("Bag Velocity",0.0).getEntry();
+
+        climbCurrentSetSpeed = climbTab.add("Climb Current Set Speed",Constants.ClimbConstants.pivotSpeed)
+        .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", -1, "max", 1))
+        .getEntry();
+
+        climbPivotPositon = climbTab.add("Climb Position",0.0).getEntry();
         climbPivotVelocity = climbTab.add("Climb Velocity",0.0).getEntry();
-        servoPosition = climbTab.add("Servo Position (?)",0.0).getEntry();
+        servoPosition = climbTab.add("Servo Position",0.0).getEntry();
 
         poseX = autonTab.add("Pose X", 0.0).getEntry();
         poseY = autonTab.add("Pose Y", 0.0).getEntry();
@@ -109,11 +134,16 @@ public class Telemetry {
         elevatorVelocity.setDouble(m_payload.getVelocity());
         elevatorPosition.setDouble(m_payload.getPosition());
         intakePivotPosition.setDouble(m_intake.getPivotPosition());
-        bagSpeed.setDouble(m_intake.getBagSpeed());
+        bagVelocity.setDouble(m_intake.getBagSpeed());
 
         climbPivotPositon.setDouble(m_climb.getPivotPosition());
         climbPivotVelocity.setDouble(m_climb.getPivotVelocity());
         servoPosition.setDouble(m_climb.getServoPosition());
+
+        Constants.ElevatorConstants.payloadspeed = elevatorCurrentSetSpeed.getDouble(Constants.ElevatorConstants.payloadspeed);
+        Constants.IntakeConstants.pivotspeed = intakeCurrentSetSpeed.getDouble(Constants.IntakeConstants.pivotspeed);
+        Constants.IntakeConstants.bagspeed = bagCurrentSetSpeed.getDouble(Constants.IntakeConstants.bagspeed);
+        Constants.ClimbConstants.pivotSpeed = climbCurrentSetSpeed.getDouble(Constants.ClimbConstants.pivotSpeed);
 
         // poseX.setDouble(m_poseEstimator.getPose().getX());
         // poseY.setDouble(m_poseEstimator.getPose().getY());

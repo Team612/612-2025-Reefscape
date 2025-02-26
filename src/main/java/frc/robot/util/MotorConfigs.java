@@ -37,7 +37,9 @@ public class MotorConfigs {
             .closedLoop
                 .p(Constants.IntakeConstants.kP)
                 .i(Constants.IntakeConstants.kI)
-                .d(Constants.IntakeConstants.kD);
+                .d(Constants.IntakeConstants.kD)
+                .positionWrappingEnabled(Constants.IntakeConstants.pivotWrapping)
+                .positionWrappingInputRange(Constants.IntakeConstants.maxPivotInAngleL2L3, Constants.IntakeConstants.maxPivotOutAngle);
 
         //intake/outtake motor
         spark_bag_configs = new SparkMaxConfig();
@@ -111,6 +113,8 @@ public class MotorConfigs {
         climb_pivot_configs
             .absoluteEncoder
                 .positionConversionFactor(Constants.ClimbConstants.kAngularPositionConversionFactor);
+
+
                 
     }
 

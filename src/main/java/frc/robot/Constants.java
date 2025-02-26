@@ -67,7 +67,7 @@ public class Constants {
         public static final boolean bagInverted = false;
 
         public static final int bagID = 7; 
-        public static final double bagspeed = 0.30;
+        public static double bagspeed = 0.30;
 
         public static final int bagCurrentLimit = 30;
         public static final boolean bagCurrentLimitEnable = true;
@@ -76,7 +76,7 @@ public class Constants {
         public static double kI = 0;
         public static double kD = 0;
 
-        public static final double pivotspeed = 0.30; 
+        public static double pivotspeed = 0.30; 
         public static final double L1Position = 0;
         public static final double L2Position = 0;
         public static final double L3Position = 0;
@@ -85,6 +85,7 @@ public class Constants {
         public static final double maxPivotInAngleL1 = 0;
         public static final double maxPivotOutAngle = 0;
         public static final double pivotThreshold = 0.5;
+        public static final boolean pivotWrapping = true;
 
     }
 
@@ -93,7 +94,7 @@ public class Constants {
         public static final boolean elevatorInverted = true;
         public static final int elevatorCurrentLimit = 30;
         public static final IdleMode idleMode = IdleMode.kBrake;
-        public static final double payloadspeed = 0.30;
+        public static double payloadspeed = 0.30;
 
         public static final MAXMotionPositionMode positionMode = MAXMotionPositionMode.kMAXMotionTrapezoidal;
         public static final double maxElevatorSpeed = 4.0; //default units: revolutions per minutes (converted with the velocityConversionFactor)
@@ -144,7 +145,7 @@ public class Constants {
 
         public static final double pivotOutAngle = 0;
         public static final double pivotInAngle = 0;
-        public static final double pivotSpeed = 0.5;
+        public static double pivotSpeed = 0.5;
         
 
     }

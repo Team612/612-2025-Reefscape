@@ -59,7 +59,7 @@ public void resetCount() {
 }
 
 public double getPosition(){
-  return elevatorMotor.getEncoder().getPosition();
+  return elevatorMotor.getAbsoluteEncoder().getPosition();
 }
 
 public double getVelocity(){
@@ -80,7 +80,7 @@ public static Payload getInstance(){
 
   @Override
   public void periodic() {
-
+    
     // Constants.ElevatorConstants.payloadspeed = Preferences.getDouble("Pay Speed", Constants.ElevatorConstants.payloadspeed);
    
     // // SmartDashboard.putNumber("Elevator 2 Velocity", elevator.getEncoder().getVelocity());

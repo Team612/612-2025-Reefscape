@@ -51,7 +51,7 @@ public class Climb extends SubsystemBase {
     
 
   public double getPivotPosition(){
-    return m_pivot.getEncoder().getPosition();
+    return m_pivot.getAbsoluteEncoder().getPosition();
   }
 
   public double getPivotVelocity(){
