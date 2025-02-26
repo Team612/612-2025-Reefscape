@@ -27,7 +27,7 @@ public class Climb extends SubsystemBase {
     m_servo = new Servo(Constants.ClimbConstants.servoID);
     m_pivot = new SparkMax(Constants.ClimbConstants.pivotID, MotorType.kBrushless);
     
-    m_pivot.configure(MotorConfigs.climb_pivot_configs, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_pivot.configure(MotorConfigs.climb_pivot_configs, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
     controller = m_pivot.getClosedLoopController();
 

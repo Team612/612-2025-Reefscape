@@ -27,7 +27,12 @@ public class ManualElevatorControl extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_payload.setMotorSpeed(ControlMap.gunner_controls.getRawAxis(0) * Constants.ElevatorConstants.payloadspeed);
+    if (ControlMap.gunner_controls.getRawAxis(0) == 1){
+      m_payload.setMotorSpeed(ControlMap.gunner_controls.getRawAxis(0) * Constants.ElevatorConstants.payloadDownSpeed);
+    }
+    else if (ControlMap.gunner_controls.getRawAxis(0) == -1){
+    m_payload.setMotorSpeed(ControlMap.gunner_controls.getRawAxis(0) * Constants.ElevatorConstants.payloadUpSpeed);
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -39,6 +44,7 @@ public class ManualElevatorControl extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    System.out.println(ControlMap.gunner_controls.getRawAxis(0));
+    return Math.abs(ControlMap.gunner_controls.getRawAxis(0)) <= 0.1;
   }
 }

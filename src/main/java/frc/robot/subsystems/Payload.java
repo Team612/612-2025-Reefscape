@@ -32,7 +32,7 @@ public class Payload extends SubsystemBase {
 
   public Payload() {
     elevatorMotor = new SparkMax(Constants.ElevatorConstants.elevatorID, MotorType.kBrushless);
-    elevatorMotor.configure(MotorConfigs.elevator_pivot_configs, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    elevatorMotor.configure(MotorConfigs.elevator_pivot_configs, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
     controller = elevatorMotor.getClosedLoopController();
     Preferences.initDouble("Pay Speed", Constants.ElevatorConstants.payloadspeed);

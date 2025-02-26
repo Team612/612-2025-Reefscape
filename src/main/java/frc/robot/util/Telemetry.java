@@ -101,7 +101,7 @@ public class Telemetry {
         intakeCurrentSetSpeed = payloadTab.add("Intake Current Set Speed",Constants.IntakeConstants.pivotspeed)
         .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", -1, "max", 1))
         .getEntry();
-        bagCurrentSetSpeed = payloadTab.add("Bag Current Set Speed",0.0)
+        bagCurrentSetSpeed = payloadTab.add("Bag Current Set Speed",Constants.IntakeConstants.bagspeed)
         .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", -1, "max", 1))
         .getEntry();
         bagVelocity = payloadTab.add("Bag Velocity",0.0).getEntry();
@@ -140,10 +140,12 @@ public class Telemetry {
         climbPivotVelocity.setDouble(m_climb.getPivotVelocity());
         servoPosition.setDouble(m_climb.getServoPosition());
 
-        Constants.ElevatorConstants.payloadspeed = elevatorCurrentSetSpeed.getDouble(Constants.ElevatorConstants.payloadspeed);
-        Constants.IntakeConstants.pivotspeed = intakeCurrentSetSpeed.getDouble(Constants.IntakeConstants.pivotspeed);
-        Constants.IntakeConstants.bagspeed = bagCurrentSetSpeed.getDouble(Constants.IntakeConstants.bagspeed);
-        Constants.ClimbConstants.pivotSpeed = climbCurrentSetSpeed.getDouble(Constants.ClimbConstants.pivotSpeed);
+        
+
+        Constants.ElevatorConstants.payloadspeed = (double) elevatorCurrentSetSpeed.get().getValue();
+        Constants.IntakeConstants.pivotspeed = (double)  intakeCurrentSetSpeed.get().getValue();
+        Constants.IntakeConstants.bagspeed = (double) bagCurrentSetSpeed.get().getValue();
+        Constants.ClimbConstants.pivotSpeed = (double) climbCurrentSetSpeed.get().getValue();
 
         // poseX.setDouble(m_poseEstimator.getPose().getX());
         // poseY.setDouble(m_poseEstimator.getPose().getY());

@@ -67,7 +67,7 @@ public class Constants {
         public static final boolean bagInverted = false;
 
         public static final int bagID = 7; 
-        public static double bagspeed = 0.30;
+        public static double bagspeed = 0.60;
 
         public static final int bagCurrentLimit = 30;
         public static final boolean bagCurrentLimitEnable = true;
@@ -94,6 +94,8 @@ public class Constants {
         public static final boolean elevatorInverted = true;
         public static final int elevatorCurrentLimit = 30;
         public static final IdleMode idleMode = IdleMode.kBrake;
+        public static final double payloadUpSpeed = 1.0;
+        public static final double payloadDownSpeed = 0.15;
         public static double payloadspeed = 0.30;
 
         public static final MAXMotionPositionMode positionMode = MAXMotionPositionMode.kMAXMotionTrapezoidal;

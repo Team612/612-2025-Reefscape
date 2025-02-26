@@ -104,10 +104,10 @@ private SparkClosedLoopController driverControllerBR;
     driverControllerBL = spark_bl.getClosedLoopController();
     driverControllerBR = spark_br.getClosedLoopController();
     
-    spark_fr.configure(MotorConfigs.drivetrain_configs.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    spark_br.configure(MotorConfigs.drivetrain_configs.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    spark_fl.configure(MotorConfigs.drivetrain_configs.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    spark_bl.configure(MotorConfigs.drivetrain_configs.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    spark_fr.configure(MotorConfigs.drivetrain_configs.inverted(true), ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+    spark_br.configure(MotorConfigs.drivetrain_configs.inverted(true), ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+    spark_fl.configure(MotorConfigs.drivetrain_configs.inverted(false), ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+    spark_bl.configure(MotorConfigs.drivetrain_configs.inverted(false), ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
     gyro = new Pigeon2(Constants.DrivetrainConstants.pigeonID);
     gyro.getConfigurator().apply(new Pigeon2Configuration());

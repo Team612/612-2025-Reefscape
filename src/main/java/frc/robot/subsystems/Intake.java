@@ -28,16 +28,16 @@ public class Intake extends SubsystemBase {
     pivotMotor = new SparkMax(Constants.IntakeConstants.pivotID, MotorType.kBrushless);
     bagMotor = new SparkMax(Constants.IntakeConstants.bagID, MotorType.kBrushed);
 
-    pivotMotor.configure(MotorConfigs.spark_pivot_configs, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    bagMotor.configure(MotorConfigs.spark_bag_configs, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    pivotMotor.configure(MotorConfigs.spark_pivot_configs, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+    bagMotor.configure(MotorConfigs.spark_bag_configs, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
     controller = pivotMotor.getClosedLoopController();
 
-    Preferences.initDouble("Pivot Speed", Constants.IntakeConstants.pivotspeed);
-    Preferences.initDouble("Bag Speed", Constants.IntakeConstants.bagspeed);
-    Preferences.initDouble("Intake Pivot kI", Constants.IntakeConstants.kI);
-    Preferences.initDouble("Intake Pivot kP", Constants.IntakeConstants.kP);
-    Preferences.initDouble("Intake Pivot kD", Constants.IntakeConstants.kD);
+    // Preferences.initDouble("Pivot Speed", Constants.IntakeConstants.pivotspeed);
+    // Preferences.initDouble("Bag Speed", Constants.IntakeConstants.bagspeed);
+    // Preferences.initDouble("Intake Pivot kI", Constants.IntakeConstants.kI);
+    // Preferences.initDouble("Intake Pivot kP", Constants.IntakeConstants.kP);
+    // Preferences.initDouble("Intake Pivot kD", Constants.IntakeConstants.kD);
   }
 
 
