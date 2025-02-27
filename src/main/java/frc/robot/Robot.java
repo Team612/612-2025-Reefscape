@@ -4,6 +4,11 @@
 
 package frc.robot;
 
+import java.net.http.WebSocket;
+import java.nio.file.FileSystem;
+
+import edu.wpi.first.net.WebServer;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,6 +27,7 @@ public class Robot extends TimedRobot {
   }
 
   public void robotInit() {
+    WebServer.start(5800, Filesystem.getDeployDirectory().getPath()); //for elastic
     m_telemetry.initData();
     // if (!Preferences.containsKey("Pay Speed")){
     //   Preferences.setDouble("Pay Speed", Constants.ElevatorConstants.payloadspeed);

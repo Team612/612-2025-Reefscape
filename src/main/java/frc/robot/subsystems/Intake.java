@@ -72,7 +72,7 @@ public class Intake extends SubsystemBase {
   }
 
   public double getPivotPosition(){
-    return pivotMotor.getAbsoluteEncoder().getPosition() - Constants.IntakeConstants.boreOffset;
+    return pivotMotor.getEncoder().getPosition() - Constants.IntakeConstants.boreOffset;
   }
 
   public double getPivotSpeed(){

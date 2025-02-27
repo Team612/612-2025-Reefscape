@@ -48,10 +48,14 @@ public class Climb extends SubsystemBase {
     m_servo.set(position); // setPosition
     //m_servo.setSpeed(position);
   }
+
+  public boolean isServoClosed(){
+    return (m_servo.get() == 1.0) ? true : false;
+  }
     
 
   public double getPivotPosition(){
-    return m_pivot.getAbsoluteEncoder().getPosition();
+    return m_pivot.getEncoder().getPosition();
   }
 
   public double getPivotVelocity(){

@@ -35,10 +35,6 @@ public class Payload extends SubsystemBase {
     elevatorMotor.configure(MotorConfigs.elevator_pivot_configs, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
     controller = elevatorMotor.getClosedLoopController();
-    Preferences.initDouble("Pay Speed", Constants.ElevatorConstants.payloadspeed);
-    Preferences.initDouble("Elevator kI", Constants.ElevatorConstants.kI);
-    Preferences.initDouble("Elevator kP", Constants.ElevatorConstants.kP);
-    Preferences.initDouble("Elevator kD", Constants.ElevatorConstants.kD);
   }
 
 public void setMotorSpeed(double speed) {
@@ -59,7 +55,7 @@ public void resetCount() {
 }
 
 public double getPosition(){
-  return elevatorMotor.getAbsoluteEncoder().getPosition();
+  return elevatorMotor.getEncoder().getPosition();
 }
 
 public double getVelocity(){

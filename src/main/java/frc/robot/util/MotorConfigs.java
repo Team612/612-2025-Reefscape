@@ -79,6 +79,7 @@ public class MotorConfigs {
                 .p(Constants.ElevatorConstants.kP)
                 .i(Constants.ElevatorConstants.kI)
                 .d(Constants.ElevatorConstants.kD);
+     
 
         elevator_pivot_configs
             .closedLoop
@@ -109,6 +110,7 @@ public class MotorConfigs {
         climb_pivot_configs
             .encoder
                 .positionConversionFactor(Constants.ClimbConstants.kAngularPositionConversionFactor);
+        
         
         climb_pivot_configs
             .absoluteEncoder
