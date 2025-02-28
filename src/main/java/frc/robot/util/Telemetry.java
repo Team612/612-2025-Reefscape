@@ -51,6 +51,9 @@ public class Telemetry {
     GenericEntry elevatorkP;
     GenericEntry elevatorkI;
     GenericEntry elevatorkD;
+    GenericEntry elevatorkG;
+    GenericEntry elevatorkV;
+    GenericEntry elevatorkS;
     
     GenericEntry intakePivotVelocity;
     GenericEntry intakePivotPosition;
@@ -92,6 +95,8 @@ public class Telemetry {
         payloadData = table.getTable("Payload Data");
         climbData = table.getTable("Climb Data");
         autonomousData = table.getTable("Autonomous Data");
+        
+
 
         //drivetrain
         pigeonAngle = drivetrainData.getDoubleTopic("Robot Angle").getGenericEntry();
@@ -118,6 +123,12 @@ public class Telemetry {
             elevatorkI.setDefaultDouble(Constants.ElevatorConstants.kI);
         elevatorkD = payloadData.getDoubleTopic("Elevator kD (changeable)").getGenericEntry();
             elevatorkD.setDefaultDouble(Constants.ElevatorConstants.kD);
+        elevatorkS = payloadData.getDoubleTopic("Elevator kS (changeable)").getGenericEntry();
+            elevatorkS.setDefaultDouble(Constants.ElevatorConstants.kS);
+        elevatorkG = payloadData.getDoubleTopic("Elevator kG (changeable)").getGenericEntry();
+            elevatorkG.setDefaultDouble(Constants.ElevatorConstants.kG);
+        elevatorkV = payloadData.getDoubleTopic("Elevator kV (changeable)").getGenericEntry();
+            elevatorkV.setDefaultDouble(Constants.ElevatorConstants.kV);
         intakekP = payloadData.getDoubleTopic("Intake kP (changeable)").getGenericEntry();
             intakekP.setDefaultDouble(Constants.IntakeConstants.kP);
         intakekI = payloadData.getDoubleTopic("Intake kI (changeable)").getGenericEntry();
@@ -169,8 +180,11 @@ public class Telemetry {
         intakePivotVelocity.setDouble(m_intake.getPivotSpeed());
 
         Constants.ElevatorConstants.kP = elevatorkP.getDouble(Constants.ElevatorConstants.kP);
-        Constants.ElevatorConstants.kI = elevatorkP.getDouble(Constants.ElevatorConstants.kI);
-        Constants.ElevatorConstants.kD = elevatorkP.getDouble(Constants.ElevatorConstants.kD);
+        Constants.ElevatorConstants.kI = elevatorkI.getDouble(Constants.ElevatorConstants.kI);
+        Constants.ElevatorConstants.kD = elevatorkD.getDouble(Constants.ElevatorConstants.kD);
+        Constants.ElevatorConstants.kS = elevatorkS.getDouble(Constants.ElevatorConstants.kS);
+        Constants.ElevatorConstants.kG = elevatorkG.getDouble(Constants.ElevatorConstants.kG);
+        Constants.ElevatorConstants.kV = elevatorkV.getDouble(Constants.ElevatorConstants.kV);
         Constants.IntakeConstants.kP = intakekP.getDouble(Constants.IntakeConstants.kP);
         Constants.IntakeConstants.kI = intakekI.getDouble(Constants.IntakeConstants.kI);
         Constants.IntakeConstants.kD = intakekD.getDouble(Constants.IntakeConstants.kD);

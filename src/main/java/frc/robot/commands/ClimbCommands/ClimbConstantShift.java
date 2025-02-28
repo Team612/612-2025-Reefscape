@@ -5,43 +5,33 @@
 package frc.robot.commands.ClimbCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.Climb;
-import frc.robot.util.ControlMap;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ManualClimbPivotControls extends Command {
-  /** Creates a new PivotIn. */
-  Climb m_climb;
-  double speed;
-  public ManualClimbPivotControls(Climb c, double s) {
-    m_climb = c;
-    speed = s;
-    addRequirements(m_climb);
+public class ClimbConstantShift extends Command {
+  /** Creates a new ArmsCommand. */
+  public ClimbConstantShift(double val) {
+    Constants.ClimbConstants.pivotSpeed += val;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    m_climb.setPivotSpeed(0);
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println(speed);
-    m_climb.setPivotSpeed(speed);
-    
+
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_climb.setPivotSpeed(0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }
