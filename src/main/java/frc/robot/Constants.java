@@ -59,6 +59,8 @@ public class Constants {
     }
 
     public class IntakeConstants {
+        public static final double intakeThreshold = 0.0001;
+
         public static final int pivotID = 6;
         public static final boolean pivotInverted = false;
         public static final int pivotCurrentLimit = 30;
@@ -72,9 +74,22 @@ public class Constants {
         public static final int bagCurrentLimit = 30;
         public static final boolean bagCurrentLimitEnable = true;
 
-        public static double kP = 0;
+        // New intake constants
+        public static final double kGearRatio = (5 / 1.0);  
+        public static final double kSprocketPitchDiameter = Units.inchesToMeters(3.0);
+        public static final double kPositionConversionFactor = (kSprocketPitchDiameter * Math.PI) / kGearRatio; //meters per revolutions
+        public static final double kVelocityConversionFactor = kPositionConversionFactor / 60.0; // meters per rotations seconds
+
+
+        // public static double kP = 0;
+        // public static double kI = 0;
+        // public static double kD = 0;
+        public static double kP = 2.0;
         public static double kI = 0;
         public static double kD = 0;
+        public static double kS = 0;
+        public static double kG = 0;
+        public static double kV = 0;
 
         public static double pivotspeed = 0.30; 
         public static final double L1Position = 0;

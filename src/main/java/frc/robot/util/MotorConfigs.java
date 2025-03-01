@@ -41,6 +41,16 @@ public class MotorConfigs {
                 .positionWrappingEnabled(Constants.IntakeConstants.pivotWrapping)
                 .positionWrappingInputRange(Constants.IntakeConstants.maxPivotInAngleL2L3, Constants.IntakeConstants.maxPivotOutAngle);
 
+        spark_pivot_configs
+            .encoder
+                    .positionConversionFactor(Constants.IntakeConstants.kPositionConversionFactor)
+                    .velocityConversionFactor(Constants.IntakeConstants.kVelocityConversionFactor);
+            
+        spark_pivot_configs 
+            .absoluteEncoder
+                    .positionConversionFactor(Constants.IntakeConstants.kPositionConversionFactor)
+                    .velocityConversionFactor(Constants.IntakeConstants.kVelocityConversionFactor);
+
         //intake/outtake motor
         spark_bag_configs = new SparkMaxConfig();
         spark_bag_configs

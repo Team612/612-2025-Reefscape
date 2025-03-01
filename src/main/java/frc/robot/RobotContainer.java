@@ -16,6 +16,7 @@ import frc.robot.commands.IntakeCommands.AutoOutCoral;
 import frc.robot.commands.IntakeCommands.BagIn;
 import frc.robot.commands.IntakeCommands.BagOut;
 import frc.robot.commands.IntakeCommands.ManualIntakePivotControl;
+import frc.robot.commands.IntakeCommands.setIntakePosition;
 // import frc.robot.commands.AutoCommands.DriverCommands.ApriltagAlign;
 import frc.robot.commands.AutoCommands.GunnerCommands.SetBagSpeedTimed;
 import frc.robot.commands.ClimbCommands.CloseServo;
@@ -186,6 +187,11 @@ public class RobotContainer {
 
     ControlMap.gunnerButton1.whileTrue(m_BagIn);
     ControlMap.gunnerButton4.whileTrue(m_BagOut);
+    ControlMap.gunnerButton3.onTrue(new setIntakePosition(m_intake, Constants.IntakeConstants.L1Position));
+    ControlMap.gunnerButton6.onTrue(new setIntakePosition(m_intake, Constants.IntakeConstants.L1Position));
+    ControlMap.gunnerButton11.onTrue(new setIntakePosition(m_intake, Constants.IntakeConstants.L1Position));
+    ControlMap.gunnerButton12.onTrue(new setIntakePosition(m_intake, Constants.IntakeConstants.L1Position));
+
     ControlMap.gunnerButton3.onTrue(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.L1Position));
     ControlMap.gunnerButton6.onTrue(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.L2Position));
     ControlMap.gunnerButton11.onTrue(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.L3Position));

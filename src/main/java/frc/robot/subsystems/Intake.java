@@ -11,6 +11,9 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.MotorConfigs;
@@ -21,6 +24,15 @@ public class Intake extends SubsystemBase {
   private SparkClosedLoopController controller;
   private SparkMax bagMotor;
   private static Intake instance;
+
+
+  double kDt = 0.02;
+  double kMaxVelocity = 0.3;
+  double kMaxAccel = 0.3;
+
+  private final TrapezoidProfile.Constraints m_constraints = new TrapezoidProfile.Constraints(kMaxVelocity, kMaxAccel);
+  private final ProfiledPIDController m_controller = new ProfiledPIDController(Constants.IntakeConstants.kP, Constants.IntakeConstants.kI, Constants.IntakeConstants.kD, m_constraints);
+  private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(Constants.IntakeConstants.kS, Constants.IntakeConstants.kG, Constants.IntakeConstants.kV);
 
   public Intake() {
     pivotMotor = new SparkMax(Constants.IntakeConstants.pivotID, MotorType.kBrushless);
@@ -42,7 +54,10 @@ public class Intake extends SubsystemBase {
   }
 
   public void setPivotPosition(double position) {
-    controller.setReference(position, ControlType.kPosition);
+    // controller.setReference(position, ControlType.kPosition);
+    m_controller.setGoal(-position);
+    pivotMotor.setVoltage(m_controller.calculate(getPivotPosition()) + m_feedforward.calculate(m_controller.getSetpoint().velocity));
+    // controller.setReference(-position, ControlType.kMAXMotionPositionControl);
   }
   
   public boolean getIntakeLimitStateForward(){
@@ -81,6 +96,9 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    System.out.println(bagMotor.getEncoder().getPosition());
+    System.out.println("Pivot Pos: " + getPivotPosition());
+    if (pivotMotor.getForwardLimitSwitch().isPressed()){
+      pivotMotor.getEncoder().setPosition(0);
+    }
   }
 }
