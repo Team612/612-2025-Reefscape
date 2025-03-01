@@ -29,8 +29,10 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   // private PivotCommand pivotCommand;
   private final CommandXboxController gunnerControls;
+  private final SparkMax pivotMotor;
   public RobotContainer() {
     gunnerControls = new CommandXboxController(1); // 1 = gunner port
+    pivotMotor = new SparkMax(2, MotorType.kBrushed);
     // pivotCommand = new PivotCommand(new Motor(new TalonSRX(0)), 1);
     // Configure the button bindings
     configureBindings();
@@ -47,11 +49,11 @@ public class RobotContainer {
     // gunnerControls.b().onTrue(new SequentialCommandGroup(new PivotCommand(new Shoot(new SparkMax(0, MotorType.kBrushless)), 1), new ShootCommand(new Motor(new TalonSRX(0)), true, 1000, 2)));
     // gunnerControls.x().onTrue(new SequentialCommandGroup(new PivotCommand(new Shoot(new SparkMax(0, MotorType.kBrushless)), 2), new ShootCommand(new Motor(new TalonSRX(0)), true, 1000, 3)));
     // gunnerControls.y().onTrue(new PivotCommand(new Shoot(new SparkMax(0, MotorType.kBrushless)), 3));
-    gunnerControls.rightTrigger().whileTrue(new PivotCommand(new Shoot(new SparkMax(0, MotorType.kBrushless)),true));
-    gunnerControls.leftTrigger().whileTrue(new PivotCommand(new Shoot(new SparkMax(0, MotorType.kBrushless)),false));
-    gunnerControls.a().whileTrue(new ShootCommand(new Motor(new TalonSRX(0)), true, 1000, 1));
-    gunnerControls.b().whileTrue(new ShootCommand(new Motor(new TalonSRX(0)), true, 1000, 2));
-    gunnerControls.x().whileTrue(new ShootCommand(new Motor(new TalonSRX(0)), true, 1000, 3));
+    gunnerControls.rightTrigger().whileTrue(new PivotCommand(new Shoot(pivotMotor),true));
+    gunnerControls.leftTrigger().whileTrue(new PivotCommand(new Shoot(pivotMotor),false));
+    gunnerControls.a().whileTrue(new ShootCommand(new Motor(new TalonSRX(1)), true, 1000, 1));
+    gunnerControls.b().whileTrue(new ShootCommand(new Motor(new TalonSRX(1)), true, 1000, 2));
+    gunnerControls.x().whileTrue(new ShootCommand(new Motor(new TalonSRX(1)), true, 1000, 3));
   }
 
   /**

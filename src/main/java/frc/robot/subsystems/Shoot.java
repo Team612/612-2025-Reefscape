@@ -30,6 +30,6 @@ public class Shoot extends SubsystemBase { // SHOOT IS ACTUALLY NOT FOR SHOOTING
   }
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    System.out.println(this.getPosition());
   }
 }

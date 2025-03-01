@@ -33,19 +33,14 @@ public class ShootCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (ready && time == 0) {
-      time = System.currentTimeMillis();
-      m_motor.setVelocity(level == 3 ? 0.7 : level == 2 ? 0.5 : 0.275);
-    }
-    if (System.currentTimeMillis() - time >= finish) {
-      m_motor.setVelocity(0);
-      this.end(true);
-    }
+    m_motor.setVelocity(level == 3 ? 0.7 : level == 2 ? 0.5 : 0.275);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_motor.setVelocity(0);
+  }
 
   // Returns true when the command should end.
   @Override

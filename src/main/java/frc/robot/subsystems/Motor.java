@@ -21,7 +21,7 @@ public class Motor extends SubsystemBase {
   //   return motor.getActiveTrajectoryVelocity();
   // }
   public void setVelocity(double speed) {
-    motor.set(TalonSRXControlMode.Velocity, speed);
+    motor.set(TalonSRXControlMode.PercentOutput, speed);
   }
   // public double getPosition() {
   //   return motor.getActiveTrajectoryPosition();

@@ -40,9 +40,9 @@ public class PivotCommand extends Command {
     //   this.end(true);
     // }
     if (m_up) {
-      m_shoot.set(0.5);
+      m_shoot.set(0.9);
     } else {
-      m_shoot.set(-0.5);
+      m_shoot.set(-0.9);
     }
   }
 
