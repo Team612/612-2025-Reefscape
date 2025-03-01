@@ -5,6 +5,8 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -14,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.PivotCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.subsystems.Motor;
+import frc.robot.subsystems.Shoot;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -40,10 +43,15 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureBindings() {
-    gunnerControls.a().onTrue(new SequentialCommandGroup(new PivotCommand(new Motor(new TalonSRX(0)), 0), new ShootCommand(new Motor(new TalonSRX(0)), true, 1000, 1)));
-    gunnerControls.b().onTrue(new SequentialCommandGroup(new PivotCommand(new Motor(new TalonSRX(0)), 1), new ShootCommand(new Motor(new TalonSRX(0)), true, 1000, 2)));
-    gunnerControls.x().onTrue(new SequentialCommandGroup(new PivotCommand(new Motor(new TalonSRX(0)), 2), new ShootCommand(new Motor(new TalonSRX(0)), true, 1000, 3)));
-    gunnerControls.y().onTrue(new PivotCommand(new Motor(new TalonSRX(0)), 3));
+    // gunnerControls.a().onTrue(new SequentialCommandGroup(new PivotCommand(new Shoot(new SparkMax(0, MotorType.kBrushless)), 0), new ShootCommand(new Motor(new TalonSRX(0)), true, 1000, 1)));
+    // gunnerControls.b().onTrue(new SequentialCommandGroup(new PivotCommand(new Shoot(new SparkMax(0, MotorType.kBrushless)), 1), new ShootCommand(new Motor(new TalonSRX(0)), true, 1000, 2)));
+    // gunnerControls.x().onTrue(new SequentialCommandGroup(new PivotCommand(new Shoot(new SparkMax(0, MotorType.kBrushless)), 2), new ShootCommand(new Motor(new TalonSRX(0)), true, 1000, 3)));
+    // gunnerControls.y().onTrue(new PivotCommand(new Shoot(new SparkMax(0, MotorType.kBrushless)), 3));
+    gunnerControls.rightTrigger().whileTrue(new PivotCommand(new Shoot(new SparkMax(0, MotorType.kBrushless)),true));
+    gunnerControls.leftTrigger().whileTrue(new PivotCommand(new Shoot(new SparkMax(0, MotorType.kBrushless)),false));
+    gunnerControls.a().whileTrue(new ShootCommand(new Motor(new TalonSRX(0)), true, 1000, 1));
+    gunnerControls.b().whileTrue(new ShootCommand(new Motor(new TalonSRX(0)), true, 1000, 2));
+    gunnerControls.x().whileTrue(new ShootCommand(new Motor(new TalonSRX(0)), true, 1000, 3));
   }
 
   /**

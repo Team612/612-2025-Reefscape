@@ -13,31 +13,31 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Motor extends SubsystemBase {
   /** Creates a new Motor. */
   private TalonSRX motor;
-  private static int counter = 0;
+  // private static int counter = 0;
   public Motor(TalonSRX motor) {
     this.motor = motor;
   }
-  public double getVelocity() {
-    return motor.getActiveTrajectoryVelocity();
-  }
+  // public double getVelocity() {
+  //   return motor.getActiveTrajectoryVelocity();
+  // }
   public void setVelocity(double speed) {
     motor.set(TalonSRXControlMode.Velocity, speed);
   }
-  public double getPosition() {
-    return motor.getActiveTrajectoryPosition();
-  }
-  private double getSelectedSensorVelocity() {
-    return motor.getSelectedSensorVelocity();
-  }
-  private double getSelectedSensorPosition() {
-    return motor.getSelectedSensorPosition();
-  }
+  // public double getPosition() {
+  //   return motor.getActiveTrajectoryPosition();
+  // }
+  // private double getSelectedSensorVelocity() {
+  //   return motor.getSelectedSensorVelocity();
+  // }
+  // private double getSelectedSensorPosition() {
+  //   return motor.getSelectedSensorPosition();
+  // }
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Active trajectory pos " + counter, this.getPosition());
-    SmartDashboard.putNumber("Active trajectory velocity " + counter, this.getVelocity());
-    SmartDashboard.putNumber("Selected trajectory pos " + counter, this.getSelectedSensorPosition());
-    SmartDashboard.putNumber("Selected trajectory velocity " + counter, this.getSelectedSensorVelocity());
+    // SmartDashboard.putNumber("Active trajectory pos " + counter, this.getPosition());
+    // SmartDashboard.putNumber("Active trajectory velocity " + counter, this.getVelocity());
+    // SmartDashboard.putNumber("Selected trajectory pos " + counter, this.getSelectedSensorPosition());
+    // SmartDashboard.putNumber("Selected trajectory velocity " + counter, this.getSelectedSensorVelocity());
     // This method will be called once per scheduler run
   }
 }
