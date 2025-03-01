@@ -7,7 +7,6 @@ package frc.robot.commands.IntakeCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Payload;
 import frc.robot.util.ControlMap;
 
 public class ManualIntakePivotControl extends Command {

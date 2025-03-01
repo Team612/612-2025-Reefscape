@@ -11,12 +11,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.commands.IntakeCommands.AutoIntakeCoral;
+import frc.robot.commands.IntakeCommands.AutoOutCoral;
 import frc.robot.commands.IntakeCommands.BagIn;
 import frc.robot.commands.IntakeCommands.BagOut;
 import frc.robot.commands.IntakeCommands.ManualIntakePivotControl;
-import frc.robot.commands.IntakeCommands.PivotIntakeIn;
-import frc.robot.commands.IntakeCommands.PivotIntakeOut;
-import frc.robot.commands.IntakeCommands.SetIntakePivotPosition;
 // import frc.robot.commands.AutoCommands.DriverCommands.ApriltagAlign;
 import frc.robot.commands.AutoCommands.GunnerCommands.SetBagSpeedTimed;
 import frc.robot.commands.ClimbCommands.CloseServo;
@@ -117,22 +116,18 @@ public class RobotContainer {
   private void configureCommands(){
 
     m_autoCoralStation = new SequentialCommandGroup(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.CoralStationPosition)
-    .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.CoralStationPosition)));
+    .andThen(new AutoIntakeCoral(m_intake)));
 
-    //intake position set first in case the pivot is too far in to begin with
-    m_autoL1 = new SequentialCommandGroup(new SetIntakePivotPosition(m_intake,m_payload, Constants.IntakeConstants.L1Position))
-    .andThen(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.L1Position))
-    .andThen(new SetBagSpeedTimed(m_intake))
+    m_autoL1 = new SequentialCommandGroup(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.L1Position))
+    .andThen(new AutoOutCoral(m_intake))
     .andThen(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.basePosition));
 
     m_autoL2 = new SequentialCommandGroup(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.L2Position))
-    .andThen(new SetIntakePivotPosition(m_intake,m_payload, Constants.IntakeConstants.L2Position))
-    .andThen(new SetBagSpeedTimed(m_intake))
+    .andThen(new AutoOutCoral(m_intake))
     .andThen(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.basePosition));
 
     m_autoL3 = new SequentialCommandGroup(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.L3Position))
-    .andThen(new SetIntakePivotPosition(m_intake,m_payload, Constants.IntakeConstants.L3Position))
-    .andThen(new SetBagSpeedTimed(m_intake))
+    .andThen(new AutoOutCoral(m_intake))
     .andThen(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.basePosition));
 
     m_outAndOpenClimb = null; //new SequentialCommandGroup(m_pivotClimbOut).andThen(m_openServo);
@@ -180,8 +175,9 @@ public class RobotContainer {
     ControlMap.gunnerButton4.whileTrue(m_BagOut);
 
     // ControlMap.gunnerButton4.onTrue(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L1Position));
-    ControlMap.gunnerButton5.onTrue(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L2Position));
-    ControlMap.gunnerButton6.onTrue(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.CoralStationPosition));
+
+    ControlMap.gunnerButton5.onTrue(new AutoIntakeCoral(m_intake));
+    ControlMap.gunnerButton6.onTrue(new AutoOutCoral(m_intake));
 
     ControlMap.gunnerButton7.onTrue(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.CoralStationPosition));
     ControlMap.gunnerButton8.onTrue(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.L1Position));
