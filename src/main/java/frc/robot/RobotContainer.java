@@ -8,35 +8,32 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Controls.ControlMap;
-import frc.robot.commands.OutInTake;
+// import frc.robot.commands.OutInTake;
 import frc.robot.commands.Reset;
 import frc.robot.commands.Pivot;
 import frc.robot.subsystems.Payload;
-import frc.robot.commands.OutInTake;
+// import frc.robot.commands.OutInTake;
 
 public class RobotContainer {
   private final Payload m_pay;
   private final Command m_movePay;
-  private final Command m_resetPay;
-  private final Command m_incUp;
-  private final Command m_incDown;
+  // private final Command m_resetPay;
+  private final Command m_wheelsIn;
+  private final Command m_wheelsOut;
   
   public RobotContainer() {
     m_pay = Payload.getInstance();
 
     m_movePay = new Pivot(m_pay);
-    m_resetPay = new Reset(m_pay);
-    m_incUp = new OutInTake(0.05);
-    m_incDown = new OutInTake(-0.05);
+    m_wheelsIn = new Reset(m_pay,1);
+    m_wheelsOut = new Reset(m_pay,-1);
     configureBindings();
   }
 
   private void configureBindings() {
-    m_pay.setDefaultCommand(m_movePay);
-    ControlMap.driver_joystick.b().onTrue(m_resetPay);
-    
-    ControlMap.driver_joystick.y().onTrue(m_incUp);
-    ControlMap.driver_joystick.a().onTrue(m_incDown);
+    ControlMap.driver_joystick.a().whileTrue(m_wheelsIn);
+    ControlMap.driver_joystick.y().whileTrue(m_wheelsOut);
+    ControlMap.driver_joystick.b().whileTrue(m_wheelsIn);  
   }
 
   public Command getAutonomousCommand() {

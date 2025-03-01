@@ -19,11 +19,6 @@ public class Pivot extends Command {
 
   @Override
   public void execute() {
-    if (Math.abs(ControlMap.driver_joystick.getRawAxis(0)) < DEADZONE){
-      m_pay.setMotorSpeed(0);
-    }
-    else{
-      m_pay.setMotorSpeed(Constants.payspeed);
-    }
+    m_pay.pivot(ControlMap.driver_joystick.getRawAxis(0));
   }
 }

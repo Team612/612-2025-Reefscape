@@ -11,13 +11,15 @@ import java.util.function.DoubleSupplier;
 
 public class Reset extends Command {
   private Payload m_pay;
+  private double s;
 
-  public Reset(Payload pay) {
+  public Reset(Payload pay, double speed) {
      m_pay = pay;
+     s = speed;
   }
 
   @Override
   public void execute() {
-    m_pay.resetCount();
+    m_pay.wheels(s);
   }
 }
