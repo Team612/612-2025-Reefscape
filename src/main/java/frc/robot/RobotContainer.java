@@ -16,25 +16,26 @@ import frc.robot.commands.IntakeCommands.AutoOutCoral;
 import frc.robot.commands.IntakeCommands.BagIn;
 import frc.robot.commands.IntakeCommands.BagOut;
 import frc.robot.commands.IntakeCommands.ManualIntakePivotControl;
+import frc.robot.commands.IntakeCommands.SetIntakePivotPosition;
 // import frc.robot.commands.AutoCommands.DriverCommands.ApriltagAlign;
 import frc.robot.commands.AutoCommands.GunnerCommands.SetBagSpeedTimed;
-import frc.robot.commands.ClimbCommands.CloseServo;
-import frc.robot.commands.ClimbCommands.ManualClimbPivotControls;
-import frc.robot.commands.ClimbCommands.OpenServo;
-import frc.robot.commands.ClimbCommands.PivotClimbIn;
-import frc.robot.commands.ClimbCommands.PivotClimbOut;
+// import frc.robot.commands.ClimbCommands.CloseServo;
+// import frc.robot.commands.ClimbCommands.ManualClimbPivotControls;
+// import frc.robot.commands.ClimbCommands.OpenServo;
+// import frc.robot.commands.ClimbCommands.PivotClimbIn;
+// import frc.robot.commands.ClimbCommands.PivotClimbOut;
 import frc.robot.commands.DriveCommands.DefaultDrive;
 import frc.robot.commands.DriveCommands.FieldRelativeDrive;
 import frc.robot.commands.ElevatorCommands.ElevatorDown;
 import frc.robot.commands.ElevatorCommands.ElevatorUp;
 import frc.robot.commands.ElevatorCommands.ManualElevatorControl;
 import frc.robot.commands.ElevatorCommands.SetElevatorPosition;
-import frc.robot.subsystems.Climb;
+// import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Mecanum;
 import frc.robot.subsystems.Payload;
 // import frc.robot.subsystems.Vision;
-import frc.robot.commands.ClimbCommands.ClimbConstantShift;
+// import frc.robot.commands.ClimbCommands.ClimbConstantShift;
 import frc.robot.util.ControlMap;
 import frc.robot.util.MotorConfigs;
 // import frc.robot.util.TrajectoryConfiguration;
@@ -44,7 +45,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 public class RobotContainer {
   private Payload m_payload;
   private Intake m_intake;
-  private Climb m_climb;
+  // private Climb m_climb;
   private Mecanum m_drivetrain;
   // private PoseEstimator m_poseEstimator;
   // private Vision m_vision;
@@ -87,7 +88,7 @@ public class RobotContainer {
   public RobotContainer() {
     m_payload = Payload.getInstance();
     m_intake = Intake.getInstance();
-    m_climb = Climb.getInstance();
+    // m_climb = Climb.getInstance();
     m_drivetrain = Mecanum.getInstance();
 
     // m_poseEstimator = PoseEstimator.getPoseEstimatorInstance();
@@ -109,13 +110,13 @@ public class RobotContainer {
     m_defaultDrive = new DefaultDrive(m_drivetrain);
     m_fieldRelativeDrive = new FieldRelativeDrive(m_drivetrain);
 
-    m_closeServo = new CloseServo(m_climb);
-    m_openServo = new OpenServo(m_climb);
-    m_pivotClimbIn = new PivotClimbIn(m_climb);
-    m_pivotClimbOut = new PivotClimbOut(m_climb);
+    // m_closeServo = new CloseServo(m_climb);
+    // m_openServo = new OpenServo(m_climb);
+    // m_pivotClimbIn = new PivotClimbIn(m_climb);
+    // m_pivotClimbOut = new PivotClimbOut(m_climb);
 
-    m_ClimbConstantShiftUp = new ClimbConstantShift(0.05);
-    m_ClimbConstantShiftDown = new ClimbConstantShift(-0.05);
+    // m_ClimbConstantShiftUp = new ClimbConstantShift(0.05);
+    // m_ClimbConstantShiftDown = new ClimbConstantShift(-0.05);
 
 
     configureCommands();
@@ -126,20 +127,20 @@ public class RobotContainer {
 
   private void configureCommands(){
 
-    m_autoCoralStation = new SequentialCommandGroup(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.CoralStationPosition)
-    .andThen(new AutoIntakeCoral(m_intake)));
+    m_autoCoralStation = new SequentialCommandGroup(new SetElevatorPosition(m_payload, m_intake,Constants.ElevatorConstants.CoralStationPosition)
+    .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.CoralStationPosition)));
 
-    m_autoL1 = new SequentialCommandGroup(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.L1Position))
+    m_autoL1 = new SequentialCommandGroup(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.L1Position))
     .andThen(new AutoOutCoral(m_intake))
-    .andThen(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.basePosition));
+    .andThen(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.basePosition));
 
-    m_autoL2 = new SequentialCommandGroup(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.L2Position))
-    .andThen(new AutoOutCoral(m_intake))
-    .andThen(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.basePosition));
+    m_autoL2 = new SequentialCommandGroup(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L2Position))
+    .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L2Position))
+    .andThen(new SetBagSpeedTimed(m_intake));
 
-    m_autoL3 = new SequentialCommandGroup(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.L3Position))
-    .andThen(new AutoOutCoral(m_intake))
-    .andThen(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.basePosition));
+    m_autoL3 =  new SequentialCommandGroup(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L3Position))
+    .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L3Position))
+    .andThen(new SetBagSpeedTimed(m_intake));
 
     m_outAndOpenClimb = null; //new SequentialCommandGroup(m_pivotClimbOut).andThen(m_openServo);
     m_inAndClosedClimb = null;//new SequentialCommandGroup(m_closeServo).andThen(m_pivotClimbIn);
@@ -157,6 +158,9 @@ public class RobotContainer {
   private void configureBindings() {
     ControlMap.driver_controls.leftBumper().onTrue(new InstantCommand(() -> m_drivetrain.zeroGyro()));
     ControlMap.driver_controls.rightBumper().toggleOnTrue(m_defaultDrive);
+    ControlMap.driver_controls.b().onTrue(m_autoCoralStation);
+    ControlMap.driver_controls.a().onTrue(m_autoL2);
+    ControlMap.driver_controls.x().onTrue(m_autoL3);
 
     // ControlMap.driver_controls.leftTrigger().onTrue(new ApriltagAlign(
     //  m_poseEstimator,
@@ -174,30 +178,34 @@ public class RobotContainer {
 
     // ControlMap.driver_controls.y().onTrue(m_outAndOpenClimb);   
     // ControlMap.driver_controls.a().onTrue(m_inAndClosedClimb);
-    ControlMap.driver_controls.x().whileTrue(m_openServo);
-    ControlMap.driver_controls.b().whileTrue(m_closeServo);
+    // ControlMap.driver_controls.x().whileTrue(m_openServo);
+    // ControlMap.driver_controls.b().whileTrue(m_closeServo);
 
-    ControlMap.driver_controls.povLeft().whileTrue(new ManualClimbPivotControls(m_climb, Constants.ClimbConstants.pivotSpeed));
-    ControlMap.driver_controls.povRight().whileTrue(new ManualClimbPivotControls(m_climb, -Constants.ClimbConstants.pivotSpeed));
-    ControlMap.driver_controls.povUp().onTrue(m_ClimbConstantShiftUp);
-    ControlMap.driver_controls.povDown().onTrue(m_ClimbConstantShiftDown);
+    // ControlMap.driver_controls.povLeft().whileTrue(new ManualClimbPivotControls(m_climb, Constants.ClimbConstants.pivotSpeed));
+    // ControlMap.driver_controls.povRight().whileTrue(new ManualClimbPivotControls(m_climb, -Constants.ClimbConstants.pivotSpeed));
+    // ControlMap.driver_controls.povUp().onTrue(m_ClimbConstantShiftUp);
+    // ControlMap.driver_controls.povDown().onTrue(m_ClimbConstantShiftDown);
 
 
 
     ControlMap.gunnerButton1.whileTrue(m_BagIn);
+    ControlMap.gunnerButton2.onTrue(new SetIntakePivotPosition(m_intake,m_payload,Constants.IntakeConstants.L1Position));
     ControlMap.gunnerButton4.whileTrue(m_BagOut);
-    ControlMap.gunnerButton3.onTrue(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.L1Position));
-    ControlMap.gunnerButton6.onTrue(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.L2Position));
-    ControlMap.gunnerButton11.onTrue(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.L3Position));
-    ControlMap.gunnerButton12.onTrue(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.CoralStationPosition));
+    ControlMap.gunnerButton5.onTrue(new SetIntakePivotPosition(m_intake,m_payload,Constants.IntakeConstants.L2Position));
+    ControlMap.gunnerButton3.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.L3Position));
+    ControlMap.gunnerButton6.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.L2Position));
+    ControlMap.gunnerButton7.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancelAll()));
+    ControlMap.gunnerButton8.onTrue(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.CoralStationPosition));
+    ControlMap.gunnerButton11.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.CoralStationPosition));
+    // ControlMap.gunnerButton12.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.CoralStationPosition));
     // ControlMap.gunnerButton4.onTrue(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L1Position));
 
-    ControlMap.gunnerButton5.onTrue(new AutoIntakeCoral(m_intake));
-    ControlMap.gunnerButton2.onTrue(new AutoOutCoral(m_intake));
+    
+    // ControlMap.gunnerButton2.onTrue(new AutoOutCoral(m_intake));
 
-    ControlMap.gunnerButton7.onTrue(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.CoralStationPosition));
-    ControlMap.gunnerButton8.onTrue(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.L1Position));
-    ControlMap.gunnerButton10.onTrue(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.L3Position));
+    // ControlMap.gunnerButton7.onTrue(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.CoralStationPosition));
+    // ControlMap.gunnerButton8.onTrue(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.L1Position));
+    ControlMap.gunnerButton10.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.L3Position));
 
     // ControlMap.gunnerButton11.onTrue(m_autoCoralStation);
    // ControlMap.gunnerButton12.onTrue(m_autoL1);

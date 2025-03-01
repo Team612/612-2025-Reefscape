@@ -89,8 +89,8 @@ public class MotorConfigs {
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                 .p(Constants.ElevatorConstants.kP)
                 .i(Constants.ElevatorConstants.kI)
-                .d(Constants.ElevatorConstants.kD)
-                .outputRange(-1, 1);
+                .d(Constants.ElevatorConstants.kD);
+              
      
 
         elevator_pivot_configs

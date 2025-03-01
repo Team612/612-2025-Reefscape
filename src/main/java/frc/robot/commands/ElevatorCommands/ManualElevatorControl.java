@@ -44,7 +44,7 @@ public class ManualElevatorControl extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    System.out.println(ControlMap.gunner_controls.getRawAxis(0));
+    // System.out.println(ControlMap.gunner_controls.getRawAxis(0));
     return Math.abs(ControlMap.gunner_controls.getRawAxis(0)) <= 0.1;
   }
 }

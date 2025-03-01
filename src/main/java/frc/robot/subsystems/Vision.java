@@ -28,8 +28,7 @@
 // import frc.robot.Constants;
 // public class Vision extends SubsystemBase {
 //   private static AprilTagFieldLayout aprilTagFieldLayout;
-//   private PhotonPoseEstimator photonFrontPoseEstimator;
-//   private PhotonPoseEstimator photonBackPoseEstimator;
+//   private PhotonPoseEstimator photonPoseEstimator;
 
 //   private static Vision visionInstance = null;
 
@@ -54,8 +53,7 @@
 
 //     aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark); //how to load the april tags from the field
 
-//     photonFrontPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d()); //instantiates photon pose estimator
-//     photonBackPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d());
+//     photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d()); //instantiates photon pose estimator
 
 
 //     //m_PoseEstimatorFront.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
@@ -76,13 +74,9 @@
 //       m_candle.setLEDs(red, green, blue);
 //   }
 
-//   public PhotonPoseEstimator getFrontVisionEstimator(){
-//     return photonFrontPoseEstimator;
+//   public PhotonPoseEstimator getPhotonPoseEstimator(){
+//     return photonPoseEstimator;
 //   }
-//   public PhotonPoseEstimator getBackVisionEStimator(){
-//     return photonBackPoseEstimator;
-//   }
-
 //   public PhotonCamera getFrontApriltagCamera(){
 //     return frontCamera; 
 //   }
@@ -94,8 +88,15 @@
 //     return new Transform3d(); //center of robot to camera transformation
 //   }
 
-//   public boolean hasCalibration(){ //checks if camera is callibrated with the right coefficients
+//   public boolean frontHasCalibration(){ //checks if camera is callibrated with the right coefficients
 //     if (frontCamera.getDistCoeffs().equals(Optional.empty())){
+//       return false;
+//     }
+//     return true;
+//   }
+
+//   public boolean backHasCalibration(){ //checks if camera is callibrated with the right coefficients
+//     if (backCamera.getDistCoeffs().equals(Optional.empty())){
 //       return false;
 //     }
 //     return true;
@@ -109,6 +110,7 @@
 //     }
 //     return false;
 //   }
+
 //   public boolean backHasTag(){ //if it detects an april tag
 //     if (backCamera.getLatestResult().hasTargets()){
 //       if (backCamera.getLatestResult().getBestTarget().getFiducialId() >= 0){
@@ -117,6 +119,7 @@
 //     }
 //     return false;
 //   }
+
 //   public int frontTagID(){ //returns the ID of the apriltag ift detects, only runs if hasTag and has targets
 //      if (frontCamera.getLatestResult().hasTargets()){
 //       return frontCamera.getLatestResult().getBestTarget().getFiducialId();
@@ -160,11 +163,7 @@
 //     Pose2d tagPose = robotInTagPose;
 //     return new Pose2d().transformBy(new Transform2d(tagPose.getTranslation(), tagPose.getRotation()));
 //   }
-
-
-
- 
-
+  
 //   // return tag pose
 //   public Pose3d return_tag_pose(int id) {
 //     Optional<Pose3d> pose_of_tag = aprilTagFieldLayout.getTagPose(id);
@@ -181,8 +180,8 @@
 
 //   // photonvision pose estimator
 //   public Optional<EstimatedRobotPose> return_photon_pose(Pose2d latestPose) {
-//     photonFrontPoseEstimator.setReferencePose(latestPose);
-//     return photonFrontPoseEstimator.update(new PhotonPipelineResult());
+//     photonPoseEstimator.setReferencePose(latestPose);
+//     return photonPoseEstimator.update(new PhotonPipelineResult());
 //   }
 
 

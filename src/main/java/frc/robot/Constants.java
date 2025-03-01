@@ -66,9 +66,11 @@ public class Constants {
         public static final IdleMode idleMode = IdleMode.kBrake;
         public static final boolean bagInverted = false;
         public static final double kGearRatio = (125.0 / 1.0);
-        public static final double kSprocketPitchDiameter = Units.inchesToMeters(3.5);
-        public static final double kPositionConversionFactor =
-            ((kSprocketPitchDiameter * Math.PI)) / (kGearRatio);
+        public static final double kSprocketPitchDiameter = Units.inchesToMeters(2.87);
+        public static final double kPositionConversionFactor = 360  / kGearRatio;
+            // ((kSprocketPitchDiameter * Math.PI)) / (kGearRatio);
+        public static final double kAngularPositionConversionFactor = 
+            360.0 / kPositionConversionFactor;
         public static final double kVelocityConversionFactor =
             kPositionConversionFactor / 60.0;
         
@@ -79,21 +81,20 @@ public class Constants {
         public static final int bagCurrentLimit = 30;
         public static final boolean bagCurrentLimitEnable = true;
 
-        public static double kP = 0;
+        public static double kP = 0.1;
         public static double kI = 0;
         public static double kD = 0;
 
         public static double pivotspeed = 0.30; 
-        public static final double L1Position = 0;
-        public static final double L2Position = 0;
-        public static final double L3Position = 0;
-        public static final double CoralStationPosition = 0;
-        public static final double maxPivotInAngleL2L3 = 0;
-        public static final double maxPivotInAngleL1 = 0;
-        public static final double maxPivotOutAngle = 0;
+        public static final double L1Position = 0.0;
+        public static final double L2Position = 26.126;
+        public static final double L3Position = 26.126;
+        public static final double CoralStationPosition = 347.451;
+        public static final double maxPivotL1Angle = 70;
         public static final double maxVelocity = 0.3;
         public static final double maxAcceleration = 0.3;
         public static final double pivotThreshold = 0.5;
+        public static final double intakeThreshold = 2;//in degrees
         public static final boolean pivotWrapping = true;
 
     }
@@ -118,7 +119,7 @@ public class Constants {
         public static final double kPositionConversionFactor = (kSprocketPitchDiameter * Math.PI) / kGearRatio; //meters per revolutions
         public static final double kVelocityConversionFactor = kPositionConversionFactor / 60.0; // meters per rotations seconds
 
-        public static double kP = 0.0;
+        public static double kP = 1.6;
         public static double kI = 0;
         public static double kD = 0;
         public static double kS = 0.2;
@@ -128,10 +129,11 @@ public class Constants {
             
     public static final double basePosition = 0.0;
     public static final double L1Position = 0.035;
-    public static final double L2Position = 0.279;
-    public static final double L3Position = 0.697;
-    public static final double CoralStationPosition = 0.327;
-    public static final double elevatorThreshold = 0.0001;
+    public static final double L2Position = 0.236; //0.279
+    public static final double L3Position = 0.654;
+    public static final double CoralStationPosition = 0.316;
+    // public static final double L1Minimum = 0.3 //the minimum position that allows for maximum movement for the intake pivot
+    public static final double elevatorThreshold = 0.01;
 
 
     }

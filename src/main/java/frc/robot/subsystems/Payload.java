@@ -20,6 +20,7 @@ import frc.robot.Constants;
 import frc.robot.util.MotorConfigs;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import frc.robot.util.Telemetry;
+import frc.robot.subsystems.Intake;
 
 // import com.studica.frc.AHRS;
 // import com.studica.frc.AHRS.NavXComType;
@@ -48,7 +49,6 @@ public class Payload extends SubsystemBase {
   public Payload() {
     elevatorMotor = new SparkMax(Constants.ElevatorConstants.elevatorID, MotorType.kBrushless);
     elevatorMotor.configure(MotorConfigs.elevator_pivot_configs, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-
     controller = elevatorMotor.getClosedLoopController();
 
   } 
@@ -59,11 +59,10 @@ public void setMotorSpeed(double speed) {
 
 public void setPosition(double position){
   //elevatorMotor.set(m_pidController.calculate(getPosition(), position));
-  //controller.setReference(-position, ControlType.kPosition);
+  controller.setReference(-position, ControlType.kPosition);
   //m_controller.setGoal(-position);
-  System.out.println(m_feedforward.calculate(kMaxVelocity));
   //elevatorMotor.setVoltage(m_controller.calculate(getPosition()) + m_feedforward.calculate(m_controller.getSetpoint().velocity));
- controller.setReference(-position, ControlType.kMAXMotionPositionControl,ClosedLoopSlot.kSlot0, -m_feedforward.calculate(kMaxVelocity));
+//  controller.setReference(-position, ControlType.kMAXMotionPositionControl,ClosedLoopSlot.kSlot0, -m_feedforward.calculate(kMaxVelocity));
 }
 
 public void freezeMotors(){

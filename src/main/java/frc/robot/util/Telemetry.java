@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.WidgetType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
-import frc.robot.subsystems.Climb;
+// import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Mecanum;
 import frc.robot.subsystems.Payload;
@@ -27,7 +27,7 @@ public class Telemetry {
     Mecanum m_drivetrain;
     Intake m_intake;
     Payload m_payload;
-    Climb m_climb;
+    // Climb m_climb;
 
     NetworkTableInstance table;
     NetworkTable drivetrainData;
@@ -85,7 +85,7 @@ public class Telemetry {
         m_drivetrain = Mecanum.getInstance();
         m_payload = Payload.getInstance();
         m_intake = Intake.getInstance();
-        m_climb = Climb.getInstance();
+        // m_climb = Climb.getInstance();
         //m_poseEstimator = PoseEstimator.getInstance();
         //m_vision = Vision.getInstance();
 
@@ -194,9 +194,9 @@ public class Telemetry {
         Constants.ElevatorConstants.payloadDownSpeed = elevatorCurrentDownSpeed.getDouble(Constants.ElevatorConstants.payloadDownSpeed);
 
         //climb
-        climbPivotPositon.setDouble(m_climb.getPivotPosition());
-        climbPivotVelocity.setDouble(m_climb.getPivotVelocity());
-        servoStatus.setBoolean(m_climb.isServoClosed());
+        // climbPivotPositon.setDouble(m_climb.getPivotPosition());
+        // climbPivotVelocity.setDouble(m_climb.getPivotVelocity());
+        // servoStatus.setBoolean(m_climb.isServoClosed());
 
         Constants.ClimbConstants.pivotSpeed = climbCurrentSetSpeed.getDouble(Constants.ClimbConstants.pivotSpeed);
 

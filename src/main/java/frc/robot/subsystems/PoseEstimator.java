@@ -6,10 +6,11 @@
 
 
 // import java.io.IOException;
-// import java.util.Optional;
+
+// import org.photonvision.PhotonPoseEstimator;
+// import org.photonvision.targeting.PhotonTrackedTarget;
 
 // import edu.wpi.first.apriltag.AprilTagFieldLayout;
-// import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 // import edu.wpi.first.apriltag.AprilTagFields;
 // import edu.wpi.first.math.VecBuilder;
 // import edu.wpi.first.math.Vector;
@@ -18,28 +19,18 @@
 // import edu.wpi.first.math.geometry.Pose3d;
 // import edu.wpi.first.math.geometry.Rotation2d;
 // import edu.wpi.first.math.geometry.Rotation3d;
-// import edu.wpi.first.math.geometry.Transform2d;
 // import edu.wpi.first.math.geometry.Transform3d;
-// import edu.wpi.first.math.geometry.Translation2d;
 // import edu.wpi.first.math.geometry.Translation3d;
 // import edu.wpi.first.math.numbers.N3;
 // import edu.wpi.first.math.util.Units;
 // import edu.wpi.first.networktables.NetworkTableInstance;
 // import edu.wpi.first.networktables.StructArrayPublisher;
 // import edu.wpi.first.networktables.StructPublisher;
-// import edu.wpi.first.units.Unit;
 // import edu.wpi.first.wpilibj.DriverStation;
-// import edu.wpi.first.wpilibj.DriverStation.Alliance;
 // import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-// import edu.wpi.first.wpilibj2.command.Command;
-// import edu.wpi.first.wpilibj2.command.CommandScheduler;
 // import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // import frc.robot.Constants;
-// import frc.robot.Robot;
-// import frc.robot.RobotContainer;
-// import org.photonvision.*;
-// import org.photonvision.targeting.PhotonTrackedTarget;
 
 
 // // import frc.robot.LimelightHelpers;
@@ -99,7 +90,7 @@
 //       statesStdDev,
 //       visionMeasurementStdDevs
 //     );
-//     photonEstimator = visionSubsystem.getFrontVisionEstimator();
+//     photonEstimator = visionSubsystem.getPhotonPoseEstimator();
 
 
 //     poseA = new Pose3d();
@@ -119,7 +110,7 @@
 //   }
 
 //   public void updatePoseEstimator() {
-//     if(visionSubsystem.getFrontApriltagCamera().getLatestResult().hasTargets()) {
+//     if(visionSubsystem.getFrontApriltagCamera().getLatestResult().hasTargets() || visionSubsystem.getBackApriltagCamera().getLatestResult().hasTargets()) {
 //       photonEstimator.update(visionSubsystem.getFrontPipelineResult()).ifPresent(estimatedRobotPose -> {
 //        var estimatedPose = estimatedRobotPose.estimatedPose;
       

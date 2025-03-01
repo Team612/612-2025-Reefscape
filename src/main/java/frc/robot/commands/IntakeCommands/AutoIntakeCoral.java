@@ -17,11 +17,7 @@ public class AutoIntakeCoral extends Command {
 
   @Override
   public void execute() {
-    m_intake.setPivotSpeed(Constants.IntakeConstants.pivotspeed);
-    if (m_intake.getIntakeLimitStateForward()){
-      m_intake.setBags(Constants.IntakeConstants.bagspeed);
-      ticks++;
-    }
+    m_intake.setBags(Constants.IntakeConstants.pivotspeed);
   }
 
   @Override

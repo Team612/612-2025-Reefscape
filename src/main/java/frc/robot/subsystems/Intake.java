@@ -11,6 +11,7 @@ import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import frc.robot.subsystems.Payload;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -47,8 +48,9 @@ public class Intake extends SubsystemBase {
   }
 
   public void setPivotPosition(double position) {
-    controller.setReference(position, ControlType.kPosition);
-    controller.setReference(position, ControlType.kPosition,ClosedLoopSlot.kSlot0,m_feedForward.calculate(Constants.IntakeConstants.maxVelocity));
+
+    controller.setReference(-position, ControlType.kPosition);
+    // controller.setReference(position, ControlType.kPosition,ClosedLoopSlot.kSlot0,m_feedForward.calculate(Constants.IntakeConstants.maxVelocity));
   }
   
   public boolean getIntakeLimitStateForward(){
@@ -67,11 +69,11 @@ public class Intake extends SubsystemBase {
   }
 
   public double getPivotPosition(){
-    return pivotMotor.getEncoder().getPosition() - Constants.IntakeConstants.boreOffset;
+    return -pivotMotor.getEncoder().getPosition();
   }
 
   public double getPivotSpeed(){
-    return pivotMotor.getEncoder().getVelocity();
+    return -pivotMotor.getEncoder().getVelocity();
   }
 
   public double getBagSpeed(){
@@ -87,6 +89,9 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    System.out.println(bagMotor.getEncoder().getPosition());
+    if (getIntakeLimitStateForward()){
+      pivotMotor.getEncoder().setPosition(0.0);
+    }
+    //System.out.println(bagMotor.getEncoder().getPosition());
   }
 }
