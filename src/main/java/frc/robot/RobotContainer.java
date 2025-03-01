@@ -34,6 +34,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Mecanum;
 import frc.robot.subsystems.Payload;
 // import frc.robot.subsystems.Vision;
+import frc.robot.commands.ClimbCommands.ClimbConstantShift;
 import frc.robot.util.ControlMap;
 import frc.robot.util.MotorConfigs;
 // import frc.robot.util.TrajectoryConfiguration;
@@ -69,6 +70,10 @@ public class RobotContainer {
   private Command m_openServo;
   private Command m_pivotClimbIn;
   private Command m_pivotClimbOut;
+
+  private Command m_ClimbConstantShiftUp;
+  private Command m_ClimbConstantShiftDown;
+
   private SequentialCommandGroup m_autoL1;
   private SequentialCommandGroup m_autoL2;
   private SequentialCommandGroup m_autoL3;
@@ -78,11 +83,13 @@ public class RobotContainer {
 
 
 
+
   public RobotContainer() {
     m_payload = Payload.getInstance();
     m_intake = Intake.getInstance();
     m_climb = Climb.getInstance();
     m_drivetrain = Mecanum.getInstance();
+
     // m_poseEstimator = PoseEstimator.getPoseEstimatorInstance();
     // m_vision = Vision.getVisionInstance();
     // m_trajConfigs = TrajectoryConfiguration.getInstance();
@@ -106,6 +113,10 @@ public class RobotContainer {
     m_openServo = new OpenServo(m_climb);
     m_pivotClimbIn = new PivotClimbIn(m_climb);
     m_pivotClimbOut = new PivotClimbOut(m_climb);
+
+    m_ClimbConstantShiftUp = new ClimbConstantShift(0.05);
+    m_ClimbConstantShiftDown = new ClimbConstantShift(-0.05);
+
 
     configureCommands();
     configureBindings();
@@ -168,28 +179,32 @@ public class RobotContainer {
 
     ControlMap.driver_controls.povLeft().whileTrue(new ManualClimbPivotControls(m_climb, Constants.ClimbConstants.pivotSpeed));
     ControlMap.driver_controls.povRight().whileTrue(new ManualClimbPivotControls(m_climb, -Constants.ClimbConstants.pivotSpeed));
+    ControlMap.driver_controls.povUp().onTrue(m_ClimbConstantShiftUp);
+    ControlMap.driver_controls.povDown().onTrue(m_ClimbConstantShiftDown);
 
 
 
     ControlMap.gunnerButton1.whileTrue(m_BagIn);
     ControlMap.gunnerButton4.whileTrue(m_BagOut);
-
+    ControlMap.gunnerButton3.onTrue(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.L1Position));
+    ControlMap.gunnerButton6.onTrue(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.L2Position));
+    ControlMap.gunnerButton11.onTrue(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.L3Position));
+    ControlMap.gunnerButton12.onTrue(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.CoralStationPosition));
     // ControlMap.gunnerButton4.onTrue(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L1Position));
 
     ControlMap.gunnerButton5.onTrue(new AutoIntakeCoral(m_intake));
-    ControlMap.gunnerButton6.onTrue(new AutoOutCoral(m_intake));
+    ControlMap.gunnerButton2.onTrue(new AutoOutCoral(m_intake));
 
     ControlMap.gunnerButton7.onTrue(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.CoralStationPosition));
     ControlMap.gunnerButton8.onTrue(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.L1Position));
-    ControlMap.gunnerButton9.onTrue(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.L2Position));
     ControlMap.gunnerButton10.onTrue(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.L3Position));
 
-    ControlMap.gunnerButton11.onTrue(m_autoCoralStation);
-    ControlMap.gunnerButton12.onTrue(m_autoL1);
+    // ControlMap.gunnerButton11.onTrue(m_autoCoralStation);
+   // ControlMap.gunnerButton12.onTrue(m_autoL1);
     ControlMap.gunnerButton13.onTrue(m_autoL2);
     ControlMap.gunnerButton14.onTrue(m_autoL3);
 
-    ControlMap.gunnerButton3.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancelAll()));
+    //ControlMap.gunnerButton3.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancelAll()));
 
 
     // ControlMap.gunner_joystick.a().whileTrue(m_ElevatorUp);

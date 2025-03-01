@@ -11,11 +11,13 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
-import edu.wpi.first.wpilibj.Preferences;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.MotorConfigs;
+import frc.robot.util.Telemetry;
 
 // import com.studica.frc.AHRS;
 // import com.studica.frc.AHRS.NavXComType;
@@ -30,20 +32,34 @@ public class Payload extends SubsystemBase {
   // DigitalInput toplimitSwitch = new DigitalInput(Constants.toplimitSwitchID);
   // DigitalInput bottomlimitSwitch = new DigitalInput(Constants.bottomlimitSwitchID);
 
+  double kDt = 0.02;
+  double kMaxVelocity = 0.3;
+  double kMaxAccel = 0.3;
+  
+  private final TrapezoidProfile.Constraints m_constraints = new TrapezoidProfile.Constraints(kMaxVelocity, kMaxAccel);
+  private final ProfiledPIDController m_controller = new ProfiledPIDController(Constants.ElevatorConstants.kP, Constants.ElevatorConstants.kI, Constants.ElevatorConstants.kD, m_constraints);
+  private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(Constants.ElevatorConstants.kS, Constants.ElevatorConstants.kG, Constants.ElevatorConstants.kV);
+
+
+
   public Payload() {
     elevatorMotor = new SparkMax(Constants.ElevatorConstants.elevatorID, MotorType.kBrushless);
     elevatorMotor.configure(MotorConfigs.elevator_pivot_configs, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
     controller = elevatorMotor.getClosedLoopController();
-  }
+
+  } 
 
 public void setMotorSpeed(double speed) {
   elevatorMotor.set(speed);
 }
 
 public void setPosition(double position){
-  controller.setReference(position, ControlType.kPosition);
-  //controller.setReference(position, ControlType.kMAXMotionPositionControl);
+  //elevatorMotor.set(m_pidController.calculate(getPosition(), position));
+  //controller.setReference(-position, ControlType.kPosition);
+  //m_controller.setGoal(-position);
+  //elevatorMotor.setVoltage(m_controller.calculate(getPosition()) + m_feedforward.calculate(m_controller.getSetpoint().velocity));
+ controller.setReference(-position, ControlType.kMAXMotionPositionControl);
 }
 
 public void freezeMotors(){
@@ -55,7 +71,7 @@ public void resetCount() {
 }
 
 public double getPosition(){
-  return elevatorMotor.getEncoder().getPosition();
+  return -elevatorMotor.getEncoder().getPosition();
 }
 
 public double getVelocity(){
@@ -76,10 +92,11 @@ public static Payload getInstance(){
 
   @Override
   public void periodic() {
-    
-    // Constants.ElevatorConstants.payloadspeed = Preferences.getDouble("Pay Speed", Constants.ElevatorConstants.payloadspeed);
-   
-    // // SmartDashboard.putNumber("Elevator 2 Velocity", elevator.getEncoder().getVelocity());
+    if (elevatorMotor.getForwardLimitSwitch().isPressed()){
+      elevatorMotor.getEncoder().setPosition(0);
+    }
+    // // Constants.ElevatorConstants.payloadspeed = Preferences.getDouble("Pay Speed", Constants.ElevatorConstants.payloadspeed);
+    //    // // SmartDashboard.putNumber("Elevator 2 Velocity", elevator.getEncoder().getVelocity());
     // // SmartDashboard.putNumber("Elevator 2 position", elevator.getEncoder().getPosition());
     // Constants.ElevatorConstants.kP = Preferences.getDouble("Elevator Pivot kP", Constants.ElevatorConstants.kP);
     // Constants.ElevatorConstants.kI = Preferences.getDouble("Elevator Pivot kI", Constants.ElevatorConstants.kI);

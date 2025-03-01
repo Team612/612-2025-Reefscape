@@ -94,31 +94,35 @@ public class Constants {
         public static final boolean elevatorInverted = true;
         public static final int elevatorCurrentLimit = 30;
         public static final IdleMode idleMode = IdleMode.kBrake;
-        public static double payloadUpSpeed = 1.0;
+        public static final double elePos = 0;
+        public static double payloadUpSpeed = 0.12;
         public static double payloadDownSpeed = 0.15;
        
 
         public static final MAXMotionPositionMode positionMode = MAXMotionPositionMode.kMAXMotionTrapezoidal;
         public static final double maxElevatorSpeed = 4.0; //default units: revolutions per minutes (converted with the velocityConversionFactor)
         public static final double maxElevatorAcceleration = 1.0; //defualt units: RPM / s (converted with the velocityConversionFactor)
-        public static final double marginOfError = 0; //in positions. Check .allowedClosedLoopError for more info
+        public static final double marginOfError = 0.001; //in positions. Check .allowedClosedLoopError for more info
 
         public static final double kGearRatio = (5 / 1.0);  
-        public static final double kSprocketPitchDiameter = 1.504;
+        public static final double kSprocketPitchDiameter = Units.inchesToMeters(3.0);
         public static final double kPositionConversionFactor = (kSprocketPitchDiameter * Math.PI) / kGearRatio; //meters per revolutions
         public static final double kVelocityConversionFactor = kPositionConversionFactor / 60.0; // meters per rotations seconds
 
-        public static double kP = 0;
+        public static double kP = 2.0;
         public static double kI = 0;
         public static double kD = 0;
+        public static double kS = 0;
+        public static double kG = 0;
+        public static double kV = 0;
 
             
-    public static final double basePosition = 0;
-    public static final double L1Position = 0;
-    public static final double L2Position = 0;
-    public static final double L3Position = 0;
-    public static final double CoralStationPosition = 0;
-    public static final double elevatorThreshold = 0.5;
+    public static final double basePosition = 0.0;
+    public static final double L1Position = 0.035;
+    public static final double L2Position = 0.279;
+    public static final double L3Position = 0.697;
+    public static final double CoralStationPosition = 0.327;
+    public static final double elevatorThreshold = 0.0001;
 
 
     }
@@ -147,7 +151,7 @@ public class Constants {
 
         public static final double pivotOutAngle = 0;
         public static final double pivotInAngle = 0;
-        public static double pivotSpeed = 0.5;
+        public static double pivotSpeed = 0.8;
         
 
     }

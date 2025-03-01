@@ -30,11 +30,13 @@ public class SetElevatorPosition extends Command {
   @Override
   public void execute() {
     m_payload.setPosition(position);
+    // m_payload.setMotorSpeed(0.5);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    System.out.println("True");
     m_payload.setMotorSpeed(0);
   }
 
