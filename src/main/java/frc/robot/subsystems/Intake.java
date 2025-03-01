@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -12,7 +11,6 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
-import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.MotorConfigs;
@@ -32,12 +30,6 @@ public class Intake extends SubsystemBase {
     bagMotor.configure(MotorConfigs.spark_bag_configs, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
     controller = pivotMotor.getClosedLoopController();
-
-    // Preferences.initDouble("Pivot Speed", Constants.IntakeConstants.pivotspeed);
-    // Preferences.initDouble("Bag Speed", Constants.IntakeConstants.bagspeed);
-    // Preferences.initDouble("Intake Pivot kI", Constants.IntakeConstants.kI);
-    // Preferences.initDouble("Intake Pivot kP", Constants.IntakeConstants.kP);
-    // Preferences.initDouble("Intake Pivot kD", Constants.IntakeConstants.kD);
   }
 
 
@@ -52,14 +44,11 @@ public class Intake extends SubsystemBase {
   public void setPivotPosition(double position) {
     controller.setReference(position, ControlType.kPosition);
   }
-
-
   
   public boolean getIntakeLimitStateForward(){
     return pivotMotor.getForwardLimitSwitch().isPressed();
   }
 
-  // return limit switch states
   public boolean getIntakeLimitStateReverse(){
     return pivotMotor.getReverseLimitSwitch().isPressed();
   }
@@ -92,11 +81,6 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-    // Constants.IntakeConstants.pivotspeed = Preferences.getDouble("Pivot Speed", Constants.IntakeConstants.pivotspeed);
-    // Constants.IntakeConstants.bagspeed = Preferences.getDouble("Bag Speed", Constants.IntakeConstants.bagspeed);
-    // Constants.IntakeConstants.kP = Preferences.getDouble("Intake Pivot kP", Constants.IntakeConstants.kP);
-    // Constants.IntakeConstants.kI = Preferences.getDouble("Intake Pivot kI", Constants.IntakeConstants.kI);
-    // Constants.IntakeConstants.kD = Preferences.getDouble("Intake Pivot kD", Constants.IntakeConstants.kD);
+    System.out.println(bagMotor.getEncoder().getPosition());
   }
 }
