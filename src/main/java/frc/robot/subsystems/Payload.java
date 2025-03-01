@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
@@ -38,6 +39,7 @@ public class Payload extends SubsystemBase {
   
   private final TrapezoidProfile.Constraints m_constraints = new TrapezoidProfile.Constraints(kMaxVelocity, kMaxAccel);
   private final ProfiledPIDController m_controller = new ProfiledPIDController(Constants.ElevatorConstants.kP, Constants.ElevatorConstants.kI, Constants.ElevatorConstants.kD, m_constraints);
+  //ks: minimum voltage to overcome static friction. kG: minimum voltage to overcome gravity. Kv: idfk. Do kG before kS
   private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(Constants.ElevatorConstants.kS, Constants.ElevatorConstants.kG, Constants.ElevatorConstants.kV);
 
 
@@ -58,8 +60,9 @@ public void setPosition(double position){
   //elevatorMotor.set(m_pidController.calculate(getPosition(), position));
   //controller.setReference(-position, ControlType.kPosition);
   //m_controller.setGoal(-position);
+  System.out.println(m_feedforward.calculate(kMaxVelocity));
   //elevatorMotor.setVoltage(m_controller.calculate(getPosition()) + m_feedforward.calculate(m_controller.getSetpoint().velocity));
- controller.setReference(-position, ControlType.kMAXMotionPositionControl);
+ controller.setReference(-position, ControlType.kMAXMotionPositionControl,ClosedLoopSlot.kSlot0, -m_feedforward.calculate(kMaxVelocity));
 }
 
 public void freezeMotors(){
@@ -82,6 +85,10 @@ public SparkMax getElevatorMotor() {
   return elevatorMotor;
 }
 
+public double getVoltage(){
+  return elevatorMotor.getAppliedOutput();
+}
+
 public static Payload getInstance(){
   if (payloadInstance == null){
     payloadInstance = new Payload();
@@ -92,6 +99,7 @@ public static Payload getInstance(){
 
   @Override
   public void periodic() {
+    // System.out.println(getVoltage()); 
     if (elevatorMotor.getForwardLimitSwitch().isPressed()){
       elevatorMotor.getEncoder().setPosition(0);
     }

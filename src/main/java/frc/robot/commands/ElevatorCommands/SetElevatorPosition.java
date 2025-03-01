@@ -43,6 +43,7 @@ public class SetElevatorPosition extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    // System.out.println(Math.abs(m_payload.getPosition() - position));
     return (Math.abs(m_payload.getPosition() - position) <= Constants.ElevatorConstants.elevatorThreshold);
     // if (m_payload.getPosition() < position){
     //   return (m_payload.getPosition() - position) >= 0;

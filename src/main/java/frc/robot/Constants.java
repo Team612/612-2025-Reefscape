@@ -100,7 +100,7 @@ public class Constants {
        
 
         public static final MAXMotionPositionMode positionMode = MAXMotionPositionMode.kMAXMotionTrapezoidal;
-        public static final double maxElevatorSpeed = 4.0; //default units: revolutions per minutes (converted with the velocityConversionFactor)
+        public static final double maxElevatorSpeed = 0.3; //default units: revolutions per minutes (converted with the velocityConversionFactor)
         public static final double maxElevatorAcceleration = 1.0; //defualt units: RPM / s (converted with the velocityConversionFactor)
         public static final double marginOfError = 0.001; //in positions. Check .allowedClosedLoopError for more info
 
@@ -109,12 +109,12 @@ public class Constants {
         public static final double kPositionConversionFactor = (kSprocketPitchDiameter * Math.PI) / kGearRatio; //meters per revolutions
         public static final double kVelocityConversionFactor = kPositionConversionFactor / 60.0; // meters per rotations seconds
 
-        public static double kP = 2.0;
+        public static double kP = 0.0;
         public static double kI = 0;
         public static double kD = 0;
-        public static double kS = 0;
-        public static double kG = 0;
-        public static double kV = 0;
+        public static double kS = 0.2;
+        public static double kG = 0.1;
+        public static double kV = 0.0;
 
             
     public static final double basePosition = 0.0;
