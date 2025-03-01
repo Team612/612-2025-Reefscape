@@ -32,14 +32,25 @@ public class MotorConfigs {
             .inverted(Constants.IntakeConstants.pivotInverted)
             .smartCurrentLimit(Constants.IntakeConstants.pivotCurrentLimit)
             .idleMode(Constants.IntakeConstants.idleMode);
+        
+        spark_pivot_configs
+            .encoder
+                .positionConversionFactor(Constants.IntakeConstants.kPositionConversionFactor)
+                .velocityConversionFactor(Constants.IntakeConstants.kVelocityConversionFactor);
 
         spark_pivot_configs
             .closedLoop
                 .p(Constants.IntakeConstants.kP)
                 .i(Constants.IntakeConstants.kI)
-                .d(Constants.IntakeConstants.kD)
-                .positionWrappingEnabled(Constants.IntakeConstants.pivotWrapping)
-                .positionWrappingInputRange(Constants.IntakeConstants.maxPivotInAngleL2L3, Constants.IntakeConstants.maxPivotOutAngle);
+                .d(Constants.IntakeConstants.kD);
+        
+        spark_pivot_configs
+            .closedLoop
+                .maxMotion
+                    .maxVelocity(Constants.IntakeConstants.maxVelocity)
+                    .maxAcceleration(Constants.IntakeConstants.maxAcceleration)
+                    .positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal);
+        
 
         //intake/outtake motor
         spark_bag_configs = new SparkMaxConfig();

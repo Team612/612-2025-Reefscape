@@ -18,6 +18,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.MotorConfigs;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import frc.robot.util.Telemetry;
 
 // import com.studica.frc.AHRS;

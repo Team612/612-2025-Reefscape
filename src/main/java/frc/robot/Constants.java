@@ -65,6 +65,13 @@ public class Constants {
         public static final double boreOffset = 0;
         public static final IdleMode idleMode = IdleMode.kBrake;
         public static final boolean bagInverted = false;
+        public static final double kGearRatio = (125.0 / 1.0);
+        public static final double kSprocketPitchDiameter = Units.inchesToMeters(3.5);
+        public static final double kPositionConversionFactor =
+            ((kSprocketPitchDiameter * Math.PI)) / (kGearRatio);
+        public static final double kVelocityConversionFactor =
+            kPositionConversionFactor / 60.0;
+        
 
         public static final int bagID = 7; 
         public static double bagspeed = 0.60;
@@ -84,6 +91,8 @@ public class Constants {
         public static final double maxPivotInAngleL2L3 = 0;
         public static final double maxPivotInAngleL1 = 0;
         public static final double maxPivotOutAngle = 0;
+        public static final double maxVelocity = 0.3;
+        public static final double maxAcceleration = 0.3;
         public static final double pivotThreshold = 0.5;
         public static final boolean pivotWrapping = true;
 
