@@ -189,14 +189,19 @@ public class RobotContainer {
 
 
     ControlMap.gunnerButton1.whileTrue(m_BagIn);
-    ControlMap.gunnerButton2.onTrue(new SetIntakePivotPosition(m_intake,m_payload,Constants.IntakeConstants.L1Position));
-    ControlMap.gunnerButton4.whileTrue(m_BagOut);
+    ControlMap.gunnerButton2.whileTrue(m_BagOut);
+    ControlMap.gunnerButton3.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancelAll()));
+    ControlMap.gunnerButton4.onTrue(new SetIntakePivotPosition(m_intake,m_payload,Constants.IntakeConstants.L1Position));
     ControlMap.gunnerButton5.onTrue(new SetIntakePivotPosition(m_intake,m_payload,Constants.IntakeConstants.L2Position));
-    ControlMap.gunnerButton3.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.L3Position));
-    ControlMap.gunnerButton6.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.L2Position));
-    ControlMap.gunnerButton7.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancelAll()));
-    ControlMap.gunnerButton8.onTrue(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.CoralStationPosition));
-    ControlMap.gunnerButton11.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.CoralStationPosition));
+    ControlMap.gunnerButton6.onTrue(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.CoralStationPosition));
+    ControlMap.gunnerButton7.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.L1Position));
+    ControlMap.gunnerButton8.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.L2Position));
+    ControlMap.gunnerButton9.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.L3Position));
+    ControlMap.gunnerButton10.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.CoralStationPosition));
+    ControlMap.gunnerButton11.onTrue(m_autoL1);
+    ControlMap.gunnerButton12.onTrue(m_autoL2);
+    ControlMap.gunnerButton13.onTrue(m_autoL3);
+    ControlMap.gunnerButton14.onTrue(m_autoCoralStation);
     // ControlMap.gunnerButton12.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.CoralStationPosition));
     // ControlMap.gunnerButton4.onTrue(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L1Position));
 
@@ -205,12 +210,10 @@ public class RobotContainer {
 
     // ControlMap.gunnerButton7.onTrue(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.CoralStationPosition));
     // ControlMap.gunnerButton8.onTrue(new SetElevatorPosition(m_payload, Constants.ElevatorConstants.L1Position));
-    ControlMap.gunnerButton10.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.L3Position));
 
     // ControlMap.gunnerButton11.onTrue(m_autoCoralStation);
    // ControlMap.gunnerButton12.onTrue(m_autoL1);
-    ControlMap.gunnerButton13.onTrue(m_autoL2);
-    ControlMap.gunnerButton14.onTrue(m_autoL3);
+
 
     //ControlMap.gunnerButton3.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancelAll()));
 

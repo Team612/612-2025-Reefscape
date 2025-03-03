@@ -14,6 +14,8 @@ import frc.robot.subsystems.Payload;
 
 import java.util.Map;
 
+import frc.robot.subsystems.PoseEstimator;
+import frc.robot.subsystems.Vision;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.DoubleTopic;
@@ -27,6 +29,8 @@ public class Telemetry {
     Mecanum m_drivetrain;
     Intake m_intake;
     Payload m_payload;
+    PoseEstimator m_PoseEstimator;
+    Vision m_vision;
     // Climb m_climb;
 
     NetworkTableInstance table;
@@ -86,9 +90,8 @@ public class Telemetry {
         m_payload = Payload.getInstance();
         m_intake = Intake.getInstance();
         // m_climb = Climb.getInstance();
-        //m_poseEstimator = PoseEstimator.getInstance();
-        //m_vision = Vision.getInstance();
-
+        m_PoseEstimator = PoseEstimator.getPoseEstimatorInstance();
+        m_vision = Vision.getVisionInstance();
         table = NetworkTableInstance.getDefault();
 
         drivetrainData = table.getTable("Drivetrain Data");
@@ -201,6 +204,9 @@ public class Telemetry {
         Constants.ClimbConstants.pivotSpeed = climbCurrentSetSpeed.getDouble(Constants.ClimbConstants.pivotSpeed);
 
         //autonomous
+        poseX.setDouble(m_PoseEstimator.getPose().getX());
+        poseY.setDouble(m_PoseEstimator.getPose().getY());
+        poseAngle.setDouble(m_PoseEstimator.getPose().getRotation().getDegrees());
      
 
 

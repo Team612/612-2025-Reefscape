@@ -110,6 +110,7 @@ public class PoseEstimator extends SubsystemBase {
   }
 
   public void updatePoseEstimator() {
+    if (visionSubsystem.getFrontApriltagCamera() != null){
     if((visionSubsystem.getFrontApriltagCamera().getLatestResult().hasTargets() && !visionSubsystem.getBackApriltagCamera().getLatestResult().hasTargets()) ||
         visionSubsystem.getFrontApriltagCamera().getLatestResult().getBestTarget().poseAmbiguity <= visionSubsystem.getBackApriltagCamera().getLatestResult().getBestTarget().poseAmbiguity){
         photonEstimator.update(visionSubsystem.getFrontPipelineResult()).ifPresent(estimatedRobotPose -> {
@@ -171,13 +172,11 @@ public class PoseEstimator extends SubsystemBase {
         });
     }
   }
+  }
 
   @Override
   public void periodic() {
     drivePoseEstimator.update(m_Mecanum.getPigeonAngle(), m_Mecanum.getMecanumDriveWheelPositions());
-    SmartDashboard.putNumber("X", getPose().getX());
-    SmartDashboard.putNumber("Y", getPose().getY());
-    SmartDashboard.putNumber("angle", getPose().getRotation().getDegrees());
     updatePoseEstimator();
     field.setRobotPose(getPose());
     
