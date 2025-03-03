@@ -76,7 +76,7 @@ public class PoseEstimator extends SubsystemBase {
     field = new Field2d();
     SmartDashboard.putData("field",field);
        try{
-          layout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025ReefscapeAndyMark.m_resourceFile);
+          layout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025Reefscape.m_resourceFile);
         }
         catch(IOException e) {
                 DriverStation.reportError("Failed to load AprilTagFieldLayout", e.getStackTrace());
