@@ -6,7 +6,11 @@ package frc.robot;
 import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
@@ -174,6 +178,7 @@ public class Constants {
     public class DriverConstants {
         public static final int driverPort = 0;
         public static final int gunnerPort = 1;
+        public static final int gunnerPort2 = 2;
         public static final double stickDeadband = 0.1;
     }
 
@@ -184,6 +189,7 @@ public class Constants {
         public static final double maxAcceleration = 1;
         public static final double maxAngularVelocity = Math.PI;
         public static final double maxAngularAcceleration = Math.PI/6;
+        public static final Transform3d frontCameraTransform = new Transform3d(new Translation3d(Units.inchesToMeters(7.5),Units.inchesToMeters(0),Units.inchesToMeters(8)), new Rotation3d());
 
         public static final double yApriltagDisplacement = 1;
         public static final double xApriltagDisplacement = 0.5;
