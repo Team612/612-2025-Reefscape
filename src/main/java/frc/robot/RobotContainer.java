@@ -37,8 +37,8 @@ import frc.robot.commands.ElevatorCommands.SetElevatorPosition;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Mecanum;
 import frc.robot.subsystems.Payload;
-// import frc.robot.subsystems.PoseEstimator;
-// import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.PoseEstimator;
+import frc.robot.subsystems.Vision;
 // import frc.robot.subsystems.Vision;
 // import frc.robot.commands.ClimbCommands.ClimbConstantShift;
 import frc.robot.util.ControlMap;
@@ -54,8 +54,8 @@ public class RobotContainer {
   private Intake m_intake;
   // private Climb m_climb;
   private Mecanum m_drivetrain;
-  // private PoseEstimator m_poseEstimator;
-  // private Vision m_vision;
+  private PoseEstimator m_poseEstimator;
+  private Vision m_vision;
   // private TrajectoryConfiguration m_trajConfigs;
   // private TrajectoryCreation m_trajCreation;
   private MotorConfigs m_motorConfigs = new MotorConfigs();
@@ -99,8 +99,8 @@ public class RobotContainer {
     // m_climb = Climb.getInstance();
     m_drivetrain = Mecanum.getInstance();
 
-    // m_poseEstimator = PoseEstimator.getPoseEstimatorInstance();
-    // m_vision = Vision.getVisionInstance();
+    m_poseEstimator = PoseEstimator.getPoseEstimatorInstance();
+    m_vision = Vision.getVisionInstance();
     // m_trajConfigs = TrajectoryConfiguration.getInstance();
     // m_trajCreation = TrajectoryCreation.getInstance();
     

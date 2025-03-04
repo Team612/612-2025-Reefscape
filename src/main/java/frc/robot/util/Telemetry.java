@@ -9,8 +9,8 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Mecanum;
 import frc.robot.subsystems.Payload;
-// import frc.robot.subsystems.PoseEstimator;
-// import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.PoseEstimator;
+import frc.robot.subsystems.Vision;
 
 import java.util.Map;
 
@@ -29,8 +29,8 @@ public class Telemetry {
     Mecanum m_drivetrain;
     Intake m_intake;
     Payload m_payload;
-    // PoseEstimator m_PoseEstimator;
-    // Vision m_vision;
+    PoseEstimator m_PoseEstimator;
+    Vision m_vision;
     // Climb m_climb;
 
     NetworkTableInstance table;
@@ -93,8 +93,8 @@ public class Telemetry {
         m_payload = Payload.getInstance();
         m_intake = Intake.getInstance();
         // m_climb = Climb.getInstance();
-        // m_PoseEstimator = PoseEstimator.getPoseEstimatorInstance();
-        // m_vision = Vision.getVisionInstance();
+        m_PoseEstimator = PoseEstimator.getPoseEstimatorInstance();
+        m_vision = Vision.getVisionInstance();
         table = NetworkTableInstance.getDefault();
 
         drivetrainData = table.getTable("Drivetrain Data");
@@ -210,13 +210,13 @@ public class Telemetry {
         Constants.ClimbConstants.pivotSpeed = climbCurrentSetSpeed.getDouble(Constants.ClimbConstants.pivotSpeed);
 
         //autonomous
-        // poseX.setDouble(m_PoseEstimator.getPose().getX());
-        // poseY.setDouble(m_PoseEstimator.getPose().getY());
-        // poseAngle.setDouble(m_PoseEstimator.getPose().getRotation().getDegrees());
-        // seeAprilTagFront.setBoolean(m_vision.frontHasTag());
-        // seeAprilTagBack.setBoolean(m_vision.backHasTag());
-        // apriltagIDFront.setDouble(m_vision.frontTagID());
-        // apriltagIDBack.setDouble(m_vision.backTagID());
+        poseX.setDouble(m_PoseEstimator.getPose().getX());
+        poseY.setDouble(m_PoseEstimator.getPose().getY());
+        poseAngle.setDouble(m_PoseEstimator.getPose().getRotation().getDegrees());
+        seeAprilTagFront.setBoolean(m_vision.frontHasTag());
+        seeAprilTagBack.setBoolean(m_vision.backHasTag());
+        apriltagIDFront.setDouble(m_vision.frontTagID());
+        apriltagIDBack.setDouble(m_vision.backTagID());
      
 
 
