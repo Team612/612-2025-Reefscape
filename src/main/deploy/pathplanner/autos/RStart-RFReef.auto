@@ -7,19 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LStartTurn"
+            "pathName": "RFTurnStart"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "LStart-RFReef"
+            "pathName": "RStart-RFReef"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": null
+            "pathName": "RFTurnReef"
           }
         }
       ]
