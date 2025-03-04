@@ -146,7 +146,7 @@ private SparkClosedLoopController driverControllerBR;
     if(Math.abs(x) < DEADZONE) x = 0;
     if(Math.abs(y) < DEADZONE) y = 0;
     if(Math.abs(zRotation) < DEADZONE) zRotation = 0;
-    mech.driveCartesian(x, y, zRotation, getPigeonAngle());
+    mech.driveCartesian(x, y, zRotation, getPigeonAngle().times(-1));
   }
   
 

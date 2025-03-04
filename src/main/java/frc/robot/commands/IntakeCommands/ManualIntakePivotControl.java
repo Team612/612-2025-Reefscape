@@ -27,7 +27,7 @@ public class ManualIntakePivotControl extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intake.setPivotSpeed(ControlMap.gunner_controls.getRawAxis(1) * Constants.IntakeConstants.pivotspeed);
+    m_intake.setPivotSpeed(-ControlMap.gunner_controls.getRawAxis(1) * Constants.IntakeConstants.pivotspeed);
   }
 
   // Called once the command ends or is interrupted.

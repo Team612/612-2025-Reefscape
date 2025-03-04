@@ -28,10 +28,10 @@ public class ManualElevatorControl extends Command {
   @Override
   public void execute() {
     if (ControlMap.gunner_controls.getRawAxis(0) == 1){
-      m_payload.setMotorSpeed(ControlMap.gunner_controls.getRawAxis(0) * Constants.ElevatorConstants.payloadDownSpeed);
+      m_payload.setMotorSpeed(-ControlMap.gunner_controls.getRawAxis(0) * Constants.ElevatorConstants.payloadDownSpeed);
     }
     else if (ControlMap.gunner_controls.getRawAxis(0) == -1){
-    m_payload.setMotorSpeed(ControlMap.gunner_controls.getRawAxis(0) * Constants.ElevatorConstants.payloadUpSpeed);
+    m_payload.setMotorSpeed(-ControlMap.gunner_controls.getRawAxis(0) * Constants.ElevatorConstants.payloadUpSpeed);
     }
   }
 

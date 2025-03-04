@@ -89,7 +89,7 @@ public class Constants {
         public static double kI = 0;
         public static double kD = 0;
 
-        public static double pivotspeed = 0.30; 
+        public static double pivotspeed = 0.40; 
         public static final double L1Position = 0.0;
         public static final double L2Position = 26.126;
         public static final double L3Position = 26.126;
@@ -123,7 +123,7 @@ public class Constants {
         public static final double kPositionConversionFactor = (kSprocketPitchDiameter * Math.PI) / kGearRatio; //meters per revolutions
         public static final double kVelocityConversionFactor = kPositionConversionFactor / 60.0; // meters per rotations seconds
 
-        public static double kP = 1.6;
+        public static double kP = 1.8;
         public static double kI = 0;
         public static double kD = 0;
         public static double kS = 0.2;
@@ -190,6 +190,8 @@ public class Constants {
         public static final double maxAngularVelocity = Math.PI;
         public static final double maxAngularAcceleration = Math.PI/6;
         public static final Transform3d frontCameraTransform = new Transform3d(new Translation3d(Units.inchesToMeters(7.5),Units.inchesToMeters(0),Units.inchesToMeters(8)), new Rotation3d());
+        public static final Transform3d backCameraTransform = new Transform3d(new Translation3d(), new Rotation3d(0,0,Units.degreesToRadians(180)));
+
 
         public static final double yApriltagDisplacement = 1;
         public static final double xApriltagDisplacement = 0.5;

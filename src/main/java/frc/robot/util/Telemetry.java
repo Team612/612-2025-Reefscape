@@ -14,8 +14,8 @@ import frc.robot.subsystems.Payload;
 
 import java.util.Map;
 
-import frc.robot.subsystems.PoseEstimator;
-import frc.robot.subsystems.Vision;
+// import frc.robot.subsystems.PoseEstimator;
+// import frc.robot.subsystems.Vision;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.DoubleTopic;
@@ -29,8 +29,8 @@ public class Telemetry {
     Mecanum m_drivetrain;
     Intake m_intake;
     Payload m_payload;
-    PoseEstimator m_PoseEstimator;
-    Vision m_vision;
+    // PoseEstimator m_PoseEstimator;
+    // Vision m_vision;
     // Climb m_climb;
 
     NetworkTableInstance table;
@@ -80,9 +80,12 @@ public class Telemetry {
     GenericEntry poseX;
     GenericEntry poseY;
     GenericEntry poseAngle;
-    GenericEntry seeAprilTag;
+    GenericEntry seeAprilTagFront;
+    GenericEntry seeAprilTagBack;
     GenericEntry apriltagAmbiguity;
-    GenericEntry apriltagID;
+    GenericEntry apriltagIDFront;
+    GenericEntry apriltagIDBack;
+
     GenericEntry apriltagX;
     GenericEntry apriltagY;
     public void initData(){
@@ -90,8 +93,8 @@ public class Telemetry {
         m_payload = Payload.getInstance();
         m_intake = Intake.getInstance();
         // m_climb = Climb.getInstance();
-        m_PoseEstimator = PoseEstimator.getPoseEstimatorInstance();
-        m_vision = Vision.getVisionInstance();
+        // m_PoseEstimator = PoseEstimator.getPoseEstimatorInstance();
+        // m_vision = Vision.getVisionInstance();
         table = NetworkTableInstance.getDefault();
 
         drivetrainData = table.getTable("Drivetrain Data");
@@ -155,11 +158,14 @@ public class Telemetry {
         poseX = autonomousData.getDoubleTopic("Pose X").getGenericEntry();
         poseY = autonomousData.getDoubleTopic("Pose Y").getGenericEntry();
         poseAngle = autonomousData.getDoubleTopic("Pose Angle").getGenericEntry();
-        seeAprilTag = autonomousData.getDoubleTopic("Sees Tag").getGenericEntry();
+        seeAprilTagFront = autonomousData.getDoubleTopic("Sees Tag Front").getGenericEntry();
+        seeAprilTagBack = autonomousData.getDoubleTopic("Sees Tag Back").getGenericEntry();
         apriltagAmbiguity = autonomousData.getDoubleTopic("Tag Ambiguity").getGenericEntry();
             apriltagAmbiguity.setDefaultDouble(0.0);        
-        apriltagID = autonomousData.getDoubleTopic("Tag ID").getGenericEntry();
-            apriltagID.setDefaultDouble(-1);
+        apriltagIDFront = autonomousData.getDoubleTopic("Tag ID Front").getGenericEntry();
+            apriltagIDFront.setDefaultDouble(-1);
+        apriltagIDBack = autonomousData.getDoubleTopic("Tag ID Back").getGenericEntry();
+            apriltagIDBack.setDefaultDouble(-1);
         apriltagX = autonomousData.getDoubleTopic("Tag X").getGenericEntry();
             apriltagX.setDefaultDouble(-1);
         apriltagY = autonomousData.getDoubleTopic("Tag Y").getGenericEntry();
@@ -204,9 +210,13 @@ public class Telemetry {
         Constants.ClimbConstants.pivotSpeed = climbCurrentSetSpeed.getDouble(Constants.ClimbConstants.pivotSpeed);
 
         //autonomous
-        poseX.setDouble(m_PoseEstimator.getPose().getX());
-        poseY.setDouble(m_PoseEstimator.getPose().getY());
-        poseAngle.setDouble(m_PoseEstimator.getPose().getRotation().getDegrees());
+        // poseX.setDouble(m_PoseEstimator.getPose().getX());
+        // poseY.setDouble(m_PoseEstimator.getPose().getY());
+        // poseAngle.setDouble(m_PoseEstimator.getPose().getRotation().getDegrees());
+        // seeAprilTagFront.setBoolean(m_vision.frontHasTag());
+        // seeAprilTagBack.setBoolean(m_vision.backHasTag());
+        // apriltagIDFront.setDouble(m_vision.frontTagID());
+        // apriltagIDBack.setDouble(m_vision.backTagID());
      
 
 

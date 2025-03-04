@@ -25,19 +25,26 @@ import frc.robot.commands.AutoCommands.GunnerCommands.SetBagSpeedTimed;
 // import frc.robot.commands.ClimbCommands.PivotClimbIn;
 // import frc.robot.commands.ClimbCommands.PivotClimbOut;
 import frc.robot.commands.DriveCommands.DefaultDrive;
+import frc.robot.commands.DriveCommands.FeedForwardCharacterization;
+import frc.robot.commands.DriveCommands.FeedForwardCharacterization.FeedForwardCharacterizationData;
 import frc.robot.commands.DriveCommands.FieldRelativeDrive;
 import frc.robot.commands.ElevatorCommands.ElevatorDown;
 import frc.robot.commands.ElevatorCommands.ElevatorUp;
 import frc.robot.commands.ElevatorCommands.ManualElevatorControl;
 import frc.robot.commands.ElevatorCommands.SetElevatorPosition;
+// import frc.robot.commands.AutoCommands.DriverCommands.MoveForward;
 // import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Mecanum;
 import frc.robot.subsystems.Payload;
+// import frc.robot.subsystems.PoseEstimator;
+// import frc.robot.subsystems.Vision;
 // import frc.robot.subsystems.Vision;
 // import frc.robot.commands.ClimbCommands.ClimbConstantShift;
 import frc.robot.util.ControlMap;
 import frc.robot.util.MotorConfigs;
+// import frc.robot.util.TrajectoryConfiguration;
+// import frc.robot.util.TrajectoryCreation;
 // import frc.robot.util.TrajectoryConfiguration;
 // import frc.robot.util.TrajectoryCreation;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -66,6 +73,7 @@ public class RobotContainer {
   private Command m_defaultElevatorCommand;
   private Command m_defaultIntakeCommand;
   private Command m_defaultDrive;
+  private Command m_forwardMeter;
   private Command m_fieldRelativeDrive;
   private Command m_closeServo;
   private Command m_openServo;
@@ -100,6 +108,7 @@ public class RobotContainer {
 
     m_BagIn = new BagIn(m_intake);
     m_BagOut =  new BagOut(m_intake);
+    // m_forwardMeter = new MoveForward(m_drivetrain, m_poseEstimator, m_trajCreation, m_vision, 0, false);
     // m_PivotIntakeOut = new PivotIntakeOut(m_intake, m_payload);
     // m_PivotIntakeIn = new PivotIntakeIn(m_intake,m_payload);
     // m_ElevatorUp = new ElevatorUp(m_payload);
@@ -148,6 +157,13 @@ public class RobotContainer {
     m_chooser.addOption("Auto L1", m_autoL1);
     m_chooser.addOption("Auto L2", m_autoL2);
     m_chooser.addOption("Auto L3", m_autoL3);
+    m_chooser.addOption("Forward Meter",m_forwardMeter);
+    m_chooser.addOption("Mecanum Characterization", new FeedForwardCharacterization(
+                  m_drivetrain,
+                  true,
+                  new FeedForwardCharacterizationData("drive"),
+                  m_drivetrain::runCharacterizationVolts,
+                  m_drivetrain::getCharacterizationVelocity));
 
     m_chooser.setDefaultOption("Nothing Selected", null);
     SmartDashboard.putData(m_chooser);
@@ -157,10 +173,10 @@ public class RobotContainer {
 
   private void configureBindings() {
     ControlMap.driver_controls.leftBumper().onTrue(new InstantCommand(() -> m_drivetrain.zeroGyro()));
-    ControlMap.driver_controls.rightBumper().toggleOnTrue(m_defaultDrive);
-    ControlMap.driver_controls.b().onTrue(m_autoCoralStation);
-    ControlMap.driver_controls.a().onTrue(m_autoL2);
-    ControlMap.driver_controls.x().onTrue(m_autoL3);
+    ControlMap.driver_controls.rightBumper().toggleOnTrue(m_fieldRelativeDrive);
+    // ControlMap.driver_controls.b().onTrue(m_visio);
+    // ControlMap.driver_controls.a().onTrue(m_autoL2);
+    // ControlMap.driver_controls.x().onTrue(m_autoL3);
 
     // ControlMap.driver_controls.leftTrigger().onTrue(new ApriltagAlign(
     //  m_poseEstimator,
@@ -198,10 +214,10 @@ public class RobotContainer {
     ControlMap.gunnerButton8.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.L2Position));
     ControlMap.gunnerButton9.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.L3Position));
     ControlMap.gunnerButton10.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.CoralStationPosition));
-    ControlMap.gunnerButton11.onTrue(m_autoL1);
-    ControlMap.gunnerButton12.onTrue(m_autoL2);
-    ControlMap.gunnerButton13.onTrue(m_autoL3);
-    ControlMap.gunnerButton14.onTrue(m_autoCoralStation);
+    ControlMap.gunnerButton14.onTrue(m_autoL1);
+    ControlMap.gunnerButton13.onTrue(m_autoL2);
+    ControlMap.gunnerButton12.onTrue(m_autoL3);
+    ControlMap.gunnerButton11.onTrue(m_autoCoralStation);
     // ControlMap.gunnerButton12.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.CoralStationPosition));
     // ControlMap.gunnerButton4.onTrue(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L1Position));
 
