@@ -17,6 +17,9 @@ import frc.robot.commands.IntakeCommands.BagIn;
 import frc.robot.commands.IntakeCommands.BagOut;
 import frc.robot.commands.IntakeCommands.ManualIntakePivotControl;
 import frc.robot.commands.IntakeCommands.SetIntakePivotPosition;
+import frc.robot.commands.IntakeCommands.ZeroIntake;
+import frc.robot.commands.AutoCommands.DriverCommands.PIDAlign;
+import frc.robot.commands.AutoCommands.DriverCommands.SimpleAlign;
 // import frc.robot.commands.AutoCommands.DriverCommands.ApriltagAlign;
 import frc.robot.commands.AutoCommands.GunnerCommands.SetBagSpeedTimed;
 // import frc.robot.commands.ClimbCommands.CloseServo;
@@ -32,6 +35,7 @@ import frc.robot.commands.ElevatorCommands.ElevatorDown;
 import frc.robot.commands.ElevatorCommands.ElevatorUp;
 import frc.robot.commands.ElevatorCommands.ManualElevatorControl;
 import frc.robot.commands.ElevatorCommands.SetElevatorPosition;
+import frc.robot.commands.ElevatorCommands.ZeroElevator;
 // import frc.robot.commands.AutoCommands.DriverCommands.MoveForward;
 // import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Intake;
@@ -83,10 +87,15 @@ public class RobotContainer {
   private Command m_ClimbConstantShiftUp;
   private Command m_ClimbConstantShiftDown;
 
+  private Command m_alignLeft;
+  private Command m_alignRight;
+  private Command m_simpleAlign;
+
   private SequentialCommandGroup m_autoL1;
   private SequentialCommandGroup m_autoL2;
   private SequentialCommandGroup m_autoL3;
   private SequentialCommandGroup m_autoCoralStation;
+  private SequentialCommandGroup m_autoZero;
   private SequentialCommandGroup m_outAndOpenClimb;
   private SequentialCommandGroup m_inAndClosedClimb;
 
@@ -118,6 +127,10 @@ public class RobotContainer {
 
     m_defaultDrive = new DefaultDrive(m_drivetrain);
     m_fieldRelativeDrive = new FieldRelativeDrive(m_drivetrain);
+
+    m_alignLeft = new PIDAlign(m_drivetrain, m_vision, 1);
+    m_alignRight = new PIDAlign(m_drivetrain, m_vision, -1);
+    m_simpleAlign = new SimpleAlign(m_drivetrain, m_vision);
 
     // m_closeServo = new CloseServo(m_climb);
     // m_openServo = new OpenServo(m_climb);
@@ -151,6 +164,9 @@ public class RobotContainer {
     .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L3Position))
     .andThen(new SetBagSpeedTimed(m_intake));
 
+    m_autoZero = new SequentialCommandGroup(new ZeroIntake(m_intake))
+    .andThen(new ZeroElevator(m_payload));
+
     m_outAndOpenClimb = null; //new SequentialCommandGroup(m_pivotClimbOut).andThen(m_openServo);
     m_inAndClosedClimb = null;//new SequentialCommandGroup(m_closeServo).andThen(m_pivotClimbIn);
 
@@ -174,6 +190,9 @@ public class RobotContainer {
   private void configureBindings() {
     ControlMap.driver_controls.leftBumper().onTrue(new InstantCommand(() -> m_drivetrain.zeroGyro()));
     ControlMap.driver_controls.rightBumper().toggleOnTrue(m_fieldRelativeDrive);
+    ControlMap.driver_controls.b().onTrue(m_alignRight);
+    ControlMap.driver_controls.x().onTrue(m_alignLeft);
+    ControlMap.driver_controls.a().whileTrue(m_simpleAlign);
     // ControlMap.driver_controls.b().onTrue(m_visio);
     // ControlMap.driver_controls.a().onTrue(m_autoL2);
     // ControlMap.driver_controls.x().onTrue(m_autoL3);

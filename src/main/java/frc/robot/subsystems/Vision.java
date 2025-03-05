@@ -158,14 +158,32 @@ public class Vision extends SubsystemBase {
     // return new PhotonPipelineResult();
     return null;
   }  
-  
  
   public Pose2d getFrontRelativeTagPose() { //pose of the april tag detected
     for (PhotonPipelineResult result : frontCameraResults){
         if (result.hasTargets()){
             PhotonTrackedTarget bestTarget = result.getBestTarget();
-            Transform3d tagSpace = bestTarget.getBestCameraToTarget();
-            return new Pose2d(tagSpace.getX(), tagSpace.getY(), new Rotation2d( (bestTarget.getYaw()) * (Math.PI/180)) ); 
+            Transform3d tagSpace = bestTarget.getBestCameraToTarget().plus(getRobotToFrontCam());
+            return new Pose2d(tagSpace.getX(), tagSpace.getY(), tagSpace.getRotation().toRotation2d()); 
+        }
+    }
+    // if (result.hasTargets()) {
+    //   PhotonTrackedTarget bestTarget = result.getBestTarget();
+
+    //   Transform3d tagSpace = bestTarget.getBestCameraToTarget();
+
+    //   return new Pose2d(tagSpace.getX(), tagSpace.getY(), new Rotation2d( (bestTarget.getYaw()) * (Math.PI/180)) ); 
+    // }
+    // return new Pose2d();
+    return new Pose2d();
+  }
+
+  public Pose2d getBackRelativeTagPose() { //pose of the april tag detected
+    for (PhotonPipelineResult result : backCameraResults){
+        if (result.hasTargets()){
+            PhotonTrackedTarget bestTarget = result.getBestTarget();
+            Transform3d tagSpace = bestTarget.getBestCameraToTarget().plus(getRobotToBackCam());
+            return new Pose2d(tagSpace.getX(), tagSpace.getY(), tagSpace.getRotation().toRotation2d()); 
         }
     }
     // if (result.hasTargets()) {
@@ -204,6 +222,33 @@ public class Vision extends SubsystemBase {
     return photonPoseEstimator.update(new PhotonPipelineResult());
   }
 
+  public boolean alignedLeft() {
+    double x = getFrontRelativeTagPose().getX();
+    double y = getFrontRelativeTagPose().getY();
+    double angle = getFrontRelativeTagPose().getRotation().getDegrees();
+
+    double xOffset = 0.5;
+    double yOffset = 0.2;
+
+    if (Math.abs(x - xOffset) < 0.1 && Math.abs(y - yOffset) < 0.1 && y < 0 && Math.abs(angle) < 1) {
+      return true;
+    }
+    return false;
+  }
+
+  public boolean alignedRight() {
+    double x = getFrontRelativeTagPose().getX();
+    double y = getFrontRelativeTagPose().getY();
+    double angle = getFrontRelativeTagPose().getRotation().getDegrees();
+
+    double xOffset = 0.5;
+    double yOffset = 0.2;
+
+    if (Math.abs(x - xOffset) < 0.1 && Math.abs(y - yOffset) < 0.1 && y > 0 && Math.abs(angle) < 1) {
+      return true;
+    }
+    return false;
+  }
 
   @Override
   public void periodic() {

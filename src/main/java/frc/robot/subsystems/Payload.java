@@ -96,6 +96,9 @@ public static Payload getInstance(){
   return payloadInstance;
 }
 
+public boolean isLimitPressed() {
+  return elevatorMotor.getForwardLimitSwitch().isPressed();
+}
 
   @Override
   public void periodic() {

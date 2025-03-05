@@ -16,7 +16,8 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 
-
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
@@ -235,5 +236,9 @@ private SparkClosedLoopController driverControllerBR;
       spark_fl.setVoltage(characterizationVolts);
       spark_br.setVoltage(characterizationVolts);
     }
+    PIDController m_translationController = new PIDController(1, 0, 0);
+
+    double xApplied = m_translationController.calculate(0, 0.5);
+    System.out.println(xApplied);
   }
 }
