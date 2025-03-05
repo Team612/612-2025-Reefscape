@@ -16,6 +16,7 @@ public class Robot extends TimedRobot {
   private int neo1ID = 1;
   private int neo2ID = 10;
   private int controllerPort = 0;
+  private double leftSideSlow = 0.6;
 
   //instantiation
   private TalonSRX cim1 = new TalonSRX(cim1ID);
@@ -74,8 +75,8 @@ public class Robot extends TimedRobot {
       deflator = 1/(Math.abs(speed) + Math.abs(turn));
 
     // aplies inputs to wheels
-    cim1.set(TalonSRXControlMode.PercentOutput,(speed + turn) * deflator);
-    cim2.set(TalonSRXControlMode.PercentOutput,(speed + turn) * deflator);
+    cim1.set(TalonSRXControlMode.PercentOutput,(speed + turn) * deflator * leftSideSlow);
+    cim2.set(TalonSRXControlMode.PercentOutput,(speed + turn) * deflator * leftSideSlow);
     cim3.set(TalonSRXControlMode.PercentOutput,(speed - turn) * deflator);
     cim4.set(TalonSRXControlMode.PercentOutput,(speed - turn) * deflator);
 
