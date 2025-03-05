@@ -51,6 +51,7 @@ public class Vision extends SubsystemBase {
     m_candle = new CANdle(Constants.LedConstants.candleID);
     frontCamera = new PhotonCamera(Constants.AutoConstants.frontCamera); 
     backCamera = new PhotonCamera(Constants.AutoConstants.backCamera);
+    setColor(255, 255, 255);
     //calls once on instantiation
     frontCameraResults = frontCamera.getAllUnreadResults();
     backCameraResults = backCamera.getAllUnreadResults();

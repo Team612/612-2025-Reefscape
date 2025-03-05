@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.NamedCommands;
+
 // import frc.robot.subsystems.PoseEstimator;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -20,6 +22,7 @@ import frc.robot.commands.IntakeCommands.SetIntakePivotPosition;
 import frc.robot.commands.IntakeCommands.ZeroIntake;
 import frc.robot.commands.AutoCommands.DriverCommands.PIDAlign;
 import frc.robot.commands.AutoCommands.DriverCommands.SimpleAlign;
+import frc.robot.commands.AutoCommands.GunnerCommands.SetBagSpeedInTimed;
 // import frc.robot.commands.AutoCommands.DriverCommands.ApriltagAlign;
 import frc.robot.commands.AutoCommands.GunnerCommands.SetBagSpeedTimed;
 // import frc.robot.commands.ClimbCommands.CloseServo;
@@ -95,6 +98,8 @@ public class RobotContainer {
   private SequentialCommandGroup m_autoL2;
   private SequentialCommandGroup m_autoL3;
   private SequentialCommandGroup m_autoCoralStation;
+  private SequentialCommandGroup m_autoCoralStation2;
+
   private SequentialCommandGroup m_autoZero;
   private SequentialCommandGroup m_outAndOpenClimb;
   private SequentialCommandGroup m_inAndClosedClimb;
@@ -152,6 +157,10 @@ public class RobotContainer {
     m_autoCoralStation = new SequentialCommandGroup(new SetElevatorPosition(m_payload, m_intake,Constants.ElevatorConstants.CoralStationPosition)
     .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.CoralStationPosition)));
 
+    m_autoCoralStation2 = new SequentialCommandGroup(new SetElevatorPosition(m_payload, m_intake,Constants.ElevatorConstants.CoralStationPosition)
+    .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.CoralStationPosition))
+    .andThen(new SetBagSpeedInTimed(m_intake)));
+
     m_autoL1 = new SequentialCommandGroup(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.L1Position))
     .andThen(new AutoOutCoral(m_intake))
     .andThen(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.basePosition));
@@ -169,6 +178,11 @@ public class RobotContainer {
 
     m_outAndOpenClimb = null; //new SequentialCommandGroup(m_pivotClimbOut).andThen(m_openServo);
     m_inAndClosedClimb = null;//new SequentialCommandGroup(m_closeServo).andThen(m_pivotClimbIn);
+
+    NamedCommands.registerCommand("autoL1", m_autoL1);
+    NamedCommands.registerCommand("autoL2", m_autoL2);
+    NamedCommands.registerCommand("autoL3", m_autoL3);
+    NamedCommands.registerCommand("autoCoral", m_autoCoralStation2);
 
     m_chooser.addOption("Auto L1", m_autoL1);
     m_chooser.addOption("Auto L2", m_autoL2);

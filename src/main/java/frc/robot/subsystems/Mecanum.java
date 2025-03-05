@@ -239,6 +239,6 @@ private SparkClosedLoopController driverControllerBR;
     PIDController m_translationController = new PIDController(1, 0, 0);
 
     double xApplied = m_translationController.calculate(0, 0.5);
-    System.out.println(xApplied);
+   
   }
 }

@@ -35,7 +35,7 @@ public class PIDAlign extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double xApplied = -m_xTranslationController.calculate(m_vision.getFrontRelativeTagPose().getX(), 0.5);
+    double xApplied = m_xTranslationController.calculate(m_vision.getFrontRelativeTagPose().getX(), 0.5);
 		double yApplied = -m_yTranslationController.calculate(m_vision.getFrontRelativeTagPose().getY(), m_side * 0.2);
     //rotation may need to be negated here
     double rotationApplied = -m_rotationController.calculate(m_vision.getFrontRelativeTagPose().getRotation().getRadians(), 0);
