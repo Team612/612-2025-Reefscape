@@ -51,9 +51,9 @@ public class RobotContainer {
     // gunnerControls.y().onTrue(new PivotCommand(new Shoot(new SparkMax(0, MotorType.kBrushless)), 3));
     gunnerControls.rightTrigger().whileTrue(new PivotCommand(new Shoot(pivotMotor),true));
     gunnerControls.leftTrigger().whileTrue(new PivotCommand(new Shoot(pivotMotor),false));
-    gunnerControls.a().whileTrue(new ShootCommand(new Motor(new TalonSRX(1)), true, 1000, 1));
-    gunnerControls.b().whileTrue(new ShootCommand(new Motor(new TalonSRX(1)), true, 1000, 2));
-    gunnerControls.x().whileTrue(new ShootCommand(new Motor(new TalonSRX(1)), true, 1000, 3));
+    gunnerControls.a().onTrue(new ShootCommand(new Motor(new TalonSRX(1)), 1000, 1));
+    gunnerControls.b().whileTrue(new ShootCommand(new Motor(new TalonSRX(1)), 1000, 2));
+    gunnerControls.x().whileTrue(new ShootCommand(new Motor(new TalonSRX(1)), 1000, 3));
   }
 
   /**

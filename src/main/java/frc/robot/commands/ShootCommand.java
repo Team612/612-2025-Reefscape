@@ -12,15 +12,14 @@ import frc.robot.subsystems.Motor;
 public class ShootCommand extends Command {
   /** Creates a new ShootCommand. */
   private final Motor m_motor;
-  private boolean ready;
   private final long finish;
   private long time;
   private int level;
-  public ShootCommand(Motor motor, boolean atLevel, int finish, int level) { // 1 = L1, 2 = L2, 3 = L3
+  public ShootCommand(Motor motor, int finish, int level) { // 1 = L1, 2 = L2, 3 = L3
     m_motor = motor;
-    ready = atLevel;
     this.level = level;
     this.finish = finish;
+    time = System.currentTimeMillis();
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -33,7 +32,11 @@ public class ShootCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_motor.setVelocity(level == 3 ? 0.7 : level == 2 ? 0.5 : 0.275);
+    if (System.currentTimeMillis() - time <= finish - 0.01) {
+      m_motor.setVelocity(level == 3 ? 0.7 : level == 2 ? 0.5 : 0.275);
+    } else {
+      m_motor.setVelocity(0);
+    }
   }
 
   // Called once the command ends or is interrupted.
