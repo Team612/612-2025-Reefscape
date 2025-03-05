@@ -28,19 +28,11 @@ public class Robot extends TimedRobot {
   private static final int ServoID = 0;
   private static final int ClimbPivotID = 8;
   private static final double ClimbPivotSpeed = 0.1;
-<<<<<<< Updated upstream
   private static final double Elevatorkp = 1;
   private static final double maxAutoElevatorSpeed = 0.5;
   private static final double coralStationPosition = -0.316;
   private static final double L2Position = -0.236;
   private static final double L3Position = -0.654;
-=======
-  private static final double Elevatorkp = 1.0;
-  private static final double maxAutoElevatorSpeed = 0.5;
-  private static final double coralStation = 0.316;
-  private static final double L2Position = 0.236;
-  private static final double L3Position = 0.654;
->>>>>>> Stashed changes
 
   // instantiate things here
   private XboxController driveController = new XboxController(driverPort);
@@ -63,13 +55,9 @@ public class Robot extends TimedRobot {
   @SuppressWarnings("deprecation")
   public Robot() {
     mech.setDeadband(DEADZONE);
-    elevator.setInverted(true);
-<<<<<<< Updated upstream
-=======
-    
+    elevator.setInverted(true);    
     if (elevator.getForwardLimitSwitch().isPressed())
       elevator.getEncoder().setPosition(0);
->>>>>>> Stashed changes
   }
 
   @Override
@@ -117,45 +105,18 @@ public class Robot extends TimedRobot {
 
     // controls elevator using gunner buttons
     // and adds pid control
-<<<<<<< Updated upstream
-    if ((controller.getRightTriggerAxis() != 0) || (controller.getLeftTriggerAxis() != 0))
-      Lposition = -1;
-    if (controller.getRawButtonPressed(7))
-      Lposition = 2;
-    if (controller.getRawButtonPressed(8))
-      Lposition = 3;
-    if (controller.getLeftBumperButtonPressed())
-      Lposition = 1;
-    
-    double elevatorSpeed = 0.0;
-    if (Lposition == -1){
-      elevatorSpeed = controller.getLeftTriggerAxis()-controller.getRightTriggerAxis();
-      elevator.set(elevatorSpeed);
-    }
-    else{
-      if (Lposition == 1)
-        elevatorSpeed = elevatorController.calculate(elevator.getEncoder().getPosition(), coralStationPosition);
-      else if (Lposition == 2)
-        elevatorSpeed = elevatorController.calculate(elevator.getEncoder().getPosition(), L2Position);
-      else if (Lposition == 3)
-        elevatorSpeed = elevatorController.calculate(elevator.getEncoder().getPosition(), L3Position);
-      if (elevatorSpeed > maxAutoElevatorSpeed)
-        elevatorSpeed = maxAutoElevatorSpeed;
-      if (elevatorSpeed < -maxAutoElevatorSpeed)
-        elevatorSpeed = -maxAutoElevatorSpeed;
-=======
-    if (gunController.getBButton())
-      Lposition = 0;
-    if (gunController.getXButton())
-      Lposition = 1;
     if (gunController.getAButton())
+      Lposition = 1;
+    if (gunController.getXButton())
       Lposition = 2;
     if (gunController.getYButton())
       Lposition = 3;
+    if (gunController.getBButton())
+      Lposition = 0;
     
-    double elevatorSpeed = 0;
+    double elevatorSpeed = 0.0;
     if (Lposition == 0){
-      elevatorSpeed = -elevatorController.calculate(elevator.getEncoder().getPosition(), 0);
+      elevatorSpeed = elevatorController.calculate(elevator.getEncoder().getPosition(), 0);
       elevatorSpeed = applyMin(elevatorSpeed);
       intakePivot.set(IntakePivotSpeed);
       if (intakePivot.getForwardLimitSwitch().isPressed())
@@ -164,25 +125,23 @@ public class Robot extends TimedRobot {
         elevator.set(0);
     }
     if (Lposition == 1){
-      elevatorSpeed = -elevatorController.calculate(elevator.getEncoder().getPosition(), coralStation);
+      elevatorSpeed = elevatorController.calculate(elevator.getEncoder().getPosition(), L2Position);
       elevatorSpeed = applyMin(elevatorSpeed);
->>>>>>> Stashed changes
+      intakePivot.set(IntakePivotSpeed);
       elevator.set(elevatorSpeed);
-      intakePivot.set(-IntakePivotSpeed);
     }
     if (Lposition == 2){
-      elevatorSpeed = -elevatorController.calculate(elevator.getEncoder().getPosition(), L2Position);
+      elevatorSpeed = elevatorController.calculate(elevator.getEncoder().getPosition(), coralStationPosition);
       elevatorSpeed = applyMin(elevatorSpeed);
+      intakePivot.set(-IntakePivotSpeed);
       elevator.set(elevatorSpeed);
-      intakePivot.set(IntakePivotSpeed);
     }
     if (Lposition == 3){
-      elevatorSpeed = -elevatorController.calculate(elevator.getEncoder().getPosition(), L3Position);
+      elevatorSpeed = elevatorController.calculate(elevator.getEncoder().getPosition(), L3Position);
       elevatorSpeed = applyMin(elevatorSpeed);
-      elevator.set(elevatorSpeed);
       intakePivot.set(IntakePivotSpeed);
+      elevator.set(elevatorSpeed);
     }
-
     // controls intake bag motor with gunner variable inputs
     intakeBag.set(gunController.getRightTriggerAxis()-gunController.getLeftTriggerAxis());
 
@@ -199,8 +158,6 @@ public class Robot extends TimedRobot {
     //   servo.set(0);
     // else
     //   servo.set(0.5);
-<<<<<<< Updated upstream
-=======
   }
 
   public static double applyMin(double elevatorSpeed){
@@ -209,7 +166,6 @@ public class Robot extends TimedRobot {
     if (elevatorSpeed < -maxAutoElevatorSpeed)
       elevatorSpeed = -maxAutoElevatorSpeed;
     return elevatorSpeed;
->>>>>>> Stashed changes
   }
 
   @Override
