@@ -27,8 +27,11 @@ public class Robot extends TimedRobot {
   private static final int ServoID = 0;
   private static final int ClimbPivotID = 8;
   private static final double ClimbPivotSpeed = 0.1;
-  private static final double Elevatorkp = 0.0;
-  private static final double maxAutoElevatorSpeed = 0.25;
+  private static final double Elevatorkp = 1;
+  private static final double maxAutoElevatorSpeed = 0.5;
+  private static final double coralStationPosition = 0.316;
+  private static final double L2Position = 0.236;
+  private static final double L3Position = 0.654;
 
   // instantiate things here
   private XboxController controller = new XboxController(constantXboxControllerPortNumber);
@@ -47,8 +50,10 @@ public class Robot extends TimedRobot {
   private PIDController elevatorController = new PIDController(Elevatorkp, 0, 0);
   
   // aplies deadband so the robot does not drift when you let go of the controller.
+  @SuppressWarnings("deprecation")
   public Robot() {
     mech.setDeadband(DEADZONE);
+    elevator.setInverted(true);
   }
 
   @Override
@@ -64,6 +69,11 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("servo Position", servo.get());
     SmartDashboard.putNumber("elevator Position", elevator.getEncoder().getPosition());
     SmartDashboard.putNumber("intake Position", intakePivot.getEncoder().getPosition());
+    SmartDashboard.putNumber("desired intake position", Lposition);
+
+    if (elevator.getForwardLimitSwitch().isPressed()){
+      elevator.getEncoder().setPosition(0);
+    }
   }
 
   @Override
@@ -110,12 +120,11 @@ public class Robot extends TimedRobot {
     if ((controller.getRightTriggerAxis() != 0) || (controller.getLeftTriggerAxis() != 0))
       Lposition = -1;
     if (controller.getRawButtonPressed(7))
-      Lposition = 1;
-    if (controller.getRawButtonPressed(8))
       Lposition = 2;
-    if (controller.getLeftBumperButtonPressed())
+    if (controller.getRawButtonPressed(8))
       Lposition = 3;
-    System.out.println(Lposition);
+    if (controller.getLeftBumperButtonPressed())
+      Lposition = 1;
     
     double elevatorSpeed = 0.0;
     if (Lposition == -1){
@@ -124,15 +133,15 @@ public class Robot extends TimedRobot {
     }
     else{
       if (Lposition == 1)
-        elevatorSpeed = elevatorController.calculate(elevator.getEncoder().getPosition(), 0.035);
+        elevatorSpeed = -elevatorController.calculate(elevator.getEncoder().getPosition(), coralStationPosition);
       else if (Lposition == 2)
-        elevatorSpeed = elevatorController.calculate(elevator.getEncoder().getPosition(), 0.256);
+        elevatorSpeed = -elevatorController.calculate(elevator.getEncoder().getPosition(), L2Position);
       else if (Lposition == 3)
-        elevatorSpeed = elevatorController.calculate(elevator.getEncoder().getPosition(), 0.654);
-      if (elevatorSpeed > 0.5)
-        elevatorSpeed = 0.5;
-      if (elevatorSpeed < -0.5)
-        elevatorSpeed = -0.5;
+        elevatorSpeed = -elevatorController.calculate(elevator.getEncoder().getPosition(), L3Position);
+      if (elevatorSpeed > maxAutoElevatorSpeed)
+        elevatorSpeed = maxAutoElevatorSpeed;
+      if (elevatorSpeed < -maxAutoElevatorSpeed)
+        elevatorSpeed = -maxAutoElevatorSpeed;
       elevator.set(elevatorSpeed);
     }
 
@@ -149,9 +158,6 @@ public class Robot extends TimedRobot {
     //   servo.set(0);
     // else
     //   servo.set(0.5);
-
-
-
   }
 
   @Override
