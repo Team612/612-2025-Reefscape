@@ -89,11 +89,11 @@ public class Constants {
         public static double kI = 0;
         public static double kD = 0;
 
-        public static double pivotspeed = 0.40; 
+        public static double pivotspeed = 0.50; 
         public static final double L1Position = 0.0;
         public static final double L2Position = 26.126;
         public static final double L3Position = 26.126;
-        public static final double CoralStationPosition = 347.451;
+        public static final double CoralStationPosition = 341.212; //347.451;
         public static final double maxPivotL1Angle = 70;
         public static final double maxVelocity = 0.3;
         public static final double maxAcceleration = 0.3;
@@ -172,7 +172,7 @@ public class Constants {
     }
 
     public class LedConstants {
-        public static final int candleID = 0;
+        public static final int candleID = 1;
     }
 
     public class DriverConstants {
@@ -193,8 +193,8 @@ public class Constants {
         public static final Transform3d backCameraTransform = new Transform3d(new Translation3d(), new Rotation3d(0,0,Units.degreesToRadians(180)));
 
 
-        public static final double yApriltagDisplacement = 1;
-        public static final double xApriltagDisplacement = 0.5;
+        public static final double yApriltagDisplacement = 0.2;
+        public static final double xApriltagDisplacement = 0.2;
     }
   
     

@@ -39,10 +39,16 @@ public class MotorConfigs {
                 .velocityConversionFactor(Constants.IntakeConstants.kVelocityConversionFactor);
 
         spark_pivot_configs
+            .absoluteEncoder
+                .positionConversionFactor(Constants.IntakeConstants.kPositionConversionFactor)
+                .velocityConversionFactor(Constants.IntakeConstants.kVelocityConversionFactor);
+
+        spark_pivot_configs
             .closedLoop
                 .p(Constants.IntakeConstants.kP)
                 .i(Constants.IntakeConstants.kI)
-                .d(Constants.IntakeConstants.kD);
+                .d(Constants.IntakeConstants.kD)
+                .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
         
         spark_pivot_configs
             .closedLoop

@@ -144,7 +144,9 @@ public class Vision extends SubsystemBase {
 
   public PhotonPipelineResult getFrontPipelineResult() {
     for (PhotonPipelineResult result : frontCameraResults){
+      if (result != null){
         return result;
+      }
     }
     return null;
   }  
@@ -223,12 +225,13 @@ public class Vision extends SubsystemBase {
     return photonPoseEstimator.update(new PhotonPipelineResult());
   }
 
+
   public boolean alignedLeft() {
     double x = getFrontRelativeTagPose().getX();
     double y = getFrontRelativeTagPose().getY();
     double angle = getFrontRelativeTagPose().getRotation().getDegrees();
 
-    double xOffset = 0.5;
+    double xOffset = 0.3;
     double yOffset = 0.2;
 
     if (Math.abs(x - xOffset) < 0.1 && Math.abs(y - yOffset) < 0.1 && y < 0 && Math.abs(angle) < 1) {
@@ -242,7 +245,7 @@ public class Vision extends SubsystemBase {
     double y = getFrontRelativeTagPose().getY();
     double angle = getFrontRelativeTagPose().getRotation().getDegrees();
 
-    double xOffset = 0.5;
+    double xOffset = 0.3;
     double yOffset = 0.2;
 
     if (Math.abs(x - xOffset) < 0.1 && Math.abs(y - yOffset) < 0.1 && y > 0 && Math.abs(angle) < 1) {

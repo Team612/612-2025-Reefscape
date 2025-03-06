@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import java.util.List;
+
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 // import frc.robot.subsystems.PoseEstimator;
@@ -50,11 +53,15 @@ import frc.robot.subsystems.Vision;
 // import frc.robot.commands.ClimbCommands.ClimbConstantShift;
 import frc.robot.util.ControlMap;
 import frc.robot.util.MotorConfigs;
-// import frc.robot.util.TrajectoryConfiguration;
-// import frc.robot.util.TrajectoryCreation;
+import frc.robot.util.PathPlannerUtil;
+import frc.robot.util.TrajectoryConfiguration;
+import frc.robot.util.TrajectoryCreation;
 // import frc.robot.util.TrajectoryConfiguration;
 // import frc.robot.util.TrajectoryCreation;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.AutoCommands.DriverCommands.ApriltagAlign;
+import frc.robot.commands.AutoCommands.DriverCommands.LeaveZone;
+import frc.robot.commands.AutoCommands.DriverCommands.LeaveZone;
 
 public class RobotContainer {
   private Payload m_payload;
@@ -63,8 +70,8 @@ public class RobotContainer {
   private Mecanum m_drivetrain;
   private PoseEstimator m_poseEstimator;
   private Vision m_vision;
-  // private TrajectoryConfiguration m_trajConfigs;
-  // private TrajectoryCreation m_trajCreation;
+  private TrajectoryConfiguration m_trajConfigs;
+  private TrajectoryCreation m_trajCreation;
   private MotorConfigs m_motorConfigs = new MotorConfigs();
 
   private SendableChooser<Command> m_chooser;
@@ -77,6 +84,7 @@ public class RobotContainer {
   // private Command m_PivotIntakeOut;
   // private Command m_ElevatorUp;
   // private Command m_ElevatorDown;
+  private Command m_apriltagCentering;
   private Command m_defaultElevatorCommand;
   private Command m_defaultIntakeCommand;
   private Command m_defaultDrive;
@@ -93,6 +101,7 @@ public class RobotContainer {
   private Command m_alignLeft;
   private Command m_alignRight;
   private Command m_simpleAlign;
+  private Command m_poorMansAuto;
 
   private SequentialCommandGroup m_autoL1;
   private SequentialCommandGroup m_autoL2;
@@ -115,8 +124,8 @@ public class RobotContainer {
 
     m_poseEstimator = PoseEstimator.getPoseEstimatorInstance();
     m_vision = Vision.getVisionInstance();
-    // m_trajConfigs = TrajectoryConfiguration.getInstance();
-    // m_trajCreation = TrajectoryCreation.getInstance();
+    m_trajConfigs = TrajectoryConfiguration.getInstance();
+    m_trajCreation = TrajectoryCreation.getInstance();
     
     m_chooser = new SendableChooser<>();
 
@@ -136,6 +145,9 @@ public class RobotContainer {
     m_alignLeft = new PIDAlign(m_drivetrain, m_vision, 1);
     m_alignRight = new PIDAlign(m_drivetrain, m_vision, -1);
     m_simpleAlign = new SimpleAlign(m_drivetrain, m_vision);
+
+    m_apriltagCentering = new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, -0.2, -0.2);
+    m_poorMansAuto = new LeaveZone(m_drivetrain, m_vision);
 
     // m_closeServo = new CloseServo(m_climb);
     // m_openServo = new OpenServo(m_climb);
@@ -182,6 +194,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("autoL1", m_autoL1);
     NamedCommands.registerCommand("autoL2", m_autoL2);
     NamedCommands.registerCommand("autoL3", m_autoL3);
+    NamedCommands.registerCommand("AprilCenter", m_apriltagCentering);
     NamedCommands.registerCommand("autoCoral", m_autoCoralStation2);
 
     m_chooser.addOption("Auto L1", m_autoL1);
@@ -196,6 +209,13 @@ public class RobotContainer {
                   m_drivetrain::getCharacterizationVelocity));
 
     m_chooser.setDefaultOption("Nothing Selected", null);
+    m_chooser.addOption("Poor Man's Auto", m_poorMansAuto);
+
+     List<String> autos = PathPlannerUtil.getExistingPaths();
+    for (String auto : autos) {
+      m_chooser.addOption(auto, AutoBuilder.buildAuto(auto));
+    }
+
     SmartDashboard.putData(m_chooser);
   }
 
@@ -204,9 +224,17 @@ public class RobotContainer {
   private void configureBindings() {
     ControlMap.driver_controls.leftBumper().onTrue(new InstantCommand(() -> m_drivetrain.zeroGyro()));
     ControlMap.driver_controls.rightBumper().toggleOnTrue(m_fieldRelativeDrive);
-    ControlMap.driver_controls.b().onTrue(m_alignRight);
-    ControlMap.driver_controls.x().onTrue(m_alignLeft);
-    ControlMap.driver_controls.a().whileTrue(m_simpleAlign);
+    ControlMap.driver_controls.leftTrigger().onTrue(new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, 
+    -Constants.AutoConstants.xApriltagDisplacement,
+    Constants.AutoConstants.yApriltagDisplacement));
+    ControlMap.driver_controls.rightTrigger().onTrue(new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, 
+    -Constants.AutoConstants.xApriltagDisplacement,
+    -Constants.AutoConstants.yApriltagDisplacement));
+
+    // ControlMap.driver_controls.b().onTrue(m_apriltagCentering);
+    // ControlMap.driver_controls.x().onTrue(m_alignLeft);
+    // ControlMap.driver_controls.a().whileTrue(m_simpleAlign);
+   
     // ControlMap.driver_controls.b().onTrue(m_visio);
     // ControlMap.driver_controls.a().onTrue(m_autoL2);
     // ControlMap.driver_controls.x().onTrue(m_autoL3);
@@ -247,7 +275,7 @@ public class RobotContainer {
     ControlMap.gunnerButton8.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.L2Position));
     ControlMap.gunnerButton9.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.L3Position));
     ControlMap.gunnerButton10.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.CoralStationPosition));
-    ControlMap.gunnerButton14.onTrue(m_autoL1);
+    ControlMap.gunnerButton14.onTrue(m_autoZero);
     ControlMap.gunnerButton13.onTrue(m_autoL2);
     ControlMap.gunnerButton12.onTrue(m_autoL3);
     ControlMap.gunnerButton11.onTrue(m_autoCoralStation);

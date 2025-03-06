@@ -21,6 +21,12 @@
           "data": {
             "pathName": "RFTurnReef"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "autoL2"
+          }
         }
       ]
     }

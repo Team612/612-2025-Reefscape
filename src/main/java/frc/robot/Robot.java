@@ -7,6 +7,7 @@ package frc.robot;
 import java.net.http.WebSocket;
 import java.nio.file.FileSystem;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.net.WebServer;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Preferences;
@@ -83,7 +84,8 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+  }
 
   @Override
   public void autonomousExit() {}

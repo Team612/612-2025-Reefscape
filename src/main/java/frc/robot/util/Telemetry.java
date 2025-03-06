@@ -85,6 +85,9 @@ public class Telemetry {
     GenericEntry apriltagAmbiguity;
     GenericEntry apriltagIDFront;
     GenericEntry apriltagIDBack;
+    GenericEntry relativeApriltagX;
+    GenericEntry alignedLeft;
+    GenericEntry alignedRight;
 
     GenericEntry apriltagX;
     GenericEntry apriltagY;
@@ -170,6 +173,10 @@ public class Telemetry {
             apriltagX.setDefaultDouble(-1);
         apriltagY = autonomousData.getDoubleTopic("Tag Y").getGenericEntry();
             apriltagY.setDefaultDouble(-1);
+        alignedLeft = autonomousData.getBooleanTopic("aligned left").getGenericEntry();
+            alignedLeft.setDefaultBoolean(false);
+        alignedRight = autonomousData.getBooleanTopic("aligned right").getGenericEntry();
+        alignedRight.setDefaultBoolean(false);
   
     
     }
@@ -217,6 +224,8 @@ public class Telemetry {
         seeAprilTagBack.setBoolean(m_vision.backHasTag());
         apriltagIDFront.setDouble(m_vision.frontTagID());
         apriltagIDBack.setDouble(m_vision.backTagID());
+        alignedLeft.setBoolean(m_vision.alignedLeft());
+        alignedRight.setBoolean(m_vision.alignedRight());
      
 
 
