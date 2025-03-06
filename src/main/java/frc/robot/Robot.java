@@ -22,13 +22,13 @@ public class Robot extends TimedRobot {
   private static final int PigeonID = 0;
   private static final double DEADZONE = 0.05;
   private static final int IntakePivotID = 6;
-  private static final double IntakePivotSpeed = 0.5;
+  private static final double IntakePivotSpeed = 0.05;
   private static final int IntakeBagID = 7;
   private static final int ElevatorID = 5;
   private static final int ServoID = 0;
   private static final int ClimbPivotID = 8;
   private static final double ClimbPivotSpeed = 0.1;
-  private static final double Elevatorkp = 1;
+  private static final double Elevatorkp = 0.1;
   private static final double maxAutoElevatorSpeed = 0.5;
   private static final double coralStationPosition = -0.316;
   private static final double L2Position = -0.236;
@@ -144,6 +144,11 @@ public class Robot extends TimedRobot {
     }
     // controls intake bag motor with gunner variable inputs
     intakeBag.set(gunController.getRightTriggerAxis()-gunController.getLeftTriggerAxis());
+
+    if (Lposition == -1){
+      elevator.set(gunController.getLeftY());
+      intakePivot.set(gunController.getRightX());
+    }
 
     // controls climb using the POV buttons
     // if (controller.getPOV() == 0)
