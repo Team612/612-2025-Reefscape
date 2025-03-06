@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends TimedRobot {
   //CONSTANTS
@@ -21,9 +22,9 @@ public class Robot extends TimedRobot {
   private static final double wheelBase = 0.48;
   
   // these are the max motor percent desired to be allocated to a certain dirrection or rotation, this works for any motor with a percent output 0-1
-  private static final double xPercent = 1;
-  private static final double yPercent = 1;
-  private static final double zPercent = 0.25;
+  private static final double xPercent = 1/2.0;
+  private static final double yPercent = 1/2.0;
+  private static final double zPercent = 0.25/2.0;
 
   // the swerve kinematics object only takes in radians per second and this will ofset those calculations for it to take in motor percent
   private static final double zNecessaryOffset = (zPercent)/(Math.sqrt((trackWidth/2)*(trackWidth/2)+(wheelBase/2)*(wheelBase/2)));
@@ -89,7 +90,12 @@ public class Robot extends TimedRobot {
   // instantiating a gyroscope so that our robot can drive in the field oriented mode
   Pigeon2 gyro = new Pigeon2(gyroID);
 
-  public Robot() {}
+  public Robot() {
+    SmartDashboard.putNumber("FrontL", mod0.angleEncoder.getAbsolutePosition().getValueAsDouble());
+    SmartDashboard.putNumber("FrontR", mod1.angleEncoder.getAbsolutePosition().getValueAsDouble());
+    SmartDashboard.putNumber("BackL", mod2.angleEncoder.getAbsolutePosition().getValueAsDouble());
+    SmartDashboard.putNumber("BackR", mod3.angleEncoder.getAbsolutePosition().getValueAsDouble());
+  }
 
   @Override
   public void robotPeriodic() {}
@@ -142,10 +148,15 @@ public class Robot extends TimedRobot {
     SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, 1);
 
     // applies our swerve module states with our custom set method
-    mod0.setMySwerveState(moduleStates[0]);
-    mod1.setMySwerveState(moduleStates[1]);
-    mod2.setMySwerveState(moduleStates[2]);
-    mod3.setMySwerveState(moduleStates[3]);
+    mod0.slowlyDriveForward();
+    mod1.slowlyDriveForward();
+    mod2.slowlyDriveForward();
+    mod3.slowlyDriveForward();
+
+    // mod0.setMySwerveState(moduleStates[0]);
+    // mod1.setMySwerveState(moduleStates[1]);
+    // mod2.setMySwerveState(moduleStates[2]);
+    // mod3.setMySwerveState(moduleStates[3]);
   }
 
   @Override
@@ -171,7 +182,7 @@ public class Robot extends TimedRobot {
     // data fields for each swerve module
     private SparkMax angleMotor;
     private SparkMax drivingMotor;
-    private CANcoder angleEncoder;
+    public CANcoder angleEncoder;
     private double encoderOffset;
     private PIDController turnPIDController = new PIDController(kp, 0, 0);
   
@@ -185,7 +196,7 @@ public class Robot extends TimedRobot {
       this.encoderOffset = encoderOffset;
 
       // sets driving motors to inverse so positive motor values make the robot go forward
-      drivingMotor.setInverted(true);
+      // drivingMotor.setInverted(true);
 
       // this important command allows the PID controller to determine the shortest way to reach a target
       // for example if the PID controller knows the wheel is currently at 3rad and wants to get to -3rad
@@ -196,6 +207,10 @@ public class Robot extends TimedRobot {
     // gets velocity of the wheel using the built in neo encoders
     public double getVelocity(){
       return drivingMotor.getEncoder().getVelocity();
+    }
+
+    public void slowlyDriveForward(){
+      drivingMotor.set(0.1);
     }
 
     // this method takes in desired swerve module states and turns them into reality with motor inputs
