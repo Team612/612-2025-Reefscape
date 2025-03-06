@@ -1,4 +1,7 @@
 package frc.robot.util;
+import com.ctre.phoenix.led.CANdleConfiguration;
+import com.ctre.phoenix.led.CANdle.LEDStripType;
+import com.ctre.phoenix.led.CANdle.VBatOutputMode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
@@ -15,6 +18,7 @@ public class MotorConfigs {
     public static SparkMaxConfig elevator_pivot_configs;
     public static SparkMaxConfig climb_pivot_configs;
     public static SparkMaxConfig drivetrain_configs;
+    public static CANdleConfiguration LED_configs;
 
 
     public MotorConfigs(){
@@ -22,6 +26,7 @@ public class MotorConfigs {
         configureClimb();
         configureElevator();
         configureDrivetrain();
+        configureLEDs();
                    
     }
 
@@ -162,7 +167,12 @@ public class MotorConfigs {
             
     }
 
-    
+    public void configureLEDs(){
+        LED_configs = new CANdleConfiguration();
+        LED_configs.stripType = LEDStripType.RGBW;
+        LED_configs.vBatOutputMode = VBatOutputMode.Modulated;
+    }
+
 
   
 

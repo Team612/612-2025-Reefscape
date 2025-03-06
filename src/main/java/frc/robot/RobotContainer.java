@@ -45,6 +45,7 @@ import frc.robot.commands.ElevatorCommands.ZeroElevator;
 // import frc.robot.commands.AutoCommands.DriverCommands.MoveForward;
 // import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Leds;
 import frc.robot.subsystems.Mecanum;
 import frc.robot.subsystems.Payload;
 import frc.robot.subsystems.PoseEstimator;
@@ -70,6 +71,7 @@ public class RobotContainer {
   private Mecanum m_drivetrain;
   private PoseEstimator m_poseEstimator;
   private Vision m_vision;
+  private Leds m_leds;
   private TrajectoryConfiguration m_trajConfigs;
   private TrajectoryCreation m_trajCreation;
   private MotorConfigs m_motorConfigs = new MotorConfigs();
@@ -126,6 +128,7 @@ public class RobotContainer {
     m_vision = Vision.getVisionInstance();
     m_trajConfigs = TrajectoryConfiguration.getInstance();
     m_trajCreation = TrajectoryCreation.getInstance();
+    m_leds = Leds.getInstance();
     
     m_chooser = new SendableChooser<>();
 

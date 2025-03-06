@@ -38,7 +38,7 @@ public class Vision extends SubsystemBase {
   List<PhotonPipelineResult> frontCameraResults;
   List<PhotonPipelineResult> backCameraResults;
 
-  CANdle m_candle;
+
 
   private Pose2d robotInTagPose;
   /**
@@ -48,10 +48,10 @@ public class Vision extends SubsystemBase {
    **/
 
   public Vision() {
-    m_candle = new CANdle(Constants.LedConstants.candleID);
+
     frontCamera = new PhotonCamera(Constants.AutoConstants.frontCamera); 
     backCamera = new PhotonCamera(Constants.AutoConstants.backCamera);
-    setColor(255, 255, 255);
+    
     //calls once on instantiation
     frontCameraResults = frontCamera.getAllUnreadResults();
     backCameraResults = backCamera.getAllUnreadResults();
@@ -70,9 +70,6 @@ public class Vision extends SubsystemBase {
     return visionInstance;
   }
 
-  public void setColor(int red, int green, int blue){
-      m_candle.setLEDs(red, green, blue);
-  }
 
   public PhotonPoseEstimator getPhotonPoseEstimator(){
     return photonPoseEstimator;
