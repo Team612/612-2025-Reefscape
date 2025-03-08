@@ -135,7 +135,7 @@ public class Constants {
     public static final double L1Position = 0.035;
     public static final double L2Position = 0.236; //0.279
     public static final double L3Position = 0.654;
-    public static final double CoralStationPosition = 0.316;
+    public static final double CoralStationPosition = 0.295;//0.318
     // public static final double L1Minimum = 0.3 //the minimum position that allows for maximum movement for the intake pivot
     public static final double elevatorThreshold = 0.01;
 

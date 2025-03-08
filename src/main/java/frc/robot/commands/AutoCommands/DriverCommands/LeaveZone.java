@@ -21,6 +21,8 @@ public class LeaveZone extends Command {
     m_drivetrain = drivetrain;
     m_vision = vision;
     timer = new Timer();
+    timer.reset();
+    timer.start();
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain);
   }

@@ -16,13 +16,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.commands.IntakeCommands.AutoIntakeCoral;
-import frc.robot.commands.IntakeCommands.AutoOutCoral;
-import frc.robot.commands.IntakeCommands.BagIn;
-import frc.robot.commands.IntakeCommands.BagOut;
-import frc.robot.commands.IntakeCommands.ManualIntakePivotControl;
-import frc.robot.commands.IntakeCommands.SetIntakePivotPosition;
-import frc.robot.commands.IntakeCommands.ZeroIntake;
+// import frc.robot.util.TrajectoryConfiguration;
+// import frc.robot.util.TrajectoryCreation;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.AutoCommands.DriverCommands.ApriltagAlign;
+import frc.robot.commands.AutoCommands.DriverCommands.LeaveZone;
 import frc.robot.commands.AutoCommands.GunnerCommands.SetBagSpeedInTimed;
 // import frc.robot.commands.AutoCommands.DriverCommands.ApriltagAlign;
 import frc.robot.commands.AutoCommands.GunnerCommands.SetBagSpeedTimed;
@@ -35,11 +33,15 @@ import frc.robot.commands.DriveCommands.DefaultDrive;
 import frc.robot.commands.DriveCommands.FeedForwardCharacterization;
 import frc.robot.commands.DriveCommands.FeedForwardCharacterization.FeedForwardCharacterizationData;
 import frc.robot.commands.DriveCommands.FieldRelativeDrive;
-import frc.robot.commands.ElevatorCommands.ElevatorDown;
-import frc.robot.commands.ElevatorCommands.ElevatorUp;
 import frc.robot.commands.ElevatorCommands.ManualElevatorControl;
 import frc.robot.commands.ElevatorCommands.SetElevatorPosition;
 import frc.robot.commands.ElevatorCommands.ZeroElevator;
+import frc.robot.commands.IntakeCommands.AutoOutCoral;
+import frc.robot.commands.IntakeCommands.BagIn;
+import frc.robot.commands.IntakeCommands.BagOut;
+import frc.robot.commands.IntakeCommands.ManualIntakePivotControl;
+import frc.robot.commands.IntakeCommands.SetIntakePivotPosition;
+import frc.robot.commands.IntakeCommands.ZeroIntake;
 // import frc.robot.commands.AutoCommands.DriverCommands.MoveForward;
 // import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Intake;
@@ -55,12 +57,6 @@ import frc.robot.util.MotorConfigs;
 import frc.robot.util.PathPlannerUtil;
 import frc.robot.util.TrajectoryConfiguration;
 import frc.robot.util.TrajectoryCreation;
-// import frc.robot.util.TrajectoryConfiguration;
-// import frc.robot.util.TrajectoryCreation;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.AutoCommands.DriverCommands.ApriltagAlign;
-import frc.robot.commands.AutoCommands.DriverCommands.LeaveZone;
-import frc.robot.commands.AutoCommands.DriverCommands.LeaveZone;
 
 public class RobotContainer {
   private Payload m_payload;
@@ -94,12 +90,13 @@ public class RobotContainer {
   private Command m_openServo;
   private Command m_pivotClimbIn;
   private Command m_pivotClimbOut;
-
+  private Command m_LeaveZone;
   private Command m_ClimbConstantShiftUp;
   private Command m_ClimbConstantShiftDown;
   private Command m_leaveZone;
-  private Command m_poorMansAuto;
 
+
+  private SequentialCommandGroup m_poorMansAuto;
   private SequentialCommandGroup m_autoL1;
   private SequentialCommandGroup m_autoL2;
   private SequentialCommandGroup m_autoL3;
@@ -134,6 +131,8 @@ public class RobotContainer {
     // m_PivotIntakeIn = new PivotIntakeIn(m_intake,m_payload);
     // m_ElevatorUp = new ElevatorUp(m_payload);
     // m_ElevatorDown = new ElevatorDown(m_payload);
+    m_LeaveZone = new LeaveZone(m_drivetrain, m_vision);
+
     m_defaultElevatorCommand = new ManualElevatorControl(m_payload);
     m_defaultIntakeCommand = new ManualIntakePivotControl(m_intake);
 
@@ -184,7 +183,9 @@ public class RobotContainer {
 
     m_poorMansAuto = new SequentialCommandGroup(new LeaveZone(m_drivetrain, m_vision))
     .andThen(new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, -Constants.AutoConstants.xApriltagDisplacement, -Constants.AutoConstants.yApriltagDisplacement))
-    .andThen(m_autoL2);
+    .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L2Position))
+    .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L2Position))
+    .andThen(new SetBagSpeedTimed(m_intake));
 
     m_outAndOpenClimb = null; //new SequentialCommandGroup(m_pivotClimbOut).andThen(m_openServo);
     m_inAndClosedClimb = null;//new SequentialCommandGroup(m_closeServo).andThen(m_pivotClimbIn);
@@ -199,6 +200,8 @@ public class RobotContainer {
     m_chooser.addOption("Auto L2", m_autoL2);
     m_chooser.addOption("Auto L3", m_autoL3);
     m_chooser.addOption("Forward Meter",m_forwardMeter);
+    m_chooser.addOption("Leave Zone",m_LeaveZone);
+
     m_chooser.addOption("Mecanum Characterization", new FeedForwardCharacterization(
                   m_drivetrain,
                   true,
