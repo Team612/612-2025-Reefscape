@@ -12,12 +12,12 @@ import frc.robot.subsystems.Vision;
 import edu.wpi.first.wpilibj.Timer;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class LeaveZone extends Command {
+public class PoorLeaveZone extends Command {
   private final Mecanum m_drivetrain;
   private final Vision m_vision;
   private Timer timer;
 
-  public LeaveZone(Mecanum drivetrain, Vision vision) {
+  public PoorLeaveZone(Mecanum drivetrain, Vision vision) {
     m_drivetrain = drivetrain;
     m_vision = vision;
     timer = new Timer();
@@ -44,6 +44,7 @@ public class LeaveZone extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    System.out.println("finished");
     timer.stop();
     timer.reset();
     m_drivetrain.RobotOrientedDrive(0, 0, 0);
@@ -52,5 +53,5 @@ public class LeaveZone extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timer.get() >= 2;  }
+    return timer.get() >= 2 || m_vision.frontHasTag();  }
 }

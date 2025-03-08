@@ -200,7 +200,7 @@ public class TrajectoryCreation {
         double y = estimatedPose.getY();
         Rotation2d angle = estimatedPose.getRotation();
 
-        double displacementX = 0;
+        double displacementX = Units.inchesToMeters(16);
         double displacementY = 0;
 
 

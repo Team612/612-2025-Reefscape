@@ -9,6 +9,7 @@ import java.util.List;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.math.util.Units;
 // import frc.robot.subsystems.PoseEstimator;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -20,7 +21,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 // import frc.robot.util.TrajectoryCreation;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.AutoCommands.DriverCommands.ApriltagAlign;
+import frc.robot.commands.AutoCommands.DriverCommands.CoralStationAlign;
 import frc.robot.commands.AutoCommands.DriverCommands.LeaveZone;
+import frc.robot.commands.AutoCommands.DriverCommands.PoorLeaveZone;
 import frc.robot.commands.AutoCommands.GunnerCommands.SetBagSpeedInTimed;
 // import frc.robot.commands.AutoCommands.DriverCommands.ApriltagAlign;
 import frc.robot.commands.AutoCommands.GunnerCommands.SetBagSpeedTimed;
@@ -94,6 +97,8 @@ public class RobotContainer {
   private Command m_ClimbConstantShiftUp;
   private Command m_ClimbConstantShiftDown;
   private Command m_leaveZone;
+  private Command m_poorLeaveZone;
+  private Command m_coralAlign;
 
 
   private SequentialCommandGroup m_poorMansAuto;
@@ -132,6 +137,7 @@ public class RobotContainer {
     // m_ElevatorUp = new ElevatorUp(m_payload);
     // m_ElevatorDown = new ElevatorDown(m_payload);
     m_LeaveZone = new LeaveZone(m_drivetrain, m_vision);
+    m_poorLeaveZone = new PoorLeaveZone(m_drivetrain, m_vision);
 
     m_defaultElevatorCommand = new ManualElevatorControl(m_payload);
     m_defaultIntakeCommand = new ManualIntakePivotControl(m_intake);
@@ -141,6 +147,7 @@ public class RobotContainer {
 
     m_apriltagCentering = new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, -0.2, -0.2);
     m_leaveZone = new LeaveZone(m_drivetrain, m_vision);
+    m_coralAlign = new CoralStationAlign(m_poseEstimator, m_vision, m_trajCreation, Units.inchesToMeters(16), -0.40);
 
     // m_closeServo = new CloseServo(m_climb);
     // m_openServo = new OpenServo(m_climb);
@@ -181,7 +188,9 @@ public class RobotContainer {
     m_autoZero = new SequentialCommandGroup(new ZeroIntake(m_intake))
     .andThen(new ZeroElevator(m_payload));
 
-    m_poorMansAuto = new SequentialCommandGroup(new LeaveZone(m_drivetrain, m_vision))
+    m_poorMansAuto = new SequentialCommandGroup(new ZeroIntake(m_intake))
+    .andThen(new ZeroElevator(m_payload))
+    .andThen(new PoorLeaveZone(m_drivetrain, m_vision))
     .andThen(new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, -Constants.AutoConstants.xApriltagDisplacement, -Constants.AutoConstants.yApriltagDisplacement))
     .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L2Position))
     .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L2Position))
@@ -231,6 +240,7 @@ public class RobotContainer {
     ControlMap.driver_controls.rightTrigger().onTrue(new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, 
     -Constants.AutoConstants.xApriltagDisplacement,
     -Constants.AutoConstants.yApriltagDisplacement));
+    // ControlMap.driver_controls.a().onTrue(m_coralAlign);
 
     // ControlMap.driver_controls.b().onTrue(m_apriltagCentering);
     // ControlMap.driver_controls.x().onTrue(m_alignLeft);
