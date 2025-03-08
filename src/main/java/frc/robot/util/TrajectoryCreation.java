@@ -193,6 +193,55 @@ public class TrajectoryCreation {
         return path;
     }
 
+    public PathPlannerPath coralStationCentering(PoseEstimator estimation, Vision vision){
+    
+        Pose2d estimatedPose = estimation.getPose();
+        double x = estimatedPose.getX();
+        double y = estimatedPose.getY();
+        Rotation2d angle = estimatedPose.getRotation();
+
+        double displacementX = 0;
+        double displacementY = 0;
+
+
+        PhotonPipelineResult result = vision.getBackPipelineResult();
+        System.out.println(result);
+        System.out.println(result.getBestTarget());
+
+        
+        double tagX = vision.return_tag_pose(result.getBestTarget().getFiducialId()).getX();
+        double tagY = vision.return_tag_pose(result.getBestTarget().getFiducialId()).getY();
+        SmartDashboard.putNumber("Y:", tagY);
+        SmartDashboard.putNumber("X", tagX);
+
+
+        //gets the angle RELATIVE to the field through polar coordinates
+        Rotation2d heading = new Translation2d(tagX - x, tagY - y).getAngle(); 
+        //gets the tag angle, flipped 180 for field relative
+        Rotation2d tagAngle = vision.return_tag_pose(result.getBestTarget().getFiducialId()).getRotation().toRotation2d().rotateBy(new Rotation2d(Units.degreesToRadians(0)));
+        //final pose is the tag pose transformed by a certain distance RELATIVE to the tag (with robot coordinates)
+        //note that the heading should be the tag angle so it faces outward. Putting the tag angle as the heading results in trajectory heading towards the tag, not infront
+        Pose2d finalPose = new Pose2d(tagX, tagY, tagAngle).transformBy(new Transform2d(new Translation2d(displacementX,displacementY),new Rotation2d()));
+        
+        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+            new Pose2d(x,y, heading),
+            finalPose
+        
+        );
+
+        // Create the path using the bezier points created above
+        PathPlannerPath path = new PathPlannerPath(
+            waypoints,
+            constraints,
+            null,
+            new GoalEndState(0.0, tagAngle) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+        );
+
+        // Prevent the path from being flipped if the coordinates are already correct
+        path.preventFlipping = true;
+        return path;
+    }
+
     public static TrajectoryCreation getInstance(){
         if (instance == null){
             instance = new TrajectoryCreation();

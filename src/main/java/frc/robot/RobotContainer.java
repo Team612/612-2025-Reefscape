@@ -23,8 +23,6 @@ import frc.robot.commands.IntakeCommands.BagOut;
 import frc.robot.commands.IntakeCommands.ManualIntakePivotControl;
 import frc.robot.commands.IntakeCommands.SetIntakePivotPosition;
 import frc.robot.commands.IntakeCommands.ZeroIntake;
-import frc.robot.commands.AutoCommands.DriverCommands.PIDAlign;
-import frc.robot.commands.AutoCommands.DriverCommands.SimpleAlign;
 import frc.robot.commands.AutoCommands.GunnerCommands.SetBagSpeedInTimed;
 // import frc.robot.commands.AutoCommands.DriverCommands.ApriltagAlign;
 import frc.robot.commands.AutoCommands.GunnerCommands.SetBagSpeedTimed;
@@ -99,10 +97,7 @@ public class RobotContainer {
 
   private Command m_ClimbConstantShiftUp;
   private Command m_ClimbConstantShiftDown;
-
-  private Command m_alignLeft;
-  private Command m_alignRight;
-  private Command m_simpleAlign;
+  private Command m_leaveZone;
   private Command m_poorMansAuto;
 
   private SequentialCommandGroup m_autoL1;
@@ -145,12 +140,8 @@ public class RobotContainer {
     m_defaultDrive = new DefaultDrive(m_drivetrain);
     m_fieldRelativeDrive = new FieldRelativeDrive(m_drivetrain);
 
-    m_alignLeft = new PIDAlign(m_drivetrain, m_vision, 1);
-    m_alignRight = new PIDAlign(m_drivetrain, m_vision, -1);
-    m_simpleAlign = new SimpleAlign(m_drivetrain, m_vision);
-
     m_apriltagCentering = new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, -0.2, -0.2);
-    m_poorMansAuto = new LeaveZone(m_drivetrain, m_vision);
+    m_leaveZone = new LeaveZone(m_drivetrain, m_vision);
 
     // m_closeServo = new CloseServo(m_climb);
     // m_openServo = new OpenServo(m_climb);
@@ -190,6 +181,10 @@ public class RobotContainer {
 
     m_autoZero = new SequentialCommandGroup(new ZeroIntake(m_intake))
     .andThen(new ZeroElevator(m_payload));
+
+    m_poorMansAuto = new SequentialCommandGroup(new LeaveZone(m_drivetrain, m_vision))
+    .andThen(new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, -Constants.AutoConstants.xApriltagDisplacement, -Constants.AutoConstants.yApriltagDisplacement))
+    .andThen(m_autoL2);
 
     m_outAndOpenClimb = null; //new SequentialCommandGroup(m_pivotClimbOut).andThen(m_openServo);
     m_inAndClosedClimb = null;//new SequentialCommandGroup(m_closeServo).andThen(m_pivotClimbIn);

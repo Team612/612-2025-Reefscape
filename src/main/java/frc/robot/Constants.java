@@ -190,7 +190,7 @@ public class Constants {
         public static final double maxAngularVelocity = Math.PI;
         public static final double maxAngularAcceleration = Math.PI/6;
         public static final Transform3d frontCameraTransform = new Transform3d(new Translation3d(Units.inchesToMeters(7.5),Units.inchesToMeters(0),Units.inchesToMeters(8)), new Rotation3d());
-        public static final Transform3d backCameraTransform = new Transform3d(new Translation3d(), new Rotation3d(0,0,Units.degreesToRadians(180)));
+        public static final Transform3d backCameraTransform = new Transform3d(new Translation3d(Units.inchesToMeters(-15), Units.inchesToMeters(-12), Units.inchesToMeters(36)), new Rotation3d(0, Units.degreesToRadians(17), Units.degreesToRadians(180)));
 
 
         public static final double yApriltagDisplacement = 0.2;

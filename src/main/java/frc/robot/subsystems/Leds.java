@@ -27,7 +27,8 @@ public class Leds extends SubsystemBase {
   
   public void setColor(int red, int green, int blue){
     candle.animate(null);
-    candle.setLEDs(red, green, blue);
+    candle.setLEDs(red, green, blue,0,0,8);
+    
   }
 
   public void waterAnimation(){

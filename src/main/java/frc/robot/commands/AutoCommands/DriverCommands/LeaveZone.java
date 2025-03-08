@@ -35,7 +35,7 @@ public class LeaveZone extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_drivetrain.RobotOrientedDrive(1, 0, 0);
+    m_drivetrain.RobotOrientedDrive(0.5, 0, 0);
     
   }
 
@@ -50,5 +50,5 @@ public class LeaveZone extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timer.get() >= 1.5;  }
+    return timer.get() >= 3;  }
 }

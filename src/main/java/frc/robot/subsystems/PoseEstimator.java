@@ -156,7 +156,7 @@ public class PoseEstimator extends SubsystemBase {
                         for (PhotonTrackedTarget target : estimatedRobotPose.targetsUsed) {
                             Pose3d targetPose = visionSubsystem.return_tag_pose(target.getFiducialId());
                             Transform3d bestTarget = target.getBestCameraToTarget();
-                            Pose3d camPose = targetPose.transformBy(bestTarget.plus(visionSubsystem.getRobotToBackCam()).inverse());  //.plus(new Transform3d(robotToCam, new Rotation3d(0,0,0))); 
+                            Pose3d camPose = targetPose.transformBy(bestTarget.inverse().plus(visionSubsystem.getRobotToBackCam()));  //.plus(new Transform3d(robotToCam, new Rotation3d(0,0,0))); 
         
                             //checking the tags ambiguity. The lower the ambiguity, the more accurate the pose is
                             if (target.getPoseAmbiguity() <= .2) {
