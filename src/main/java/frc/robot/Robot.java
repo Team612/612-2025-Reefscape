@@ -18,8 +18,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends TimedRobot {
   //CONSTANTS
   // used to instantiate swerve kinematics and calculate how to offset swerve kinematics
-  private static final double trackWidth = 0.48;
-  private static final double wheelBase = 0.48;
+  private static final double trackWidth = 0.605;
+  private static final double wheelBase = 0.605;
   
   // these are the max motor percent desired to be allocated to a certain dirrection or rotation, this works for any motor with a percent output 0-1
   private static final double xPercent = 1/2.0;
@@ -51,7 +51,7 @@ public class Robot extends TimedRobot {
   // swerve module 1 constants, front right
   // when the absolute encoder reads 0.02 it is actually at 0
   private static final double mod1EncoderOffset = 0.02;
-  private static final int mod1AngleMotorID = 3;
+  private static final int mod1AngleMotorID = 19;
   private static final int mod1DriveMotorID = 2;
   private static final int mod1CANcoderID = 1;
 
