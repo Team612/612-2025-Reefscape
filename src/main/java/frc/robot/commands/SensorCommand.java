@@ -4,18 +4,18 @@
 
 package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.LIDAR;
+import frc.robot.subsystems.Sensor;
 
-public class LIDARCommand extends Command {
+public class SensorCommand extends Command {
   /** Creates a new DefaultDrive. */
   
-  LIDAR lidar;
-  public LIDARCommand(LIDAR lidar) {
-    this.lidar = lidar;
-    addRequirements(lidar);
+  Sensor m_s;
+  public SensorCommand(Sensor s) {
+    this.m_s = s;
+    addRequirements(m_s);
   }
 
   public void execute() {
-    System.out.println(lidar.getDistance());
+    System.out.println(m_s.getDistance());
   }
 }
