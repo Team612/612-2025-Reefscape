@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 // import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Mecanum;
+import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Payload;
 // import frc.robot.subsystems.PoseEstimator;
 // import frc.robot.subsystems.Vision;
@@ -24,7 +24,7 @@ import edu.wpi.first.networktables.NetworkTableValue;
 import edu.wpi.first.networktables.PubSubOption;
 
 public class Telemetry {
-    Mecanum m_drivetrain;
+    Swerve m_drivetrain;
     Intake m_intake;
     Payload m_payload;
     // Climb m_climb;
@@ -82,7 +82,7 @@ public class Telemetry {
     GenericEntry apriltagX;
     GenericEntry apriltagY;
     public void initData(){
-        m_drivetrain = Mecanum.getInstance();
+        m_drivetrain = Swerve.getInstance();
         m_payload = Payload.getInstance();
         m_intake = Intake.getInstance();
         // m_climb = Climb.getInstance();
@@ -168,10 +168,10 @@ public class Telemetry {
     public void updateData(){
         //drivetrain
         pigeonAngle.setDouble(m_drivetrain.getPigeonAngle().getDegrees());
-        sparkFLVoltage.setDouble(m_drivetrain.getSparks()[0].getOutputCurrent());
-        sparkFRVoltage.setDouble(m_drivetrain.getSparks()[1].getOutputCurrent());
-        sparkBLVoltage.setDouble(m_drivetrain.getSparks()[2].getOutputCurrent());
-        sparkBRVoltage.setDouble(m_drivetrain.getSparks()[3].getOutputCurrent());
+        // sparkFLVoltage.setDouble(m_drivetrain.getSparks()[0].getOutputCurrent());
+        // sparkFRVoltage.setDouble(m_drivetrain.getSparks()[1].getOutputCurrent());
+        // sparkBLVoltage.setDouble(m_drivetrain.getSparks()[2].getOutputCurrent());
+        // sparkBRVoltage.setDouble(m_drivetrain.getSparks()[3].getOutputCurrent());
 
         //payload
         elevatorPosition.setDouble(m_payload.getPosition());

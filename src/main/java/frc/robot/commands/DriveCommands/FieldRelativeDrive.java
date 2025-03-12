@@ -1,26 +1,53 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.commands.DriveCommands;
+
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.Mecanum;
-import frc.robot.util.ControlMap;
+import frc.robot.subsystems.Swerve;
+import java.util.function.DoubleSupplier;
 
 public class FieldRelativeDrive extends Command {
-  /** Creates a new DefaultDrive. */
-  
-  Mecanum m_drivetrain;
-  Constants.DrivetrainConstants m_slowmo;
-  public FieldRelativeDrive(Mecanum drivetrain) {
-    m_drivetrain = drivetrain;
-    m_drivetrain.driveMecanum(0, 0, 0, 0);
+  private Swerve m_drivetrain;
+  private DoubleSupplier translationSup;
+  private DoubleSupplier strafeSup;
+  private DoubleSupplier rotationSup;
+
+  private SlewRateLimiter translationLimiter = new SlewRateLimiter(3.0);
+  private SlewRateLimiter strafeLimiter = new SlewRateLimiter(3.0);
+  private SlewRateLimiter rotationLimiter = new SlewRateLimiter(3.0);
+
+  public FieldRelativeDrive(
+      Swerve drive,
+      DoubleSupplier translationSup,
+      DoubleSupplier strafeSup,
+      DoubleSupplier rotationSup) {
+    this.m_drivetrain = drive;
     addRequirements(m_drivetrain);
+
+    this.translationSup = translationSup;
+    this.strafeSup = strafeSup;
+    this.rotationSup = rotationSup;
   }
 
+  @Override
   public void execute() {
-    m_drivetrain.FieldOrientedDrive(-ControlMap.driver_controls.getRawAxis(1), ControlMap.driver_controls.getRawAxis(0), ControlMap.driver_controls.getRawAxis(4));
+    /* Get Values, Deadband*/
+    double translationVal =
+        translationLimiter.calculate(
+            MathUtil.applyDeadband(translationSup.getAsDouble(), Constants.SwerveConstants.stickDeadband));
+    double strafeVal =
+        strafeLimiter.calculate(
+            MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.SwerveConstants.stickDeadband));
+    double rotationVal =
+        rotationLimiter.calculate(
+            MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.SwerveConstants.stickDeadband));
 
+    /* Drive */
+    m_drivetrain.drive(
+        new Translation2d(translationVal, strafeVal).times(Constants.SwerveConstants.maxSpeed),
+        rotationVal * Constants.SwerveConstants.maxAngularVelocity,
+        true, false);
   }
 }

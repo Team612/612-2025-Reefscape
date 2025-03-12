@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.estimator.PoseEstimator;
 // import frc.robot.subsystems.PoseEstimator;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -11,12 +12,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.commands.IntakeCommands.AutoIntakeCoral;
-import frc.robot.commands.IntakeCommands.AutoOutCoral;
-import frc.robot.commands.IntakeCommands.BagIn;
-import frc.robot.commands.IntakeCommands.BagOut;
-import frc.robot.commands.IntakeCommands.ManualIntakePivotControl;
-import frc.robot.commands.IntakeCommands.SetIntakePivotPosition;
+// import frc.robot.util.TrajectoryConfiguration;
+// import frc.robot.util.TrajectoryCreation;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 // import frc.robot.commands.AutoCommands.DriverCommands.ApriltagAlign;
 import frc.robot.commands.AutoCommands.GunnerCommands.SetBagSpeedTimed;
 // import frc.robot.commands.ClimbCommands.CloseServo;
@@ -26,27 +25,35 @@ import frc.robot.commands.AutoCommands.GunnerCommands.SetBagSpeedTimed;
 // import frc.robot.commands.ClimbCommands.PivotClimbOut;
 import frc.robot.commands.DriveCommands.DefaultDrive;
 import frc.robot.commands.DriveCommands.FieldRelativeDrive;
-import frc.robot.commands.ElevatorCommands.ElevatorDown;
-import frc.robot.commands.ElevatorCommands.ElevatorUp;
 import frc.robot.commands.ElevatorCommands.ManualElevatorControl;
 import frc.robot.commands.ElevatorCommands.SetElevatorPosition;
+import frc.robot.commands.IntakeCommands.AutoOutCoral;
+import frc.robot.commands.IntakeCommands.BagIn;
+import frc.robot.commands.IntakeCommands.BagOut;
+import frc.robot.commands.IntakeCommands.ManualIntakePivotControl;
+import frc.robot.commands.IntakeCommands.SetIntakePivotPosition;
 // import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Mecanum;
 import frc.robot.subsystems.Payload;
+import frc.robot.subsystems.Swerve;
 // import frc.robot.subsystems.Vision;
 // import frc.robot.commands.ClimbCommands.ClimbConstantShift;
 import frc.robot.util.ControlMap;
 import frc.robot.util.MotorConfigs;
-// import frc.robot.util.TrajectoryConfiguration;
-// import frc.robot.util.TrajectoryCreation;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.commands.DriveCommands.RunOnTheFly;
+import frc.robot.commands.DriveCommands.TrajectoryCreation;
+import frc.robot.subsystems.PoseEstimator;
+import frc.robot.subsystems.TrajectoryConfiguration;
+import frc.robot.subsystems.Vision;
 
 public class RobotContainer {
   private Payload m_payload;
   private Intake m_intake;
   // private Climb m_climb;
-  private Mecanum m_drivetrain;
+  private Swerve m_drivetrain;
   // private PoseEstimator m_poseEstimator;
   // private Vision m_vision;
   // private TrajectoryConfiguration m_trajConfigs;
@@ -82,14 +89,22 @@ public class RobotContainer {
   private SequentialCommandGroup m_outAndOpenClimb;
   private SequentialCommandGroup m_inAndClosedClimb;
 
-
+  private final Swerve m_drivetrain;
+  private final TrajectoryCreation m_traj;
+  private final Vision m_vision;
+  private final RunOnTheFly runOnTheFly;
+  private final CommandXboxController driverControls;
+  private final DefaultDrive m_defaultDrive;
+  private final FieldRelativeDrive m_FieldRelativeDrive;
+  private final PoseEstimator m_poseEstimator;
+  private final TrajectoryConfiguration m_trajConfig;
 
 
   public RobotContainer() {
     m_payload = Payload.getInstance();
     m_intake = Intake.getInstance();
     // m_climb = Climb.getInstance();
-    m_drivetrain = Mecanum.getInstance();
+    m_drivetrain = Swerve.getInstance();
 
     // m_poseEstimator = PoseEstimator.getPoseEstimatorInstance();
     // m_vision = Vision.getVisionInstance();
@@ -107,8 +122,24 @@ public class RobotContainer {
     m_defaultElevatorCommand = new ManualElevatorControl(m_payload);
     m_defaultIntakeCommand = new ManualIntakePivotControl(m_intake);
 
-    m_defaultDrive = new DefaultDrive(m_drivetrain);
-    m_fieldRelativeDrive = new FieldRelativeDrive(m_drivetrain);
+     m_poseEstimator = PoseEstimator.getPoseEstimatorInstance();
+    m_vision = Vision.getVisionInstance();
+    m_traj = new TrajectoryCreation();
+    m_trajConfig = TrajectoryConfiguration.getInstance();
+    runOnTheFly = new RunOnTheFly(m_drivetrain, m_poseEstimator, m_traj, m_vision, 0);
+
+
+     driverControls = new CommandXboxController(Constants.SwerveConstants.driverPort);
+    m_defaultDrive = new DefaultDrive( m_drivetrain,
+            () -> -driverControls.getLeftY(),
+            () -> -driverControls.getLeftX(),
+            () -> -driverControls.getRightX());
+
+    m_FieldRelativeDrive = new FieldRelativeDrive( m_drivetrain,
+            () -> -driverControls.getLeftY(),
+            () -> -driverControls.getLeftX(),
+            () -> -driverControls.getRightX());
+
 
     // m_closeServo = new CloseServo(m_climb);
     // m_openServo = new OpenServo(m_climb);
