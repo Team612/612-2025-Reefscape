@@ -49,6 +49,8 @@ public class Robot extends TimedRobot {
   private final Color kBlueTarget = new Color(0.143, 0.427, 0.429);
   private final Color kGreenTarget = new Color(0.197, 0.561, 0.240);
   private final Color kRedTarget = new Color(0.561, 0.232, 0.114);
+  private final Color kBlackTarget = new Color(0.23, 0.29, 0.47);
+
   private final Color kYellowTarget = new Color(0.361, 0.524, 0.113);
 
   @Override
@@ -56,7 +58,7 @@ public class Robot extends TimedRobot {
     m_colorMatcher.addColorMatch(kBlueTarget);
     m_colorMatcher.addColorMatch(kGreenTarget);
     m_colorMatcher.addColorMatch(kRedTarget);
-    m_colorMatcher.addColorMatch(kYellowTarget);    
+    m_colorMatcher.addColorMatch(kYellowTarget);
   }
 
   @Override
@@ -73,6 +75,7 @@ public class Robot extends TimedRobot {
      */
     Color detectedColor = m_colorSensor.getColor();
 
+
     /**
      * Run the color match algorithm on our detected color
      */
@@ -88,17 +91,18 @@ public class Robot extends TimedRobot {
     } else if (match.color == kYellowTarget) {
       colorString = "Yellow";
     } else {
-      colorString = "Unknown";
+      colorString = "" + m_colorSensor.getBlue();
     }
+    System.out.println(detectedColor);
 
     /**
      * Open Smart Dashboard or Shuffleboard to see the color detected by the 
      * sensor.
      */
-    // System.out.println("Red" + detectedColor.red);
-    // SmartDashboard.putNumber("Green", detectedColor.green);
-    // SmartDashboard.putNumber("Blue", detectedColor.blue);
-    // SmartDashboard.putNumber("Confidence", match.confidence);
-    System.out.println("Detected Color" + colorString);
+    SmartDashboard.putNumber("Red", detectedColor.red);
+    SmartDashboard.putNumber("Green", detectedColor.green);
+    SmartDashboard.putNumber("Blue", detectedColor.blue);
+    SmartDashboard.putNumber("Confidence", match.confidence);
+    SmartDashboard.putString("Color", colorString);
   }
 }
