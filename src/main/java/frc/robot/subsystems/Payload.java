@@ -79,22 +79,17 @@ public Command profiledElevatorCommand(double distance) {
             var nextSetpoint =
                 m_profile.calculate(
                     currentTime + kDt, new State(), new State(distance, 0));
-            setStates(currentSetpoint, nextSetpoint, distance);
+            setStates(currentSetpoint, nextSetpoint);
           })
       .until(() -> m_profile.isFinished(0));
 }
 
  public void setStates(
       TrapezoidProfile.State currentLeft,
-      TrapezoidProfile.State nextLeft, double dist) {
+      TrapezoidProfile.State nextLeft) {
     // Feedforward is divided by battery voltage to normalize it to [-1, 1]
-    SparkClosedLoopController m_loopy = elevatorMotor.getClosedLoopController();
-      controller.setReference(dist, null)
-      mompo.setPo(
-        dist,
-        currentLeft.position,
-        m_feedforward.calculateWithVelocities(currentLeft.velocity, nextLeft.velocity)
-            / RobotController.getBatteryVoltage());
+    // SparkClosedLoopController m_loopy = elevatorMotor.getClosedLoopController();
+      controller.setReference(nextLeft.position, ControlType.kPosition);
   }
 // public void setPosition(double position){
 //   //elevatorMotor.set(m_pidController.calculate(getPosition(), position));

@@ -32,7 +32,7 @@ public class SetElevatorPosition extends Command {
   @Override
   public void execute() {
     // System.out.println(position);
-    m_payload.setPosition(position);
+    // m_payload.set(position);
     // m_payload.setMotorSpeed(0.5);
   }
 
