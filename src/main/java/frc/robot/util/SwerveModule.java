@@ -69,7 +69,6 @@ public class SwerveModule {
 
     public void setState(SwerveModuleState desiredState, boolean isOpenLoop){
         desiredState.optimize(getState().angle);
-
         if (isOpenLoop){
             double speed = desiredState.speedMetersPerSecond / Constants.maxSpeed;
             driveController.setReference(speed, ControlType.kDutyCycle);

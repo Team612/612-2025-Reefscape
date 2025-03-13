@@ -48,10 +48,10 @@ public class Swerve extends SubsystemBase {
   public Swerve() {
     swerveModuleConfigs = new SparkConfigs();
     modules = new SwerveModule[] {
-      new SwerveModule(0, Constants.Mod0.constants, swerveModuleConfigs),
-      new SwerveModule(1, Constants.Mod1.constants, swerveModuleConfigs),
-      new SwerveModule(2, Constants.Mod2.constants, swerveModuleConfigs),
-      new SwerveModule(3, Constants.Mod3.constants, swerveModuleConfigs),
+      new SwerveModule(0, Constants.Mod0.constants, swerveModuleConfigs), //front left
+      new SwerveModule(1, Constants.Mod1.constants, swerveModuleConfigs), //back left
+      new SwerveModule(2, Constants.Mod2.constants, swerveModuleConfigs), //front right
+      new SwerveModule(3, Constants.Mod3.constants, swerveModuleConfigs), //back right
     };
     configuration = new Pigeon2Configuration();
     gyro = new Pigeon2(Constants.pigeonID);
