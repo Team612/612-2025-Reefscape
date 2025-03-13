@@ -1,8 +1,15 @@
 package frc.robot;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.LimitSwitchConfig.Type;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Servo;
@@ -22,14 +29,15 @@ public class Robot extends TimedRobot {
   private static final int PigeonID = 0;
   private static final double DEADZONE = 0.05;
   private static final int IntakePivotID = 6;
-  private static final double IntakePivotSpeed = 0.05;
+  private static final double IntakePivotSpeed = 0.5;
   private static final int IntakeBagID = 7;
   private static final int ElevatorID = 5;
   private static final int ServoID = 0;
   private static final int ClimbPivotID = 8;
   private static final double ClimbPivotSpeed = 0.1;
-  private static final double Elevatorkp = 0.1;
+  private static final double Elevatorkp = 1.8;
   private static final double maxAutoElevatorSpeed = 0.5;
+  private static final double resetElevatorSpeed = 0.2;
   private static final double coralStationPosition = -0.316;
   private static final double L2Position = -0.236;
   private static final double L3Position = -0.654;
@@ -42,7 +50,7 @@ public class Robot extends TimedRobot {
   private final static SparkMax spark_bl = new SparkMax(SPARK_BL,MotorType.kBrushless);
   private final static SparkMax spark_br = new SparkMax(SPARK_BR,MotorType.kBrushless);
   private final static SparkMax intakePivot = new SparkMax(IntakePivotID,MotorType.kBrushless);
-  private final static SparkMax intakeBag = new SparkMax(IntakeBagID,MotorType.kBrushless);
+  private final static SparkMax intakeBag = new SparkMax(IntakeBagID,MotorType.kBrushed);
   private final static SparkMax elevator = new SparkMax(ElevatorID,MotorType.kBrushless);
   private final static Servo servo = new Servo(ServoID);
   private final static SparkMax climbPivot = new SparkMax(ClimbPivotID,MotorType.kBrushless);
@@ -50,6 +58,11 @@ public class Robot extends TimedRobot {
   private static MecanumDrive mech = new MecanumDrive(spark_fl, spark_bl, spark_fr, spark_br);
   private static int Lposition = -1;
   private PIDController elevatorController = new PIDController(Elevatorkp, 0, 0);
+  private SparkMaxConfig configs = new SparkMaxConfig();
+
+  // private PhotonCamera
+
+  
   
   // aplies deadband so the robot does not drift when you let go of the controller.
   @SuppressWarnings("deprecation")
@@ -58,7 +71,23 @@ public class Robot extends TimedRobot {
     elevator.setInverted(true);    
     if (elevator.getForwardLimitSwitch().isPressed())
       elevator.getEncoder().setPosition(0);
+    
+      configs
+      .limitSwitch.forwardLimitSwitchType(Type.kNormallyClosed).reverseLimitSwitchType(Type.kNormallyClosed);
+      
+      // configs
+        // .closedLoop
+        //   .pid(Elevatorkp, 0, 0);
+
+    
+    elevator.configure(configs, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    intakePivot.configure(configs, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    // SparkClosedLoopController pidcontroller = elevator.getClosedLoopController();
+    
+    // pidcontroller.setReference(15, ControlType.kPosition);
   }
+    
 
   @Override
   public void robotPeriodic() {
@@ -70,11 +99,13 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("intakeBagSpeed Speed", intakeBag.get());
     SmartDashboard.putNumber("elevator Speed", elevator.get());
     SmartDashboard.putNumber("climbPivot Speed", climbPivot.get());
-    SmartDashboard.putNumber("servo Position", servo.get());
-    SmartDashboard.putNumber("elevator Position", elevator.getEncoder().getPosition());
+    
+    //actually important stuff
     SmartDashboard.putNumber("intake Position", intakePivot.getEncoder().getPosition());
     SmartDashboard.putNumber("desired intake position", Lposition);
-
+    SmartDashboard.putNumber("Elevator Velocity", elevator.getEncoder().getVelocity());
+    SmartDashboard.putNumber("Elevator Error", elevator.getEncoder().getVelocity());
+    SmartDashboard.putNumber("Elevator Position", elevator.getEncoder().getPosition());
     if (elevator.getForwardLimitSwitch().isPressed()){
       elevator.getEncoder().setPosition(0);
     }
@@ -105,6 +136,8 @@ public class Robot extends TimedRobot {
 
     // controls elevator using gunner buttons
     // and adds pid control
+    if ((Math.abs(gunController.getLeftY()) > 0.01) || (Math.abs(gunController.getRightX()) > 0.01))
+      Lposition = -1;
     if (gunController.getAButton())
       Lposition = 1;
     if (gunController.getXButton())
@@ -115,12 +148,14 @@ public class Robot extends TimedRobot {
       Lposition = 0;
     
     double elevatorSpeed = 0.0;
+    if (Lposition == -1){
+      elevator.set(gunController.getLeftY());
+      intakePivot.set(gunController.getRightX());
+    }
     if (Lposition == 0){
-      elevatorSpeed = elevatorController.calculate(elevator.getEncoder().getPosition(), 0);
-      elevatorSpeed = applyMin(elevatorSpeed);
       intakePivot.set(IntakePivotSpeed);
       if (intakePivot.getForwardLimitSwitch().isPressed())
-        elevator.set(elevatorSpeed);
+        elevator.set(resetElevatorSpeed);
       else
         elevator.set(0);
     }
@@ -144,11 +179,6 @@ public class Robot extends TimedRobot {
     }
     // controls intake bag motor with gunner variable inputs
     intakeBag.set(gunController.getRightTriggerAxis()-gunController.getLeftTriggerAxis());
-
-    if (Lposition == -1){
-      elevator.set(gunController.getLeftY());
-      intakePivot.set(gunController.getRightX());
-    }
 
     // controls climb using the POV buttons
     // if (controller.getPOV() == 0)
@@ -183,7 +213,8 @@ public class Robot extends TimedRobot {
   public void testInit() {}
 
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+  }
 
   @Override
   public void simulationInit() {}
