@@ -15,6 +15,10 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.MotorConfigs;
@@ -38,9 +42,11 @@ public class Payload extends SubsystemBase {
   double kDt = 0.02;
   double kMaxVelocity = 0.3;
   double kMaxAccel = 0.3;
-  
+  private final Timer m_timer = new Timer();
+
   private final TrapezoidProfile.Constraints m_constraints = new TrapezoidProfile.Constraints(kMaxVelocity, kMaxAccel);
-  private final ProfiledPIDController m_controller = new ProfiledPIDController(Constants.ElevatorConstants.kP, Constants.ElevatorConstants.kI, Constants.ElevatorConstants.kD, m_constraints);
+  private final TrapezoidProfile m_profile = new TrapezoidProfile(m_constraints);
+  // private final ProfiledPIDController m_controller = new ProfiledPIDController(Constants.ElevatorConstants.kP, Constants.ElevatorConstants.kI, Constants.ElevatorConstants.kD, m_constraints);
   //ks: minimum voltage to overcome static friction. kG: minimum voltage to overcome gravity. Kv: idfk. Do kG before kS
   private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(Constants.ElevatorConstants.kS, Constants.ElevatorConstants.kG, Constants.ElevatorConstants.kV);
 
@@ -57,13 +63,45 @@ public void setMotorSpeed(double speed) {
   elevatorMotor.set(speed);
 }
 
-public void setPosition(double position){
-  //elevatorMotor.set(m_pidController.calculate(getPosition(), position));
-  controller.setReference(-position, ControlType.kPosition);
-  //m_controller.setGoal(-position);
-  //elevatorMotor.setVoltage(m_controller.calculate(getPosition()) + m_feedforward.calculate(m_controller.getSetpoint().velocity));
-//  controller.setReference(-position, ControlType.kMAXMotionPositionControl,ClosedLoopSlot.kSlot0, -m_feedforward.calculate(kMaxVelocity));
+public Command profiledElevatorCommand(double distance) {
+  return startRun(
+          () -> {
+            // Restart timer so profile setpoints start at the beginning
+            m_timer.restart();
+            resetCount();
+          },
+          () -> {
+            // Current state never changes, so we need to use a timer to get the setpoints we need
+            // to be at
+            var currentTime = m_timer.get();
+            var currentSetpoint =
+                m_profile.calculate(currentTime, new State(), new State(distance, 0));
+            var nextSetpoint =
+                m_profile.calculate(
+                    currentTime + kDt, new State(), new State(distance, 0));
+            setStates(currentSetpoint, nextSetpoint, distance);
+          })
+      .until(() -> m_profile.isFinished(0));
 }
+
+ public void setStates(
+      TrapezoidProfile.State currentLeft,
+      TrapezoidProfile.State nextLeft, double dist) {
+    // Feedforward is divided by battery voltage to normalize it to [-1, 1]
+    SparkClosedLoopController m_loopy = elevatorMotor.getClosedLoopController();
+      controller.setReference(dist, null)
+      mompo.setPo(
+        dist,
+        currentLeft.position,
+        m_feedforward.calculateWithVelocities(currentLeft.velocity, nextLeft.velocity)
+            / RobotController.getBatteryVoltage());
+  }
+// public void setPosition(double position){
+//   //elevatorMotor.set(m_pidController.calculate(getPosition(), position));
+  // controller.setReference(-position, ControlType.kPosition);
+//   //m_controller.setGoal(-position);
+//   //elevatorMotor.setVoltage(m_controller.calculate(getPosition()) + m_feedforward.calculate(m_controller.getSetpoint().velocity));
+// //  controller.setReference(-position, ControlType.kMAXMotionPositionControl,ClosedLoopSlot.kSlot0, -m_feedforward.calculate(kMaxVelocity));
 
 public void freezeMotors(){
   elevatorMotor.set(0);
