@@ -38,6 +38,10 @@ public class Telemetry {
     GenericEntry FRangle;
     GenericEntry BLangle;
     GenericEntry BRangle;
+    GenericEntry FLAbsoluteAngle;
+    GenericEntry FRAbsoluteAngle;
+    GenericEntry BLAbsoluteAngle;
+    GenericEntry BRAbsoluteAngle;
 
     public void initData(){
         m_drivetrain = Swerve.getInstance();
@@ -53,6 +57,10 @@ public class Telemetry {
         FRangle = drivetrainData.getDoubleTopic("FR Angle").getGenericEntry();
         BLangle = drivetrainData.getDoubleTopic("BL Angle").getGenericEntry();
         BRangle = drivetrainData.getDoubleTopic("BR Angle").getGenericEntry();
+        FLAbsoluteAngle = drivetrainData.getDoubleTopic("FL Absolute Angle").getGenericEntry();
+        FRAbsoluteAngle = drivetrainData.getDoubleTopic("FR Absolute Angle").getGenericEntry();
+        BLAbsoluteAngle = drivetrainData.getDoubleTopic("BL Absolute Angle").getGenericEntry();
+        BRAbsoluteAngle = drivetrainData.getDoubleTopic("BR Absolute Angle").getGenericEntry();
     }
 
     public void updateData(){
@@ -61,7 +69,11 @@ public class Telemetry {
         FLangle.setDouble((m_drivetrain.getStates())[0].angle.getDegrees());
         FRangle.setDouble((m_drivetrain.getStates())[2].angle.getDegrees());
         BLangle.setDouble((m_drivetrain.getStates())[1].angle.getDegrees());
-        BRangle.setDouble((m_drivetrain.getStates())[3].angle.getDegrees());     
+        BRangle.setDouble((m_drivetrain.getStates())[3].angle.getDegrees()); 
+        FLAbsoluteAngle.setDouble((m_drivetrain.getAbsoluteAngles())[0]);
+        FRAbsoluteAngle.setDouble((m_drivetrain.getAbsoluteAngles())[2]);
+        BLAbsoluteAngle.setDouble((m_drivetrain.getAbsoluteAngles())[1]);
+        BRAbsoluteAngle.setDouble((m_drivetrain.getAbsoluteAngles())[3]); 
     }
     }
   

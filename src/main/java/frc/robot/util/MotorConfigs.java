@@ -5,18 +5,22 @@
 package frc.robot.util;
 
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
 import frc.robot.Constants;
 
 /** Add your docs here. */
-public class SparkConfigs {
+public class MotorConfigs {
     public SparkMaxConfig driveMotorConfigs;
     public SparkMaxConfig angleMotorConfigs;
+    CANcoderConfiguration canCoderConfigs;
 
-    public SparkConfigs(){
+    public MotorConfigs(){
         driveMotorConfigs = new SparkMaxConfig();
         angleMotorConfigs = new SparkMaxConfig();
+        canCoderConfigs = new CANcoderConfiguration();
    
         
         driveMotorConfigs
@@ -42,10 +46,14 @@ public class SparkConfigs {
             .smartCurrentLimit(Constants.angleCurrentLimit);
 
         angleMotorConfigs.closedLoop
+            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
             .pidf(Constants.angleKP, Constants.angleKI, Constants.angleKD, Constants.angleKFF);
           
 
         angleMotorConfigs.encoder
             .positionConversionFactor(Constants.angleConversionFactor);
+        
+        canCoderConfigs.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1; //unsigned [0,1]
+        canCoderConfigs.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
     }
 }

@@ -13,60 +13,63 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 
 import frc.robot.Constants;
 import frc.robot.SwerveModuleConstants;
-import frc.robot.subsystems.Swerve;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
-// import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
-
-import com.ctre.phoenix.sensors.AbsoluteSensorRange;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
 /** Add your docs here. */
 
 public class SwerveModule {
+    //drive motors
     private SparkMax driveMotor;
     private SparkClosedLoopController driveController;
     private RelativeEncoder driveEncoder;
     private SimpleMotorFeedforward driveFeedforward;
 
+    //angle motors
     private SparkMax angleMotor;
     private SparkClosedLoopController angleController;
     private RelativeEncoder angleEncoder;
 
+    //cancoder
     private CANcoder canCoder;
-    private double canCoderOffsets;
     
+    //misc
     public int moduleNumber;
     private double lastAngle;
     private Rotation2d zeroAngle;
 
-    public SwerveModule(int moduleNumber, SwerveModuleConstants constants, SparkConfigs configs){
+    public SwerveModule(int moduleNumber, SwerveModuleConstants constants, MotorConfigs configs){
         this.moduleNumber = moduleNumber;
 
+        //drive motor initalization
         driveMotor = new SparkMax(constants.driveMotorID, MotorType.kBrushless);
         driveController = driveMotor.getClosedLoopController();
         driveEncoder = driveMotor.getEncoder();
         driveFeedforward = new SimpleMotorFeedforward(Constants.driveKS, Constants.driveKV, Constants.driveKA);
 
+        //angle motor initalization
         angleMotor = new SparkMax(constants.angleMotorID, MotorType.kBrushless);
         angleController = angleMotor.getClosedLoopController();
         angleEncoder = angleMotor.getEncoder();
 
+        //cancoder initalization
         canCoder = new CANcoder(constants.cancoderID);
-        canCoderOffsets = constants.desiredAngle.getDegrees();
-
         zeroAngle = constants.desiredAngle;
+
+        //configures motor configs
         configure(configs);
+
+        //saves the last angle
         lastAngle = getState().angle.getDegrees();
     }
 
+    //set the current state of the wheel (motor speed, angle)
     public void setState(SwerveModuleState desiredState, boolean isOpenLoop){
         desiredState.optimize(getState().angle);
         if (isOpenLoop){
@@ -86,10 +89,24 @@ public class SwerveModule {
         lastAngle = angle;
     }
 
+    //aligns the wheels correcetly IN THE SAME DIRECTION
+    public void resetToAbsolute(){
+        double absolutePosition = (canCoder.getAbsolutePosition().getValueAsDouble() * 360.0) - zeroAngle.getDegrees();
+        angleEncoder.setPosition(absolutePosition);
+    }
+
+    //gets the current relative angle of the wheels
     public Rotation2d getAngle() {
         return Rotation2d.fromDegrees(angleEncoder.getPosition());
     }
 
+    //gets the current absolute angle of the wheels
+    public double getAbsoluteAngle(){
+        return canCoder.getAbsolutePosition().getValueAsDouble() * 360.0;
+    }
+
+
+    //gets the current state of the wheels
     public SwerveModuleState getState(){
         double velocity = driveEncoder.getVelocity();
         Rotation2d rotation = new Rotation2d(Units.degreesToRadians(angleEncoder.getPosition()));
@@ -97,35 +114,20 @@ public class SwerveModule {
         return new SwerveModuleState(velocity, rotation);
     }
 
-    public void resetToAbsolute(){
-        //difference between the current absolute position and where zero is defined
-        double absolutePosition = (canCoder.getAbsolutePosition().getValueAsDouble() * 360.0) - zeroAngle.getDegrees();
-        System.out.println(canCoder.getAbsolutePosition().getValueAsDouble() * 360);
 
-        angleEncoder.setPosition(zeroAngle.getDegrees());
-    //    angleController.setReference(zeroAngle.getDegrees(), ControlType.kPosition);
-    }
-
+    //gets the current position of the wheel
     public SwerveModulePosition getPosition() {
         return new SwerveModulePosition(driveMotor.getEncoder().getPosition(), getAngle());
     }
 
-    public void configure(SparkConfigs configs){
+    //configures motor and cancoder parameters
+    public void configure(MotorConfigs configs){
         driveMotor.configure(configs.driveMotorConfigs, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         angleMotor.configure(configs.angleMotorConfigs, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        
+
 
         driveEncoder.setPosition(0);
         resetToAbsolute();
-
-        CANcoderConfiguration canCoderConfigs = new CANcoderConfiguration();
-        canCoderConfigs.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1; //unsigned [0,1]
-        canCoderConfigs.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-        
-        canCoder.getConfigurator().apply(canCoderConfigs);
-        
-    }
-
-    
-    
+        canCoder.getConfigurator().apply(configs.canCoderConfigs);
+    } 
 }

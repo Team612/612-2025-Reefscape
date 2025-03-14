@@ -6,7 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.util.SparkConfigs;
+import frc.robot.util.MotorConfigs;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -36,7 +36,7 @@ import com.revrobotics.RelativeEncoder;
 public class Swerve extends SubsystemBase {
   private static Swerve swerveInstance;
   private SwerveModule[] modules;
-  private SparkConfigs swerveModuleConfigs;
+  private MotorConfigs swerveModuleConfigs;
   private SwerveDriveOdometry odometry;
   public Pigeon2 gyro;
   public Pigeon2Configuration configuration;
@@ -46,7 +46,7 @@ public class Swerve extends SubsystemBase {
 
   /** Creates a new Swerve. */
   public Swerve() {
-    swerveModuleConfigs = new SparkConfigs();
+    swerveModuleConfigs = new MotorConfigs();
     modules = new SwerveModule[] {
       new SwerveModule(0, Constants.Mod0.constants, swerveModuleConfigs), //front left
       new SwerveModule(1, Constants.Mod1.constants, swerveModuleConfigs), //back left
@@ -60,10 +60,6 @@ public class Swerve extends SubsystemBase {
     gyro.getConfigurator().apply(configuration);
     gyro.setYaw(0);
     gyro.reset();
-
-    //CHECK THIS LATER!!
-    // navx = new AHRS(NavXComType.kMXP_SPI);
-    // navx.setAngleAdjustment(Constants.navxAngleOffset);
   }
 
     //Drives field relative
@@ -123,6 +119,14 @@ public class Swerve extends SubsystemBase {
     return states;
   }
 
+  public double[] getAbsoluteAngles(){
+    double[] states = new double[4];
+    for (SwerveModule mod : modules) {
+      states[mod.moduleNumber] = mod.getAbsoluteAngle();
+  }
+  return states;
+}
+
   public void zeroGyro() {
     // navx.zeroYaw();
     gyro.reset();
@@ -138,6 +142,7 @@ public class Swerve extends SubsystemBase {
       mod.resetToAbsolute();
     }
   }
+
 
   public static Swerve getInstance(){
     if (swerveInstance == null){
