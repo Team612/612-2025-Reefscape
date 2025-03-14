@@ -24,7 +24,7 @@ public class Robot extends TimedRobot {
   // these are the max motor percent desired to be allocated to a certain dirrection or rotation, this works for any motor with a percent output 0-1
   private static final double xPercent = 1/2.0;
   private static final double yPercent = 1/2.0;
-  private static final double zPercent = 0.25/2.0;
+  private static final double zPercent = 1/2.0;
 
   // the swerve kinematics object only takes in radians per second and this will ofset those calculations for it to take in motor percent
   private static final double zNecessaryOffset = (zPercent)/(Math.sqrt((trackWidth/2)*(trackWidth/2)+(wheelBase/2)*(wheelBase/2)));
@@ -42,32 +42,32 @@ public class Robot extends TimedRobot {
   private static final double kp = 0.5;
 
   // swerve module 0 constants, front left
-  // when the absolute encoder reads the 0.649 it is actually at 0
-  private static final double mod0EncoderOffset = 0.649;
-  private static final int mod0AngleMotorID = 5;
-  private static final int mod0DriveMotorID = 4;
+  // when the absolute encoder reads the 0.63 it is actually at 0
+  private static final double mod0EncoderOffset = 0.63;
+  private static final int mod0AngleMotorID = 7;
+  private static final int mod0DriveMotorID = 6;
   private static final int mod0CANcoderID = 0;
 
   // swerve module 1 constants, front right
-  // when the absolute encoder reads 0.02 it is actually at 0
-  private static final double mod1EncoderOffset = 0.02;
-  private static final int mod1AngleMotorID = 19;
-  private static final int mod1DriveMotorID = 2;
-  private static final int mod1CANcoderID = 1;
+  // when the absolute encoder reads 0.735 it is actually at 0
+  private static final double mod1EncoderOffset = 0.735;
+  private static final int mod1AngleMotorID = 5;
+  private static final int mod1DriveMotorID = 4;
+  private static final int mod1CANcoderID = 2;
 
   // swerve module 2 constants, back left
-  // when the absolute encoder reads 0.75 it is actually at 0
-  private static final double mod2EncoderOffset = 0.75;
-  private static final int mod2AngleMotorID = 7;
-  private static final int mod2DriveMotorID = 6;
+  // when the absolute encoder reads 0.459 it is actually at 0
+  private static final double mod2EncoderOffset = 0.459;
+  private static final int mod2AngleMotorID = 1;
+  private static final int mod2DriveMotorID = 8;
   private static final int mod2CANcoderID = 3;
 
   // swerve module 3 constants, back right
-  // when the absolute encoder reads 0.994 it is actually at 0
-  private static final double mod3EncoderOffset = 0.994;
-  private static final int mod3AngleMotorID = 1;
-  private static final int mod3DriveMotorID = 8;
-  private static final int mod3CANcoderID = 2;
+  // when the absolute encoder reads 0.2 it is actually at 0
+  private static final double mod3EncoderOffset = 0.2;
+  private static final int mod3AngleMotorID = 3;
+  private static final int mod3DriveMotorID = 2;
+  private static final int mod3CANcoderID = 1;
 
   // INSTANTIATING
   // xbox controller
@@ -147,16 +147,10 @@ public class Robot extends TimedRobot {
     // slows down all of the motors by the same percent if a single motor goes over the max possible speed. so we dont lose control
     SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, 1);
 
-    // applies our swerve module states with our custom set method
-    mod0.slowlyDriveForward();
-    mod1.slowlyDriveForward();
-    mod2.slowlyDriveForward();
-    mod3.slowlyDriveForward();
-
-    // mod0.setMySwerveState(moduleStates[0]);
-    // mod1.setMySwerveState(moduleStates[1]);
-    // mod2.setMySwerveState(moduleStates[2]);
-    // mod3.setMySwerveState(moduleStates[3]);
+    mod0.setMySwerveState(moduleStates[0]);
+    mod1.setMySwerveState(moduleStates[1]);
+    mod2.setMySwerveState(moduleStates[2]);
+    mod3.setMySwerveState(moduleStates[3]);
   }
 
   @Override
