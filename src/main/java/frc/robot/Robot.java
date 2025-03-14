@@ -22,9 +22,9 @@ public class Robot extends TimedRobot {
   private static final double wheelBase = 0.605;
   
   // these are the max motor percent desired to be allocated to a certain dirrection or rotation, this works for any motor with a percent output 0-1
-  private static final double xPercent = 1/2.0;
-  private static final double yPercent = 1/2.0;
-  private static final double zPercent = 1/2.0;
+  private static final double xPercent = 1;
+  private static final double yPercent = 1;
+  private static final double zPercent = 0.25;
 
   // the swerve kinematics object only takes in radians per second and this will ofset those calculations for it to take in motor percent
   private static final double zNecessaryOffset = (zPercent)/(Math.sqrt((trackWidth/2)*(trackWidth/2)+(wheelBase/2)*(wheelBase/2)));
@@ -134,8 +134,8 @@ public class Robot extends TimedRobot {
     ChassisSpeeds chassisSpeed;
     if (!controller.getRightBumperButton()){
       @SuppressWarnings("removal")
-      Rotation2d ourHeadingJustHowItWantsIt = Rotation2d.fromDegrees(Math.IEEEremainder(-gyro.getAngle(), 360));
-      chassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(x,y,zRot, ourHeadingJustHowItWantsIt);
+      Rotation2d ourHeadingJustHowTheChassisSpeedsWantsIt = Rotation2d.fromDegrees(Math.IEEEremainder(-gyro.getAngle(), 360));
+      chassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(x,y,zRot, ourHeadingJustHowTheChassisSpeedsWantsIt);
     }
     else{
       chassisSpeed = new ChassisSpeeds(x,y,zRot);
@@ -147,6 +147,7 @@ public class Robot extends TimedRobot {
     // slows down all of the motors by the same percent if a single motor goes over the max possible speed. so we dont lose control
     SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, 1);
 
+    // drive it like you stole it
     mod0.setMySwerveState(moduleStates[0]);
     mod1.setMySwerveState(moduleStates[1]);
     mod2.setMySwerveState(moduleStates[2]);
@@ -180,17 +181,12 @@ public class Robot extends TimedRobot {
     private double encoderOffset;
     private PIDController turnPIDController = new PIDController(kp, 0, 0);
   
-
     // constructor for the swerve module
-    @SuppressWarnings("deprecation")
     public mySwerveModule(int angleMotorID, int drivingMotorID, int angleEncoderID, double encoderOffset){
       angleMotor = new SparkMax(angleMotorID,MotorType.kBrushless);
       drivingMotor = new SparkMax(drivingMotorID,MotorType.kBrushless);
       angleEncoder = new CANcoder(angleEncoderID);
       this.encoderOffset = encoderOffset;
-
-      // sets driving motors to inverse so positive motor values make the robot go forward
-      // drivingMotor.setInverted(true);
 
       // this important command allows the PID controller to determine the shortest way to reach a target
       // for example if the PID controller knows the wheel is currently at 3rad and wants to get to -3rad
@@ -198,13 +194,9 @@ public class Robot extends TimedRobot {
       turnPIDController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
-    // gets velocity of the wheel using the built in neo encoders
+    // for testing purposes
     public double getVelocity(){
       return drivingMotor.getEncoder().getVelocity();
-    }
-
-    public void slowlyDriveForward(){
-      drivingMotor.set(0.1);
     }
 
     // this method takes in desired swerve module states and turns them into reality with motor inputs
@@ -216,6 +208,7 @@ public class Robot extends TimedRobot {
 
       // this transforms desired meters per second to motor percent output
       drivingMotor.set(desiredState.speedMetersPerSecond);
+      System.out.println(drivingMotor.get());
 
       // this sets the angle motor using pid control to ensure smooth turning
       angleMotor.set(turnPIDController.calculate(getCurrentAngle(), desiredState.angle.getRadians()));
