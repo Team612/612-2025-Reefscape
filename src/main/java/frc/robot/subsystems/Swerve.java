@@ -117,6 +117,7 @@ public class Swerve extends SubsystemBase {
   public SwerveModuleState[] getStates() {
     SwerveModuleState[] states = new SwerveModuleState[4];
     for (SwerveModule mod : modules) {
+      // System.out.println(mod.moduleNumber + "   " + mod.getState().angle.getDegrees());
       states[mod.moduleNumber] = mod.getState();
     }
     return states;

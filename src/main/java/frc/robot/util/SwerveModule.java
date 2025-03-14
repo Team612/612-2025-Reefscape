@@ -100,9 +100,10 @@ public class SwerveModule {
     public void resetToAbsolute(){
         //difference between the current absolute position and where zero is defined
         double absolutePosition = (canCoder.getAbsolutePosition().getValueAsDouble() * 360.0) - zeroAngle.getDegrees();
+        System.out.println(canCoder.getAbsolutePosition().getValueAsDouble() * 360);
 
-        angleEncoder.setPosition(absolutePosition);
-       // angleController.setReference(absolutePosition, ControlType.kPosition);
+        angleEncoder.setPosition(zeroAngle.getDegrees());
+    //    angleController.setReference(zeroAngle.getDegrees(), ControlType.kPosition);
     }
 
     public SwerveModulePosition getPosition() {
@@ -112,6 +113,7 @@ public class SwerveModule {
     public void configure(SparkConfigs configs){
         driveMotor.configure(configs.driveMotorConfigs, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         angleMotor.configure(configs.angleMotorConfigs, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        
 
         driveEncoder.setPosition(0);
         resetToAbsolute();

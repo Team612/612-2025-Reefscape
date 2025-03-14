@@ -5,6 +5,7 @@
 package frc.robot.util;
 
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
 import frc.robot.Constants;
 
@@ -42,6 +43,7 @@ public class SparkConfigs {
 
         angleMotorConfigs.closedLoop
             .pidf(Constants.angleKP, Constants.angleKI, Constants.angleKD, Constants.angleKFF);
+          
 
         angleMotorConfigs.encoder
             .positionConversionFactor(Constants.angleConversionFactor);

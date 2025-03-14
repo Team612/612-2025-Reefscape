@@ -56,13 +56,12 @@ public class Telemetry {
     }
 
     public void updateData(){
-        System.out.println("test");
         //drivetrain
         pigeonAngle.setDouble(m_drivetrain.getPigeonAngle().getDegrees());
         FLangle.setDouble((m_drivetrain.getStates())[0].angle.getDegrees());
-        FRangle.setDouble(m_drivetrain.getStates()[1].angle.getDegrees());
-        BLangle.setDouble(m_drivetrain.getStates()[2].angle.getDegrees());
-        BRangle.setDouble(m_drivetrain.getStates()[3].angle.getDegrees());     
+        FRangle.setDouble((m_drivetrain.getStates())[2].angle.getDegrees());
+        BLangle.setDouble((m_drivetrain.getStates())[1].angle.getDegrees());
+        BRangle.setDouble((m_drivetrain.getStates())[3].angle.getDegrees());     
     }
     }
   
