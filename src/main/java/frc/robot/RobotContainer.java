@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj.I2C;
 // import frc.robot.util.TrajectoryConfiguration;
 // import frc.robot.util.TrajectoryCreation;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -45,6 +46,7 @@ import frc.robot.commands.IntakeCommands.BagOut;
 import frc.robot.commands.IntakeCommands.ManualIntakePivotControl;
 import frc.robot.commands.IntakeCommands.SetIntakePivotPosition;
 import frc.robot.commands.IntakeCommands.ZeroIntake;
+import frc.robot.commands.VisionCommands.ReadOdometry;
 // import frc.robot.commands.AutoCommands.DriverCommands.MoveForward;
 // import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Intake;
@@ -53,6 +55,8 @@ import frc.robot.subsystems.Mecanum;
 import frc.robot.subsystems.Payload;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Odometry;
+
 // import frc.robot.subsystems.Vision;
 // import frc.robot.commands.ClimbCommands.ClimbConstantShift;
 import frc.robot.util.ControlMap;
@@ -74,7 +78,7 @@ public class RobotContainer {
   private MotorConfigs m_motorConfigs = new MotorConfigs();
 
   private SendableChooser<Command> m_chooser;
-  
+  private Odometry m_odometry;
   
   
   private Command m_BagIn;
@@ -99,6 +103,7 @@ public class RobotContainer {
   private Command m_leaveZone;
   private Command m_poorLeaveZone;
   private Command m_coralAlign;
+  private Command m_readOdometry;
 
 
   private SequentialCommandGroup m_poorMansAuto;
@@ -148,6 +153,8 @@ public class RobotContainer {
     m_apriltagCentering = new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, -0.2, -0.2);
     m_leaveZone = new LeaveZone(m_drivetrain, m_vision);
     m_coralAlign = new CoralStationAlign(m_poseEstimator, m_vision, m_trajCreation, Units.inchesToMeters(16), -0.40);
+
+    m_odometry = new Odometry();
 
     // m_closeServo = new CloseServo(m_climb);
     // m_openServo = new OpenServo(m_climb);
@@ -227,6 +234,8 @@ public class RobotContainer {
     }
 
     SmartDashboard.putData(m_chooser);
+
+    m_readOdometry = new SequentialCommandGroup(new ReadOdometry(m_odometry));
   }
 
 
@@ -330,6 +339,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return (m_chooser.getSelected() != null) ? m_chooser.getSelected() : Commands.print("No autonomous command configured");
+    return m_readOdometry;
   }
 }
