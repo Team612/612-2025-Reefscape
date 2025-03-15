@@ -30,11 +30,11 @@ public class Odometry extends SubsystemBase {
 
   public int[] readMotion() {
     byte[] buffer = new byte[4];
-    boolean error = i2c.read(0x02, 4, buffer);
+    boolean error = i2c.read(0x8f, 4, buffer);
 
     if (error) {
-        System.out.println("Error reading from Optical Sensor");
-        return new int[]{0, 0};
+      System.out.println("Error reading from Optical Sensor");
+      return new int[]{0, 0};
     }
 
     int dx = ((buffer[1] << 8) | (buffer[0] & 0xFF));
