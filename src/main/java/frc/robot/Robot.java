@@ -20,11 +20,11 @@ public class Robot extends TimedRobot {
   // used to instantiate swerve kinematics and calculate how to offset swerve kinematics
   private static final double trackWidth = 0.605;
   private static final double wheelBase = 0.605;
-  
+
   // these are the max motor percent desired to be allocated to a certain dirrection or rotation, this works for any motor with a percent output 0-1
   private static final double xPercent = 1;
   private static final double yPercent = 1;
-  private static final double zPercent = 0.25;
+  private static final double zPercent = 0.5;
 
   // the swerve kinematics object only takes in radians per second and this will ofset those calculations for it to take in motor percent
   private static final double zNecessaryOffset = (zPercent)/(Math.sqrt((trackWidth/2)*(trackWidth/2)+(wheelBase/2)*(wheelBase/2)));
@@ -179,7 +179,7 @@ public class Robot extends TimedRobot {
     private SparkMax drivingMotor;
     public CANcoder angleEncoder;
     private double encoderOffset;
-    private PIDController turnPIDController = new PIDController(kp, 0, 0);
+    private PIDController turnPIDController = new PIDController(kp, 0, 0.0);
   
     // constructor for the swerve module
     public mySwerveModule(int angleMotorID, int drivingMotorID, int angleEncoderID, double encoderOffset){
@@ -199,8 +199,15 @@ public class Robot extends TimedRobot {
       return drivingMotor.getEncoder().getVelocity();
     }
 
+    public void slowlyTurn(){
+      angleMotor.set(-0.1);
+    }
+
     // this method takes in desired swerve module states and turns them into reality with motor inputs
     public void setMySwerveState(SwerveModuleState desiredState){
+      // if (encoderOffset == 0.63)
+      //   System.out.print(desiredState.angle+"   ");
+      // System.out.println(desiredState.angle);
       // this SwerveModuleState method changes the desired state allowing the robot to run the wheels in reverse
       // for example if the front of the wheel is currently at pi/2 rad and it wants to get to -pi/2 rad
       // this method will change the desired state to -pi/2 and run the motors in reverse using the back of the wheel
@@ -208,10 +215,14 @@ public class Robot extends TimedRobot {
 
       // this transforms desired meters per second to motor percent output
       drivingMotor.set(desiredState.speedMetersPerSecond);
-      System.out.println(drivingMotor.get());
 
       // this sets the angle motor using pid control to ensure smooth turning
-      angleMotor.set(turnPIDController.calculate(getCurrentAngle(), desiredState.angle.getRadians()));
+      // if (encoderOffset == 0.63)
+      //   System.out.println(turnPIDController.calculate(getCurrentAngle(), desiredState.angle.getRadians()));
+      angleMotor.set(-turnPIDController.calculate(getCurrentAngle(), desiredState.angle.getRadians()));
+      // if (encoderOffset == 0.2)
+      //   System.out.println(desiredState.angle);
+        // System.out.println(turnPIDController.calculate(getCurrentAngle(), desiredState.angle.getRadians()));
     }
 
     // this returns the wheels current angle in the range (-pi,pi) from the CANcoder inputs
