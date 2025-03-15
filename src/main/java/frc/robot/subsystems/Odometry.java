@@ -18,6 +18,9 @@ public class Odometry extends SubsystemBase {
 
   public Odometry() {
     i2c = new I2C(I2C.Port.kOnboard, 0x62); //idk if the adress is correct
+    if (i2c.addressOnly()) {
+      System.out.println("Device address for I2C is incorrect");
+    }
   }
 
   @Override

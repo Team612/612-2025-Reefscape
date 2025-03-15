@@ -78,7 +78,6 @@ public class RobotContainer {
   private MotorConfigs m_motorConfigs = new MotorConfigs();
 
   private SendableChooser<Command> m_chooser;
-  private Odometry m_odometry;
   
   
   private Command m_BagIn;
@@ -103,7 +102,7 @@ public class RobotContainer {
   private Command m_leaveZone;
   private Command m_poorLeaveZone;
   private Command m_coralAlign;
-  private Command m_readOdometry;
+  private Command m_odometry;
 
 
   private SequentialCommandGroup m_poorMansAuto;
@@ -121,40 +120,40 @@ public class RobotContainer {
 
 
   public RobotContainer() {
-    m_payload = Payload.getInstance();
-    m_intake = Intake.getInstance();
-    // m_climb = Climb.getInstance();
-    m_drivetrain = Mecanum.getInstance();
+    // m_payload = Payload.getInstance();
+    // m_intake = Intake.getInstance();
+    // // m_climb = Climb.getInstance();
+    // m_drivetrain = Mecanum.getInstance();
 
-    m_poseEstimator = PoseEstimator.getPoseEstimatorInstance();
-    m_vision = Vision.getVisionInstance();
-    m_trajConfigs = TrajectoryConfiguration.getInstance();
-    m_trajCreation = TrajectoryCreation.getInstance();
-    m_leds = Leds.getInstance();
+    // m_poseEstimator = PoseEstimator.getPoseEstimatorInstance();
+    // m_vision = Vision.getVisionInstance();
+    // m_trajConfigs = TrajectoryConfiguration.getInstance();
+    // m_trajCreation = TrajectoryCreation.getInstance();
+    // m_leds = Leds.getInstance();
     
-    m_chooser = new SendableChooser<>();
+    // m_chooser = new SendableChooser<>();
 
-    m_BagIn = new BagIn(m_intake);
-    m_BagOut =  new BagOut(m_intake);
-    // m_forwardMeter = new MoveForward(m_drivetrain, m_poseEstimator, m_trajCreation, m_vision, 0, false);
-    // m_PivotIntakeOut = new PivotIntakeOut(m_intake, m_payload);
-    // m_PivotIntakeIn = new PivotIntakeIn(m_intake,m_payload);
-    // m_ElevatorUp = new ElevatorUp(m_payload);
-    // m_ElevatorDown = new ElevatorDown(m_payload);
-    m_LeaveZone = new LeaveZone(m_drivetrain, m_vision);
-    m_poorLeaveZone = new PoorLeaveZone(m_drivetrain, m_vision);
+    // m_BagIn = new BagIn(m_intake);
+    // m_BagOut =  new BagOut(m_intake);
+    // // m_forwardMeter = new MoveForward(m_drivetrain, m_poseEstimator, m_trajCreation, m_vision, 0, false);
+    // // m_PivotIntakeOut = new PivotIntakeOut(m_intake, m_payload);
+    // // m_PivotIntakeIn = new PivotIntakeIn(m_intake,m_payload);
+    // // m_ElevatorUp = new ElevatorUp(m_payload);
+    // // m_ElevatorDown = new ElevatorDown(m_payload);
+    // m_LeaveZone = new LeaveZone(m_drivetrain, m_vision);
+    // m_poorLeaveZone = new PoorLeaveZone(m_drivetrain, m_vision);
 
-    m_defaultElevatorCommand = new ManualElevatorControl(m_payload);
-    m_defaultIntakeCommand = new ManualIntakePivotControl(m_intake);
+    // m_defaultElevatorCommand = new ManualElevatorControl(m_payload);
+    // m_defaultIntakeCommand = new ManualIntakePivotControl(m_intake);
 
-    m_defaultDrive = new DefaultDrive(m_drivetrain);
-    m_fieldRelativeDrive = new FieldRelativeDrive(m_drivetrain);
+    // m_defaultDrive = new DefaultDrive(m_drivetrain);
+    // m_fieldRelativeDrive = new FieldRelativeDrive(m_drivetrain);
 
-    m_apriltagCentering = new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, -0.2, -0.2);
-    m_leaveZone = new LeaveZone(m_drivetrain, m_vision);
-    m_coralAlign = new CoralStationAlign(m_poseEstimator, m_vision, m_trajCreation, Units.inchesToMeters(16), -0.40);
+    // m_apriltagCentering = new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, -0.2, -0.2);
+    // m_leaveZone = new LeaveZone(m_drivetrain, m_vision);
+    // m_coralAlign = new CoralStationAlign(m_poseEstimator, m_vision, m_trajCreation, Units.inchesToMeters(16), -0.40);
 
-    m_odometry = new Odometry();
+    m_odometry = new ReadOdometry(new Odometry());
 
     // m_closeServo = new CloseServo(m_climb);
     // m_openServo = new OpenServo(m_climb);
@@ -165,90 +164,90 @@ public class RobotContainer {
     // m_ClimbConstantShiftDown = new ClimbConstantShift(-0.05);
 
 
-    configureCommands();
-    configureBindings();
-    configureDefaultCommand();
+    // configureCommands();
+    // configureBindings();
+    // configureDefaultCommand();
   
   }
 
   private void configureCommands(){
 
-    m_autoCoralStation = new SequentialCommandGroup(new SetElevatorPosition(m_payload, m_intake,Constants.ElevatorConstants.CoralStationPosition)
-    .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.CoralStationPosition)));
+    // m_autoCoralStation = new SequentialCommandGroup(new SetElevatorPosition(m_payload, m_intake,Constants.ElevatorConstants.CoralStationPosition)
+    // .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.CoralStationPosition)));
 
-    m_autoCoralStation2 = new SequentialCommandGroup(new SetElevatorPosition(m_payload, m_intake,Constants.ElevatorConstants.CoralStationPosition)
-    .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.CoralStationPosition))
-    .andThen(new SetBagSpeedInTimed(m_intake)));
+    // m_autoCoralStation2 = new SequentialCommandGroup(new SetElevatorPosition(m_payload, m_intake,Constants.ElevatorConstants.CoralStationPosition)
+    // .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.CoralStationPosition))
+    // .andThen(new SetBagSpeedInTimed(m_intake)));
 
-    m_autoL1 = new SequentialCommandGroup(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.L1Position))
-    .andThen(new AutoOutCoral(m_intake))
-    .andThen(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.basePosition));
+    // m_autoL1 = new SequentialCommandGroup(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.L1Position))
+    // .andThen(new AutoOutCoral(m_intake))
+    // .andThen(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.basePosition));
 
-    m_autoL2 = new SequentialCommandGroup(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L2Position))
-    .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L2Position))
-    .andThen(new SetBagSpeedTimed(m_intake));
+    // m_autoL2 = new SequentialCommandGroup(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L2Position))
+    // .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L2Position))
+    // .andThen(new SetBagSpeedTimed(m_intake));
 
-    m_autoL3 =  new SequentialCommandGroup(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L3Position))
-    .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L3Position))
-    .andThen(new SetBagSpeedTimed(m_intake));
+    // m_autoL3 =  new SequentialCommandGroup(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L3Position))
+    // .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L3Position))
+    // .andThen(new SetBagSpeedTimed(m_intake));
 
-    m_autoZero = new SequentialCommandGroup(new ZeroIntake(m_intake))
-    .andThen(new ZeroElevator(m_payload));
+    // m_autoZero = new SequentialCommandGroup(new ZeroIntake(m_intake))
+    // .andThen(new ZeroElevator(m_payload));
 
-    m_poorMansAuto = new SequentialCommandGroup(new ZeroIntake(m_intake))
-    .andThen(new ZeroElevator(m_payload))
-    .andThen(new PoorLeaveZone(m_drivetrain, m_vision))
-    .andThen(new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, -Constants.AutoConstants.xApriltagDisplacement, -Constants.AutoConstants.yApriltagDisplacement))
-    .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L2Position))
-    .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L2Position))
-    .andThen(new SetBagSpeedTimed(m_intake));
+    // m_poorMansAuto = new SequentialCommandGroup(new ZeroIntake(m_intake))
+    // .andThen(new ZeroElevator(m_payload))
+    // .andThen(new PoorLeaveZone(m_drivetrain, m_vision))
+    // .andThen(new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, -Constants.AutoConstants.xApriltagDisplacement, -Constants.AutoConstants.yApriltagDisplacement))
+    // .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L2Position))
+    // .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L2Position))
+    // .andThen(new SetBagSpeedTimed(m_intake));
 
-    m_outAndOpenClimb = null; //new SequentialCommandGroup(m_pivotClimbOut).andThen(m_openServo);
-    m_inAndClosedClimb = null;//new SequentialCommandGroup(m_closeServo).andThen(m_pivotClimbIn);
+    // m_outAndOpenClimb = null; //new SequentialCommandGroup(m_pivotClimbOut).andThen(m_openServo);
+    // m_inAndClosedClimb = null;//new SequentialCommandGroup(m_closeServo).andThen(m_pivotClimbIn);
 
-    NamedCommands.registerCommand("autoL1", m_autoL1);
-    NamedCommands.registerCommand("autoL2", m_autoL2);
-    NamedCommands.registerCommand("autoL3", m_autoL3);
-    NamedCommands.registerCommand("AprilCenter", m_apriltagCentering);
-    NamedCommands.registerCommand("autoCoral", m_autoCoralStation2);
+    // NamedCommands.registerCommand("autoL1", m_autoL1);
+    // NamedCommands.registerCommand("autoL2", m_autoL2);
+    // NamedCommands.registerCommand("autoL3", m_autoL3);
+    // NamedCommands.registerCommand("AprilCenter", m_apriltagCentering);
+    // NamedCommands.registerCommand("autoCoral", m_autoCoralStation2);
 
-    m_chooser.addOption("Auto L1", m_autoL1);
-    m_chooser.addOption("Auto L2", m_autoL2);
-    m_chooser.addOption("Auto L3", m_autoL3);
-    m_chooser.addOption("Forward Meter",m_forwardMeter);
-    m_chooser.addOption("Leave Zone",m_LeaveZone);
+    // m_chooser.addOption("Auto L1", m_autoL1);
+    // m_chooser.addOption("Auto L2", m_autoL2);
+    // m_chooser.addOption("Auto L3", m_autoL3);
+    // m_chooser.addOption("Forward Meter",m_forwardMeter);
+    // m_chooser.addOption("Leave Zone",m_LeaveZone);
 
-    m_chooser.addOption("Mecanum Characterization", new FeedForwardCharacterization(
-                  m_drivetrain,
-                  true,
-                  new FeedForwardCharacterizationData("drive"),
-                  m_drivetrain::runCharacterizationVolts,
-                  m_drivetrain::getCharacterizationVelocity));
+    // m_chooser.addOption("Mecanum Characterization", new FeedForwardCharacterization(
+    //               m_drivetrain,
+    //               true,
+    //               new FeedForwardCharacterizationData("drive"),
+    //               m_drivetrain::runCharacterizationVolts,
+    //               m_drivetrain::getCharacterizationVelocity));
 
-    m_chooser.setDefaultOption("Nothing Selected", null);
-    m_chooser.addOption("Poor Man's Auto", m_poorMansAuto);
+    // m_chooser.setDefaultOption("Nothing Selected", null);
+    // m_chooser.addOption("Poor Man's Auto", m_poorMansAuto);
 
-     List<String> autos = PathPlannerUtil.getExistingPaths();
-    for (String auto : autos) {
-      m_chooser.addOption(auto, AutoBuilder.buildAuto(auto));
-    }
+    //  List<String> autos = PathPlannerUtil.getExistingPaths();
+    // for (String auto : autos) {
+    //   m_chooser.addOption(auto, AutoBuilder.buildAuto(auto));
+    // }
 
-    SmartDashboard.putData(m_chooser);
+    // SmartDashboard.putData(m_chooser);
 
-    m_readOdometry = new SequentialCommandGroup(new ReadOdometry(m_odometry));
+    // m_readOdometry = new SequentialCommandGroup(new ReadOdometry(m_odometry));
   }
 
 
 
   private void configureBindings() {
-    ControlMap.driver_controls.leftBumper().onTrue(new InstantCommand(() -> m_drivetrain.zeroGyro()));
-    ControlMap.driver_controls.rightBumper().toggleOnTrue(m_fieldRelativeDrive);
-    ControlMap.driver_controls.leftTrigger().onTrue(new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, 
-    -Constants.AutoConstants.xApriltagDisplacement,
-    Constants.AutoConstants.yApriltagDisplacement));
-    ControlMap.driver_controls.rightTrigger().onTrue(new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, 
-    -Constants.AutoConstants.xApriltagDisplacement,
-    -Constants.AutoConstants.yApriltagDisplacement));
+    // ControlMap.driver_controls.leftBumper().onTrue(new InstantCommand(() -> m_drivetrain.zeroGyro()));
+    // ControlMap.driver_controls.rightBumper().toggleOnTrue(m_fieldRelativeDrive);
+    // ControlMap.driver_controls.leftTrigger().onTrue(new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, 
+    // -Constants.AutoConstants.xApriltagDisplacement,
+    // Constants.AutoConstants.yApriltagDisplacement));
+    // ControlMap.driver_controls.rightTrigger().onTrue(new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, 
+    // -Constants.AutoConstants.xApriltagDisplacement,
+    // -Constants.AutoConstants.yApriltagDisplacement));
     // ControlMap.driver_controls.a().onTrue(m_coralAlign);
 
     // ControlMap.driver_controls.b().onTrue(m_apriltagCentering);
@@ -285,20 +284,20 @@ public class RobotContainer {
 
 
 
-    ControlMap.gunnerButton1.whileTrue(m_BagIn);
-    ControlMap.gunnerButton2.whileTrue(m_BagOut);
-    ControlMap.gunnerButton3.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancelAll()));
-    ControlMap.gunnerButton4.onTrue(new SetIntakePivotPosition(m_intake,m_payload,Constants.IntakeConstants.L1Position));
-    ControlMap.gunnerButton5.onTrue(new SetIntakePivotPosition(m_intake,m_payload,Constants.IntakeConstants.L2Position));
-    ControlMap.gunnerButton6.onTrue(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.CoralStationPosition));
-    ControlMap.gunnerButton7.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.L1Position));
-    ControlMap.gunnerButton8.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.L2Position));
-    ControlMap.gunnerButton9.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.L3Position));
-    ControlMap.gunnerButton10.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.CoralStationPosition));
-    ControlMap.gunnerButton14.onTrue(m_autoZero);
-    ControlMap.gunnerButton13.onTrue(m_autoL2);
-    ControlMap.gunnerButton12.onTrue(m_autoL3);
-    ControlMap.gunnerButton11.onTrue(m_autoCoralStation);
+    // ControlMap.gunnerButton1.whileTrue(m_BagIn);
+    // ControlMap.gunnerButton2.whileTrue(m_BagOut);
+    // ControlMap.gunnerButton3.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancelAll()));
+    // ControlMap.gunnerButton4.onTrue(new SetIntakePivotPosition(m_intake,m_payload,Constants.IntakeConstants.L1Position));
+    // ControlMap.gunnerButton5.onTrue(new SetIntakePivotPosition(m_intake,m_payload,Constants.IntakeConstants.L2Position));
+    // ControlMap.gunnerButton6.onTrue(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.CoralStationPosition));
+    // ControlMap.gunnerButton7.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.L1Position));
+    // ControlMap.gunnerButton8.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.L2Position));
+    // ControlMap.gunnerButton9.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.L3Position));
+    // ControlMap.gunnerButton10.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.CoralStationPosition));
+    // ControlMap.gunnerButton14.onTrue(m_autoZero);
+    // ControlMap.gunnerButton13.onTrue(m_autoL2);
+    // ControlMap.gunnerButton12.onTrue(m_autoL3);
+    // ControlMap.gunnerButton11.onTrue(m_autoCoralStation);
     // ControlMap.gunnerButton12.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.CoralStationPosition));
     // ControlMap.gunnerButton4.onTrue(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L1Position));
 
@@ -333,12 +332,12 @@ public class RobotContainer {
   }
 
   public void configureDefaultCommand(){
-    m_drivetrain.setDefaultCommand(m_defaultDrive);
-    m_payload.setDefaultCommand(m_defaultElevatorCommand);
-    m_intake.setDefaultCommand(m_defaultIntakeCommand);
+    // m_drivetrain.setDefaultCommand(m_defaultDrive);
+    // m_payload.setDefaultCommand(m_defaultElevatorCommand);
+    // m_intake.setDefaultCommand(m_defaultIntakeCommand);
   }
 
   public Command getAutonomousCommand() {
-    return m_readOdometry;
+    return m_odometry;
   }
 }
