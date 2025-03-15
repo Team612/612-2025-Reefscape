@@ -82,7 +82,7 @@ public class Constants {
     }
 
     public class IntakeConstants {
-        public static final int pivotID = 6;
+        public static final int pivotID = 20; //TEMPORARY VALUE: NEEDS TO CHANGE
         public static final boolean pivotInverted = false;
         public static final int pivotCurrentLimit = 30;
         public static final double boreOffset = 0;
@@ -98,7 +98,7 @@ public class Constants {
             kPositionConversionFactor / 60.0;
         
 
-        public static final int bagID = 7; 
+        public static final int bagID = 22;  //TEMPORARY VALUE: NEEDS TO CHANGE 
         public static double bagspeed = 0.60;
 
         public static final int bagCurrentLimit = 30;
@@ -123,7 +123,7 @@ public class Constants {
     }
 
     public class ElevatorConstants {
-        public static final int elevatorID = 5;
+        public static final int elevatorID = 21;  //TEMPORARY VALUE: NEEDS TO CHANGE
         public static final boolean elevatorInverted = true;
         public static final int elevatorCurrentLimit = 30;
         public static final IdleMode idleMode = IdleMode.kBrake;

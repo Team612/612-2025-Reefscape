@@ -147,6 +147,7 @@ public class MotorConfigs {
 
     public static void configureDrivetrain(){
         swerve_drive_configs = new SparkMaxConfig();
+        swerve_angle_configs = new SparkMaxConfig();
         swerve_drive_configs
             .smartCurrentLimit(Constants.SwerveConstants.currentLimit);
         
