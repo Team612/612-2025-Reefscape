@@ -166,7 +166,10 @@ public class RobotContainer {
 
   private void configureCommands(){
 
-    m_autoCoralStation = new SequentialCommandGroup(new SetElevatorPosition(m_payload, m_intake,Constants.ElevatorConstants.CoralStationPosition)
+    // m_autoCoralStation = new SequentialCommandGroup(new SetElevatorPosition(m_payload, m_intake,Constants.ElevatorConstants.CoralStationPosition)
+    // .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.CoralStationPosition)));
+
+    m_autoCoralStation = new SequentialCommandGroup(m_payload.profiledElevatorCommand(Constants.ElevatorConstants.CoralStationPosition)
     .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.CoralStationPosition)));
 
     m_autoCoralStation2 = new SequentialCommandGroup(new SetElevatorPosition(m_payload, m_intake,Constants.ElevatorConstants.CoralStationPosition)
