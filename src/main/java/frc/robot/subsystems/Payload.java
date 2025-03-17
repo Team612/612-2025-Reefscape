@@ -12,6 +12,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -79,26 +80,26 @@ public double magValue(){
   return m_mag.getValue();
 }
 
-public Command profiledElevatorCommand(double distance) {
-   return startRun(
-           () -> {
-             // Restart timer so profile setpoints start at the beginning
-             m_timer.restart();
-             resetCount();
-           },
-           () -> {
-             // Current state never changes, so we need to use a timer to get the setpoints we need
-             // to be at
-             var currentTime = m_timer.get();
-             var currentSetpoint =
-                 m_profile.calculate(currentTime, new State(), new State(distance, 0));
-             var nextSetpoint =
-                 m_profile.calculate(
-                     currentTime + kDt, new State(), new State(distance, 0));
-             setStates(currentSetpoint, nextSetpoint);
-           })
-       .until(() -> m_profile.isFinished(0));
- }
+// public Command profiledElevatorCommand(double distance) {
+//    return startRun(
+//            () -> {
+//              // Restart timer so profile setpoints start at the beginning
+//              m_timer.restart();
+//              resetCount();
+//            },
+//            () -> {
+//              // Current state never changes, so we need to use a timer to get the setpoints we need
+//              // to be at
+//              var currentTime = m_timer.get();
+//              var currentSetpoint =
+//                  m_profile.calculate(currentTime, new State(), new State(distance, 0));
+//              var nextSetpoint =
+//                  m_profile.calculate(
+//                      currentTime + kDt, new State(), new State(distance, 0));
+//              setStates(currentSetpoint, nextSetpoint);
+//            })
+//        .until(() -> m_profile.isFinished(0));
+//  }
  
   public void setStates(
        TrapezoidProfile.State currentLeft,
