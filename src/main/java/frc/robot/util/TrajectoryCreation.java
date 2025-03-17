@@ -172,13 +172,13 @@ public class TrajectoryCreation {
         //final pose is the tag pose transformed by a certain distance RELATIVE to the tag (with robot coordinates)
         //note that the heading should be the tag angle so it faces outward. Putting the tag angle as the heading results in trajectory heading towards the tag, not infront
         Pose2d midPose1 = new Pose2d(tagX, tagY, tagAngle).transformBy(new Transform2d(new Translation2d(displacementX-1,displacementY),new Rotation2d()));
-        Pose2d midPose2 = new Pose2d(tagX, tagY, tagAngle).transformBy(new Transform2d(new Translation2d(displacementX-1,displacementY+Units.inchesToMeters(12.947811)),new Rotation2d()));
+        // Pose2d midPose2 = new Pose2d(tagX, tagY, tagAngle).transformBy(new Transform2d(new Translation2d(displacementX-1,displacementY+Units.inchesToMeters(-12.947811)),new Rotation2d()));
         Pose2d finalPose = new Pose2d(tagX, tagY, tagAngle).transformBy(new Transform2d(new Translation2d(displacementX,displacementY),new Rotation2d()));
         
         List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
             new Pose2d(x,y, heading),
             midPose1,
-            midPose2,
+            // midPose2,
             finalPose
         
         );

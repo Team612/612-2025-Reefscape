@@ -78,6 +78,8 @@ public class Constants {
         public static final double kVelocityConversionFactor =
             kPositionConversionFactor / 60.0;
         
+        public static final int limIID = 0;
+
 
         public static final int bagID = 7; 
         public static double bagspeed = 0.60;
@@ -91,9 +93,9 @@ public class Constants {
 
         public static double pivotspeed = 0.50; 
         public static final double L1Position = 0.0;
-        public static final double L2Position = 26.126;
-        public static final double L3Position = 26.126;
-        public static final double CoralStationPosition = 341.212; //347.451  341.212;
+        public static final double L2Position = 8.22; //26.126;
+        public static final double L3Position = 8.22; //26.126;
+        public static final double CoralStationPosition = 329.83; //347.451  341.212;
         public static final double maxPivotL1Angle = 70;
         public static final double maxVelocity = 0.3;
         public static final double maxAcceleration = 0.3;
@@ -111,7 +113,11 @@ public class Constants {
         public static final double elePos = 0;
         public static double payloadUpSpeed = 0.12;
         public static double payloadDownSpeed = 0.15;
-       
+
+        public static final int magID = 3;
+        public static final int magReached = 200;
+        public static final int limEID = 9;
+
 
         public static final MAXMotionPositionMode positionMode = MAXMotionPositionMode.kMAXMotionTrapezoidal;
         public static final double maxElevatorSpeed = 0.3; //default units: revolutions per minutes (converted with the velocityConversionFactor)
@@ -135,7 +141,7 @@ public class Constants {
     public static final double L1Position = 0.035;
     public static final double L2Position = 0.245; //0.279
     public static final double L3Position = 0.654;
-    public static final double CoralStationPosition = 0.284;//0.318
+    public static final double CoralStationPosition = 0.318;//0.318
     // public static final double L1Minimum = 0.3 //the minimum position that allows for maximum movement for the intake pivot
     public static final double elevatorThreshold = 0.01;
 
@@ -193,7 +199,7 @@ public class Constants {
         public static final Transform3d backCameraTransform = new Transform3d(new Translation3d(Units.inchesToMeters(-15), Units.inchesToMeters(-12), Units.inchesToMeters(36)), new Rotation3d(0, Units.degreesToRadians(17), Units.degreesToRadians(180)));
 
 
-        public static final double yApriltagDisplacement = 0.20;
+        public static final double yApriltagDisplacement = 0.18; // 0.20
         public static final double xApriltagDisplacement = 0.25;
     }
   

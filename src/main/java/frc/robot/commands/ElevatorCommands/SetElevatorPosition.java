@@ -4,6 +4,8 @@
 
 package frc.robot.commands.ElevatorCommands;
 
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Payload;
@@ -11,6 +13,7 @@ import frc.robot.subsystems.Intake;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class SetElevatorPosition extends Command {
   private Payload m_payload;
+
   private Intake m_intake;
   private double position;
   /** Creates a new SetElevatorPosition. */
@@ -52,7 +55,14 @@ public class SetElevatorPosition extends Command {
     }
     System.out.println("Set Elevator: " + Math.abs(m_payload.getPosition() - position));
     //System.out.println(Math.abs(m_payload.getPosition() - position));
+
+    if (Math.abs(m_payload.getPosition() - position) <= Constants.ElevatorConstants.elevatorThreshold && m_payload.magValue() <= Constants.ElevatorConstants.magReached) {
+      return true;
+    }
+
+
     return (Math.abs(m_payload.getPosition() - position) <= Constants.ElevatorConstants.elevatorThreshold);
+
     // if (m_payload.getPosition() < position){
     //   return (m_payload.getPosition() - position) >= 0;
     // }

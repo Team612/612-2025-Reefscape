@@ -113,6 +113,9 @@ public class Telemetry {
         sparkFLVoltage = drivetrainData.getDoubleTopic("FL Voltage").getGenericEntry();
         sparkBRVoltage = drivetrainData.getDoubleTopic("BR Voltage").getGenericEntry();
         sparkBLVoltage = drivetrainData.getDoubleTopic("BL Voltage").getGenericEntry();
+        // PDrive = drivetrainData.getDoubleTopic("BL Voltage").getGenericEntry();
+        // DDrive = drivetrainData.getDoubleTopic("BL Voltage").getGenericEntry();
+
 
 
         //payload
