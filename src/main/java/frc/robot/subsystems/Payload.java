@@ -7,23 +7,22 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.MotorConfigs;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import frc.robot.util.Telemetry;
-import frc.robot.subsystems.Intake;
+ 
 
 // import com.studica.frc.AHRS;
 // import com.studica.frc.AHRS.NavXComType;
@@ -45,6 +44,7 @@ public class Payload extends SubsystemBase {
   double kDt = 0.02;
   double kMaxVelocity = 0.3;
   double kMaxAccel = 0.3;
+  private final Timer m_timer = new Timer();
   
   private final TrapezoidProfile.Constraints m_constraints = new TrapezoidProfile.Constraints(kMaxVelocity, kMaxAccel);
   private final ProfiledPIDController m_controller = new ProfiledPIDController(Constants.ElevatorConstants.kP, Constants.ElevatorConstants.kI, Constants.ElevatorConstants.kD, m_constraints);
@@ -78,6 +78,35 @@ public double magVoltage(){
 public double magValue(){
   return m_mag.getValue();
 }
+
+public Command profiledElevatorCommand(double distance) {
+   return startRun(
+           () -> {
+             // Restart timer so profile setpoints start at the beginning
+             m_timer.restart();
+             resetCount();
+           },
+           () -> {
+             // Current state never changes, so we need to use a timer to get the setpoints we need
+             // to be at
+             var currentTime = m_timer.get();
+             var currentSetpoint =
+                 m_profile.calculate(currentTime, new State(), new State(distance, 0));
+             var nextSetpoint =
+                 m_profile.calculate(
+                     currentTime + kDt, new State(), new State(distance, 0));
+             setStates(currentSetpoint, nextSetpoint);
+           })
+       .until(() -> m_profile.isFinished(0));
+ }
+ 
+  public void setStates(
+       TrapezoidProfile.State currentLeft,
+       TrapezoidProfile.State nextLeft) {
+     // Feedforward is divided by battery voltage to normalize it to [-1, 1]
+     // SparkClosedLoopController m_loopy = elevatorMotor.getClosedLoopController();
+       controller.setReference(nextLeft.position, ControlType.kPosition);
+   }
 
 public void setPosition(double position){
   if (m_limE.get() && position >= elevatorMotor.getEncoder().getPosition()){
