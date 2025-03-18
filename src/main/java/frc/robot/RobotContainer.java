@@ -236,7 +236,6 @@ public class RobotContainer {
 
   private void configureBindings() {
     ControlMap.driver_controls.leftBumper().onTrue(new InstantCommand(() -> m_drivetrain.zeroGyro()));
-    ControlMap.driver_controls.rightBumper().toggleOnTrue(m_fieldRelativeDrive);
     ControlMap.driver_controls.leftTrigger().onTrue(new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, 
     -Constants.AutoConstants.xApriltagDisplacement,
     Constants.AutoConstants.yApriltagDisplacementleft));
@@ -327,7 +326,7 @@ public class RobotContainer {
   }
 
   public void configureDefaultCommand(){
-    m_drivetrain.setDefaultCommand(m_defaultDrive);
+    m_drivetrain.setDefaultCommand(m_fieldRelativeDrive);
     m_payload.setDefaultCommand(m_defaultElevatorCommand);
     m_intake.setDefaultCommand(m_defaultIntakeCommand);
   }
