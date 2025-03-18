@@ -195,7 +195,6 @@ public class RobotContainer {
     .andThen(new ZeroElevator(m_payload))
     .andThen(new PoorLeaveZone(m_drivetrain, m_vision))
     .andThen(new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, -Constants.AutoConstants.xApriltagDisplacement, -Constants.AutoConstants.yApriltagDisplacementright))
-    .andThen(new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, -Constants.AutoConstants.xApriltagDisplacement, -Constants.AutoConstants.yApriltagDisplacementright))
     .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L2Position))
     .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L2Position))
     .andThen(new SetBagSpeedTimed(m_intake));
