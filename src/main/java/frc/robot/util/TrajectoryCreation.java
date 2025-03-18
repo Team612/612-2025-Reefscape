@@ -5,6 +5,7 @@ import java.util.List;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.IdealStartingState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
@@ -187,7 +188,7 @@ public class TrajectoryCreation {
         PathPlannerPath path = new PathPlannerPath(
             waypoints,
             constraints,
-            null,
+            new IdealStartingState(0.0, heading) ,
             new GoalEndState(0.0, tagAngle) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
         );
 

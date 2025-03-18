@@ -227,9 +227,7 @@ public class Telemetry {
         seeAprilTagBack.setBoolean(m_vision.backHasTag());
         apriltagIDFront.setDouble(m_vision.frontTagID());
         apriltagIDBack.setDouble(m_vision.backTagID());
-        alignedLeft.setBoolean(m_vision.alignedLeft());
-        alignedRight.setBoolean(m_vision.alignedRight());
-     
+    
 
 
         

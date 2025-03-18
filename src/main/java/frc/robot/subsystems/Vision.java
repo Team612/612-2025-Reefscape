@@ -37,6 +37,7 @@ public class Vision extends SubsystemBase {
   PhotonCamera backCamera;
   List<PhotonPipelineResult> frontCameraResults;
   List<PhotonPipelineResult> backCameraResults;
+  PhotonPipelineResult frontLatestResult;
 
 
 
@@ -51,14 +52,22 @@ public class Vision extends SubsystemBase {
 
     frontCamera = new PhotonCamera(Constants.AutoConstants.frontCamera); 
     backCamera = new PhotonCamera(Constants.AutoConstants.backCamera);
+
     
     //calls once on instantiation
     frontCameraResults = frontCamera.getAllUnreadResults();
     backCameraResults = backCamera.getAllUnreadResults();
+
+    if (frontCameraResults.isEmpty()){
+      frontLatestResult = new PhotonPipelineResult();
+    }
     
+    else {
+      frontLatestResult = frontCameraResults.get(frontCameraResults.size()-1);
+    }
 
     aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark); //how to load the april tags from the field
-    photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d()); //instantiates photon pose estimator
+    photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, Constants.AutoConstants.frontCameraTransform); //instantiates photon pose estimator
 
 
   }
@@ -104,8 +113,11 @@ public class Vision extends SubsystemBase {
   }
 
   public boolean frontHasTag(){ //if it detects an april tag
-    for (PhotonPipelineResult result : frontCameraResults){
-        if(result.hasTargets() && result.getBestTarget().getFiducialId() >= 0){
+    if(frontCameraResults.isEmpty()){
+      return false;
+    }
+    else{
+        if(frontLatestResult.hasTargets() && frontLatestResult.getBestTarget().getFiducialId() >= 0){
             return true;
         }
     }
@@ -123,11 +135,14 @@ public class Vision extends SubsystemBase {
 
 
   public int frontTagID(){ //returns the ID of the apriltag ift detects, only runs if hasTag and has targets
-     for (PhotonPipelineResult result : frontCameraResults){
-        if (result.hasTargets()){
-            return result.getBestTarget().getFiducialId();
+    if(frontCameraResults.isEmpty()){
+      return -1;
+    }
+    else{
+        if(frontLatestResult.hasTargets() && frontLatestResult.getBestTarget().getFiducialId() >= 0){
+            return frontLatestResult.getBestTarget().getFiducialId();
         }
-     }
+    }
      return -1;
   }
   public int backTagID(){ //returns the ID of the apriltag ift detects, only runs if hasTag and has targets
@@ -140,12 +155,13 @@ public class Vision extends SubsystemBase {
   }
 
   public PhotonPipelineResult getFrontPipelineResult() {
-    for (PhotonPipelineResult result : frontCameraResults){
-      if (result != null){
-        return result;
-      }
+    if(frontCameraResults.isEmpty()){
+      return null;
     }
-    return null;
+    else{
+      return frontLatestResult;
+    }
+  
   }  
 
   public PhotonPipelineResult getBackPipelineResult() {
@@ -159,25 +175,6 @@ public class Vision extends SubsystemBase {
     return null;
   }  
  
-  public Pose2d getFrontRelativeTagPose() { //pose of the april tag detected
-    for (PhotonPipelineResult result : frontCameraResults){
-        if (result.hasTargets()){
-            PhotonTrackedTarget bestTarget = result.getBestTarget();
-            Transform3d tagSpace = bestTarget.getBestCameraToTarget().plus(getRobotToFrontCam());
-            return new Pose2d(tagSpace.getX(), tagSpace.getY(), tagSpace.getRotation().toRotation2d()); 
-        }
-    }
-    // if (result.hasTargets()) {
-    //   PhotonTrackedTarget bestTarget = result.getBestTarget();
-
-    //   Transform3d tagSpace = bestTarget.getBestCameraToTarget();
-
-    //   return new Pose2d(tagSpace.getX(), tagSpace.getY(), new Rotation2d( (bestTarget.getYaw()) * (Math.PI/180)) ); 
-    // }
-    // return new Pose2d();
-    return new Pose2d();
-  }
-
   public Pose2d getBackRelativeTagPose() { //pose of the april tag detected
     for (PhotonPipelineResult result : backCameraResults){
         if (result.hasTargets()){
@@ -223,34 +220,6 @@ public class Vision extends SubsystemBase {
   }
 
 
-  public boolean alignedLeft() {
-    double x = getFrontRelativeTagPose().getX();
-    double y = getFrontRelativeTagPose().getY();
-    double angle = getFrontRelativeTagPose().getRotation().getDegrees();
-
-    double xOffset = 0.3;
-    double yOffset = 0.2;
-
-    if (Math.abs(x - xOffset) < 0.1 && Math.abs(y - yOffset) < 0.1 && y < 0 && Math.abs(angle) < 1) {
-      return true;
-    }
-    return false;
-  }
-
-  public boolean alignedRight() {
-    double x = getFrontRelativeTagPose().getX();
-    double y = getFrontRelativeTagPose().getY();
-    double angle = getFrontRelativeTagPose().getRotation().getDegrees();
-
-    double xOffset = 0.3;
-    double yOffset = 0.2;
-
-    if (Math.abs(x - xOffset) < 0.1 && Math.abs(y - yOffset) < 0.1 && y > 0 && Math.abs(angle) < 1) {
-      return true;
-    }
-    return false;
-  }
-
   @Override
   public void periodic() {
 
@@ -258,6 +227,13 @@ public class Vision extends SubsystemBase {
     //photon stresses to call "getAllUnreadResults" once per loop. These results will be used everywhere
     frontCameraResults = frontCamera.getAllUnreadResults();
     backCameraResults = backCamera.getAllUnreadResults();
+
+    if (!frontCameraResults.isEmpty()){
+      frontLatestResult = frontCameraResults.get(frontCameraResults.size()-1);
+    }
+    else {
+      frontLatestResult = new PhotonPipelineResult();
+    }
   
 
     // if (cameraApriltagBack.getDistCoeffs().equals(Optional.empty())){

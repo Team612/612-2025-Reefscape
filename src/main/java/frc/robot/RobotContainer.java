@@ -166,15 +166,15 @@ public class RobotContainer {
 
   private void configureCommands(){
 
-    // m_autoCoralStation = new SequentialCommandGroup(new SetElevatorPosition(m_payload, m_intake,Constants.ElevatorConstants.CoralStationPosition)
-    // .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.CoralStationPosition)));
+    m_autoCoralStation = new SequentialCommandGroup(new SetElevatorPosition(m_payload, m_intake,Constants.ElevatorConstants.CoralStationPosition)
+    .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.CoralStationPosition)));
 
     // m_autoCoralStation = new SequentialCommandGroup(m_payload.profiledElevatorCommand(Constants.ElevatorConstants.CoralStationPosition)
     // .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.CoralStationPosition)));
 
-    m_autoCoralStation2 = new SequentialCommandGroup(new SetElevatorPosition(m_payload, m_intake,Constants.ElevatorConstants.CoralStationPosition)
-    .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.CoralStationPosition))
-    .andThen(new SetBagSpeedInTimed(m_intake)));
+    // m_autoCoralStation2 = new SequentialCommandGroup(new SetElevatorPosition(m_payload, m_intake,Constants.ElevatorConstants.CoralStationPosition)
+    // .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.CoralStationPosition))
+    // .andThen(new SetBagSpeedInTimed(m_intake)));
 
     m_autoL1 = new SequentialCommandGroup(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.L1Position))
     .andThen(new AutoOutCoral(m_intake))
@@ -194,7 +194,8 @@ public class RobotContainer {
     m_poorMansAuto = new SequentialCommandGroup(new ZeroIntake(m_intake))
     .andThen(new ZeroElevator(m_payload))
     .andThen(new PoorLeaveZone(m_drivetrain, m_vision))
-    .andThen(new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, -Constants.AutoConstants.xApriltagDisplacement, -Constants.AutoConstants.yApriltagDisplacement))
+    .andThen(new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, -Constants.AutoConstants.xApriltagDisplacement, -Constants.AutoConstants.yApriltagDisplacementright))
+    .andThen(new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, -Constants.AutoConstants.xApriltagDisplacement, -Constants.AutoConstants.yApriltagDisplacementright))
     .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L2Position))
     .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L2Position))
     .andThen(new SetBagSpeedTimed(m_intake));
@@ -239,10 +240,10 @@ public class RobotContainer {
     ControlMap.driver_controls.rightBumper().toggleOnTrue(m_fieldRelativeDrive);
     ControlMap.driver_controls.leftTrigger().onTrue(new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, 
     -Constants.AutoConstants.xApriltagDisplacement,
-    Constants.AutoConstants.yApriltagDisplacement));
+    Constants.AutoConstants.yApriltagDisplacementleft));
     ControlMap.driver_controls.rightTrigger().onTrue(new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, 
     -Constants.AutoConstants.xApriltagDisplacement,
-    -Constants.AutoConstants.yApriltagDisplacement));
+    -Constants.AutoConstants.yApriltagDisplacementright));
     // ControlMap.driver_controls.a().onTrue(m_coralAlign);
 
     // ControlMap.driver_controls.b().onTrue(m_apriltagCentering);
