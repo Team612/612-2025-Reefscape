@@ -35,8 +35,8 @@ public class SetElevatorPosition extends Command {
   public void execute() {
     double elevatorSpeed = elevatorPID.calculate(m_payload.getPosition(), position);
 
-    if (elevatorSpeed > 0.15) elevatorSpeed = 0.15;
-    if (elevatorSpeed < -0.15) elevatorSpeed = -0.15;
+    if (elevatorSpeed > Constants.ElevatorConstants.maxTrapezoidInput) elevatorSpeed = Constants.ElevatorConstants.maxTrapezoidInput;
+    if (elevatorSpeed < -Constants.ElevatorConstants.maxTrapezoidInput) elevatorSpeed = -Constants.ElevatorConstants.maxTrapezoidInput;
 
     m_payload.setMotorSpeed(elevatorSpeed);
   }

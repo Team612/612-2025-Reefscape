@@ -113,6 +113,7 @@ public class Constants {
         public static final double elePos = 0;
         public static double payloadUpSpeed = 0.12;
         public static double payloadDownSpeed = 0.15;
+        public static double maxTrapezoidInput = 0.15;
 
         public static final int magID = 3;
         public static final int magReached = 205;
