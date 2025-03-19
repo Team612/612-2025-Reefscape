@@ -205,9 +205,6 @@ public class Robot extends TimedRobot {
 
     // this method takes in desired swerve module states and turns them into reality with motor inputs
     public void setMySwerveState(SwerveModuleState desiredState){
-      // if (encoderOffset == 0.63)
-      //   System.out.print(desiredState.angle+"   ");
-      // System.out.println(desiredState.angle);
       // this SwerveModuleState method changes the desired state allowing the robot to run the wheels in reverse
       // for example if the front of the wheel is currently at pi/2 rad and it wants to get to -pi/2 rad
       // this method will change the desired state to -pi/2 and run the motors in reverse using the back of the wheel
@@ -217,12 +214,7 @@ public class Robot extends TimedRobot {
       drivingMotor.set(desiredState.speedMetersPerSecond);
 
       // this sets the angle motor using pid control to ensure smooth turning
-      // if (encoderOffset == 0.63)
-      //   System.out.println(turnPIDController.calculate(getCurrentAngle(), desiredState.angle.getRadians()));
       angleMotor.set(-turnPIDController.calculate(getCurrentAngle(), desiredState.angle.getRadians()));
-      // if (encoderOffset == 0.2)
-      //   System.out.println(desiredState.angle);
-        // System.out.println(turnPIDController.calculate(getCurrentAngle(), desiredState.angle.getRadians()));
     }
 
     // this returns the wheels current angle in the range (-pi,pi) from the CANcoder inputs
