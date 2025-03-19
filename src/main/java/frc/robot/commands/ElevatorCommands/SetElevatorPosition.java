@@ -14,7 +14,7 @@ public class SetElevatorPosition extends Command {
   private Intake m_intake;
   private double position;
   private int ticks = 0;
-  private PIDController elevatorPID = new PIDController(Constants.ElevatorConstants.kP, ticks, position);
+  private PIDController elevatorPID = new PIDController(Constants.ElevatorConstants.kP, 0, 0);
 
   /** Creates a new SetElevatorPosition. */
   public SetElevatorPosition(Payload pay,Intake i, double p) {
