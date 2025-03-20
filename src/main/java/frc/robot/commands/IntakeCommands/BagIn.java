@@ -6,13 +6,13 @@ package frc.robot.commands.IntakeCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Bag;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class BagIn extends Command {
   /** Creates a new BagIn. */
-  private Intake m_intake;
-  public BagIn(Intake intake) {
+  private Bag m_intake;
+  public BagIn(Bag intake) {
     m_intake = intake;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake);

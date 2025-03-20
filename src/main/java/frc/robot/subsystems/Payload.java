@@ -43,7 +43,7 @@ public class Payload extends SubsystemBase {
   // DigitalInput bottomlimitSwitch = new DigitalInput(Constants.bottomlimitSwitchID);
 
   double kDt = 0.02;
-  double kMaxVelocity = 0.3;
+  double kMaxVelocity = 0.7;
   double kMaxAccel = 0.3;
   private final Timer m_timer = new Timer();
   
@@ -110,11 +110,14 @@ public double magValue(){
    }
 
 public void setPosition(double position){
+  State endGoal =  new State(position,0);
   if (m_limE.get() && position >= elevatorMotor.getEncoder().getPosition()){
     elevatorMotor.set(0);
   }
   else {
-  controller.setReference(-position, ControlType.kPosition);
+  // controller.setReference(-position, ControlType.kPosition);
+  System.out.println(m_controller.calculate(getPosition(), endGoal));
+  controller.setReference(-m_controller.calculate(getPosition(),endGoal), ControlType.kDutyCycle);
   }
   //m_controller.setGoal(-position);
   //elevatorMotor.setVoltage(m_controller.calculate(getPosition()) + m_feedforward.calculate(m_controller.getSetpoint().velocity));
@@ -123,6 +126,10 @@ public void setPosition(double position){
 
 public void freezeMotors(){
   elevatorMotor.set(0);
+}
+
+public void resetPIDController(){
+  m_controller.reset(getPosition());
 }
 
 

@@ -17,10 +17,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 // import frc.robot.util.TrajectoryConfiguration;
 // import frc.robot.util.TrajectoryCreation;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.AutoCommands.DriverCommands.ApriltagAlign;
+import frc.robot.commands.AutoCommands.DriverCommands.AutoSpecificTag;
 import frc.robot.commands.AutoCommands.DriverCommands.CoralStationAlign;
 import frc.robot.commands.AutoCommands.DriverCommands.LeaveZone;
 import frc.robot.commands.AutoCommands.DriverCommands.PoorLeaveZone;
@@ -45,6 +47,7 @@ import frc.robot.commands.IntakeCommands.BagOut;
 import frc.robot.commands.IntakeCommands.ManualIntakePivotControl;
 import frc.robot.commands.IntakeCommands.SetIntakePivotPosition;
 import frc.robot.commands.IntakeCommands.ZeroIntake;
+import frc.robot.subsystems.Bag;
 // import frc.robot.commands.AutoCommands.DriverCommands.MoveForward;
 // import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Intake;
@@ -64,6 +67,7 @@ import frc.robot.util.TrajectoryCreation;
 public class RobotContainer {
   private Payload m_payload;
   private Intake m_intake;
+  private Bag m_bag; 
   // private Climb m_climb;
   private Mecanum m_drivetrain;
   private PoseEstimator m_poseEstimator;
@@ -101,10 +105,13 @@ public class RobotContainer {
   private Command m_coralAlign;
 
 
-  private SequentialCommandGroup m_poorMansAuto;
+  private SequentialCommandGroup m_poorMansAutoLeft;
+  private SequentialCommandGroup m_poorMansAutoRight;
   private SequentialCommandGroup m_autoL1;
   private SequentialCommandGroup m_autoL2;
   private SequentialCommandGroup m_autoL3;
+  private SequentialCommandGroup m_autoBottomAlgae;
+  private SequentialCommandGroup m_autoTopAlgae;
   private SequentialCommandGroup m_autoCoralStation;
   private SequentialCommandGroup m_autoCoralStation2;
 
@@ -118,8 +125,8 @@ public class RobotContainer {
   public RobotContainer() {
     m_payload = Payload.getInstance();
     m_intake = Intake.getInstance();
-    // m_climb = Climb.getInstance();
     m_drivetrain = Mecanum.getInstance();
+    m_bag = Bag.getInstance();
 
     m_poseEstimator = PoseEstimator.getPoseEstimatorInstance();
     m_vision = Vision.getVisionInstance();
@@ -129,8 +136,8 @@ public class RobotContainer {
     
     m_chooser = new SendableChooser<>();
 
-    m_BagIn = new BagIn(m_intake);
-    m_BagOut =  new BagOut(m_intake);
+    m_BagIn = new BagIn(m_bag);
+    m_BagOut =  new BagOut(m_bag);
     // m_forwardMeter = new MoveForward(m_drivetrain, m_poseEstimator, m_trajCreation, m_vision, 0, false);
     // m_PivotIntakeOut = new PivotIntakeOut(m_intake, m_payload);
     // m_PivotIntakeIn = new PivotIntakeIn(m_intake,m_payload);
@@ -177,27 +184,40 @@ public class RobotContainer {
     // .andThen(new SetBagSpeedInTimed(m_intake)));
 
     m_autoL1 = new SequentialCommandGroup(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.L1Position))
-    .andThen(new AutoOutCoral(m_intake))
+    .andThen(new AutoOutCoral(m_intake, m_bag))
     .andThen(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.basePosition));
 
     m_autoL2 = new SequentialCommandGroup(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L2Position))
-    .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L2Position))
-    .andThen(new SetBagSpeedTimed(m_intake));
+    .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L2Position));
 
     m_autoL3 =  new SequentialCommandGroup(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L3Position))
-    .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L3Position))
-    .andThen(new SetBagSpeedTimed(m_intake));
+    .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L3Position));
+
+    m_autoBottomAlgae = new SequentialCommandGroup(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.algaeIntakePosition))
+    .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.bottomAlgaePosition));
+
+    m_autoTopAlgae = new SequentialCommandGroup(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.algaeIntakePosition))
+    .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.topAlgaePosition));
 
     m_autoZero = new SequentialCommandGroup(new ZeroIntake(m_intake))
     .andThen(new ZeroElevator(m_payload));
 
-    m_poorMansAuto = new SequentialCommandGroup(new ZeroIntake(m_intake))
-    .andThen(new ZeroElevator(m_payload))
-    .andThen(new PoorLeaveZone(m_drivetrain, m_vision))
-    .andThen(new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, -Constants.AutoConstants.xApriltagDisplacement, -Constants.AutoConstants.yApriltagDisplacementright))
+
+    m_poorMansAutoLeft = new SequentialCommandGroup(
+    new PoorLeaveZone(m_drivetrain, m_vision))
+    .andThen(new AutoSpecificTag(m_poseEstimator, m_vision, m_trajCreation, -Constants.AutoConstants.xApriltagDisplacement, -Constants.AutoConstants.yApriltagDisplacementright, 22))
+    .alongWith(new ZeroIntake(m_intake).andThen((new ZeroElevator(m_payload))))
     .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L2Position))
     .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L2Position))
-    .andThen(new SetBagSpeedTimed(m_intake));
+    .andThen(new SetBagSpeedTimed(m_bag));
+
+    m_poorMansAutoRight = new SequentialCommandGroup(new ZeroIntake(m_intake))
+    .andThen(new ZeroElevator(m_payload))
+    .andThen(new PoorLeaveZone(m_drivetrain, m_vision))
+    .andThen(new AutoSpecificTag(m_poseEstimator, m_vision, m_trajCreation, -Constants.AutoConstants.xApriltagDisplacement, -Constants.AutoConstants.yApriltagDisplacementright, 20))
+    .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L2Position))
+    .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L2Position))
+    .andThen(new SetBagSpeedTimed(m_bag));
 
     m_outAndOpenClimb = null; //new SequentialCommandGroup(m_pivotClimbOut).andThen(m_openServo);
     m_inAndClosedClimb = null;//new SequentialCommandGroup(m_closeServo).andThen(m_pivotClimbIn);
@@ -222,7 +242,8 @@ public class RobotContainer {
                   m_drivetrain::getCharacterizationVelocity));
 
     m_chooser.setDefaultOption("Nothing Selected", null);
-    m_chooser.addOption("Poor Man's Auto", m_poorMansAuto);
+    m_chooser.addOption("Poor Man's Auto Left", m_poorMansAutoLeft);
+    m_chooser.addOption("Poor Man's Auto Right", m_poorMansAutoRight);
 
      List<String> autos = PathPlannerUtil.getExistingPaths();
     for (String auto : autos) {
@@ -285,8 +306,8 @@ public class RobotContainer {
     ControlMap.gunnerButton5.onTrue(new SetIntakePivotPosition(m_intake,m_payload,Constants.IntakeConstants.L2Position));
     ControlMap.gunnerButton6.onTrue(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.CoralStationPosition));
     ControlMap.gunnerButton7.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.L1Position));
-    ControlMap.gunnerButton8.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.L2Position));
-    ControlMap.gunnerButton9.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.L3Position));
+    ControlMap.gunnerButton8.onTrue(m_autoBottomAlgae);
+    ControlMap.gunnerButton9.onTrue(m_autoTopAlgae);
     ControlMap.gunnerButton10.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.CoralStationPosition));
     ControlMap.gunnerButton14.onTrue(m_autoZero);
     ControlMap.gunnerButton13.onTrue(m_autoL2);

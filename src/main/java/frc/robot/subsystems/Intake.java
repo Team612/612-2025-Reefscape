@@ -24,26 +24,17 @@ public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   private SparkMax pivotMotor;
   private SparkClosedLoopController controller;
-  private SparkMax bagMotor;
   private SimpleMotorFeedforward m_feedForward;
   private static Intake instance;
   private DigitalInput m_limI = new DigitalInput(Constants.IntakeConstants.limIID);
 
   public Intake() {
     pivotMotor = new SparkMax(Constants.IntakeConstants.pivotID, MotorType.kBrushless);
-    bagMotor = new SparkMax(Constants.IntakeConstants.bagID, MotorType.kBrushed);
     m_feedForward = new SimpleMotorFeedforward(0.0, 0.0, 0.0);
 
-    pivotMotor.configure(MotorConfigs.spark_pivot_configs, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-    bagMotor.configure(MotorConfigs.spark_bag_configs, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-    
+    pivotMotor.configure(MotorConfigs.spark_pivot_configs, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);    
 
     controller = pivotMotor.getClosedLoopController();
-  }
-
-
-  public void setBags(double speed){
-    bagMotor.set(speed);
   }
 
   public void setPivotSpeed(double speed){
@@ -76,9 +67,6 @@ public class Intake extends SubsystemBase {
   public SparkMax getPivot(){
     return pivotMotor;
   }
-  public SparkMax getBags(){
-    return bagMotor;
-  }
 
   public double getPivotPosition(){
     return -pivotMotor.getEncoder().getPosition();
@@ -86,10 +74,6 @@ public class Intake extends SubsystemBase {
 
   public double getPivotSpeed(){
     return -pivotMotor.getEncoder().getVelocity();
-  }
-
-  public double getBagSpeed(){
-    return bagMotor.get();
   }
 
   public static Intake getInstance(){

@@ -4,17 +4,19 @@
 
 package frc.robot.commands.AutoCommands.GunnerCommands;
 
+import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.subsystems.Bag;
 import frc.robot.subsystems.Intake;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class SetBagSpeedInTimed extends Command {
-  private Intake m_intake;
+  private Bag m_intake;
   private Timer timer;
   /** Creates a new SetBagSpeedTimed. */
-  public SetBagSpeedInTimed(Intake intake) {
+  public SetBagSpeedInTimed(Bag intake) {
     m_intake = intake;
     timer = new Timer();
     addRequirements(m_intake);

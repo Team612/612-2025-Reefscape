@@ -92,10 +92,11 @@ public class Constants {
         public static double kD = 0;
 
         public static double pivotspeed = 0.50; 
-        public static final double L1Position = 32.22;
-        public static final double L2Position = 32.22;//8.22; //26.126;
-        public static final double L3Position = 32.22;//8.22; //26.126;
-        public static final double CoralStationPosition = 346.97; //347.451  341.212;
+        public static final double L1Position = 23;
+        public static final double L2Position = 23;//8.22; //26.126;
+        public static final double L3Position = 23;//8.22; //26.126;
+        public static final double CoralStationPosition = 338.53; //347.451  341.212;
+        public static final double algaeIntakePosition = 66.71;
         public static final double maxPivotL1Angle = 70;
         public static final double maxVelocity = 0.3;
         public static final double maxAcceleration = 0.3;
@@ -113,7 +114,7 @@ public class Constants {
         public static final double elePos = 0;
         public static double payloadUpSpeed = 0.12;
         public static double payloadDownSpeed = 0.15;
-        public static double maxTrapezoidInput = 0.15;
+        public static double maxTrapezoidInput = 0.3;
 
         public static final int magID = 3;
         public static final int magReached = 205;
@@ -141,8 +142,10 @@ public class Constants {
     public static final double basePosition = 0.0;
     public static final double L1Position = 0.000;
     public static final double L2Position = 0.271; //0.245; //0.279
-    public static final double L3Position = 0.663;
+    public static final double L3Position = 0.683;
     public static final double CoralStationPosition = 0.29;//0.318
+    public static final double bottomAlgaePosition = 0.271;
+    public static final double topAlgaePosition = 0.663;
     // public static final double L1Minimum = 0.3 //the minimum position that allows for maximum movement for the intake pivot
     public static final double elevatorThreshold = 0.01;
 
@@ -201,10 +204,10 @@ public class Constants {
 
 
         //camera isnt centered with the intake
-        public static final double yApriltagDisplacementright = 0.16; // 0.20
+        public static final double yApriltagDisplacementright = 0.18; // 0.20
         public static final double yApriltagDisplacementleft = 0.20; // 0.20
 
-        public static final double xApriltagDisplacement = 0.25;
+        public static final double xApriltagDisplacement = 0.20;
     }
   
     

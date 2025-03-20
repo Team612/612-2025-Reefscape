@@ -28,17 +28,19 @@ public class SetElevatorPosition extends Command {
   @Override
   public void initialize() {
     m_payload.setMotorSpeed(0);
+    m_payload.resetPIDController();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double elevatorSpeed = elevatorPID.calculate(m_payload.getPosition(), position);
+  //   double elevatorSpeed = -elevatorPID.calculate(m_payload.getPosition(), position);
 
-    if (elevatorSpeed > Constants.ElevatorConstants.maxTrapezoidInput) elevatorSpeed = Constants.ElevatorConstants.maxTrapezoidInput;
-    if (elevatorSpeed < -Constants.ElevatorConstants.maxTrapezoidInput) elevatorSpeed = -Constants.ElevatorConstants.maxTrapezoidInput;
+  // if (elevatorSpeed > Constants.ElevatorConstants.maxTrapezoidInput) elevatorSpeed = Constants.ElevatorConstants.maxTrapezoidInput;
+  //   if (elevatorSpeed < -Constants.ElevatorConstants.maxTrapezoidInput) elevatorSpeed = -Constants.ElevatorConstants.maxTrapezoidInput;
 
-    m_payload.setMotorSpeed(elevatorSpeed);
+  //   m_payload.setMotorSpeed(elevatorSpeed);
+    m_payload.setPosition(position);
   }
 
   // Called once the command ends or is interrupted.
@@ -52,6 +54,10 @@ public class SetElevatorPosition extends Command {
   public boolean isFinished() {
     if (position <= Constants.ElevatorConstants.CoralStationPosition - Constants.ElevatorConstants.elevatorThreshold && m_intake.getPivotPosition() >= Constants.IntakeConstants.maxPivotL1Angle){
       System.out.println("Cannot move elevator, pivot too far back");
+      return true;
+    }
+
+    if (Math.abs(m_payload.getPosition() - position) <= Constants.ElevatorConstants.elevatorThreshold && m_payload.magValue() <= Constants.ElevatorConstants.magReached) {
       return true;
     }
 
