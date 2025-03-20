@@ -43,7 +43,7 @@ public class Payload extends SubsystemBase {
   // DigitalInput bottomlimitSwitch = new DigitalInput(Constants.bottomlimitSwitchID);
 
   double kDt = 0.02;
-  double kMaxVelocity = 0.7;
+  double kMaxVelocity = 0.9;
   double kMaxAccel = 0.3;
   private final Timer m_timer = new Timer();
   

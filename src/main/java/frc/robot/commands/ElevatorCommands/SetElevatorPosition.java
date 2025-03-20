@@ -8,11 +8,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Payload;
 import frc.robot.subsystems.Intake;
+import edu.wpi.first.wpilibj.Timer;
 
 public class SetElevatorPosition extends Command {
   private Payload m_payload;
   private Intake m_intake;
   private double position;
+  private Timer m_timer;
   private int ticks = 0;
   private PIDController elevatorPID = new PIDController(Constants.ElevatorConstants.kP, 0, 0);
 
@@ -21,12 +23,14 @@ public class SetElevatorPosition extends Command {
     m_intake = i;
     m_payload = pay;
     position = p;
+    m_timer = new Timer();
     addRequirements(m_payload);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_timer.start();
     m_payload.setMotorSpeed(0);
     m_payload.resetPIDController();
   }
@@ -46,12 +50,17 @@ public class SetElevatorPosition extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_timer.stop();
+    m_timer.reset();
     m_payload.setMotorSpeed(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if (m_timer.get() >= 2.5){
+      return true;
+    }
     if (position <= Constants.ElevatorConstants.CoralStationPosition - Constants.ElevatorConstants.elevatorThreshold && m_intake.getPivotPosition() >= Constants.IntakeConstants.maxPivotL1Angle){
       System.out.println("Cannot move elevator, pivot too far back");
       return true;

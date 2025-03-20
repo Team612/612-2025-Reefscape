@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 // import frc.robot.util.TrajectoryCreation;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.AutoCommands.DriverCommands.ApriltagAlign;
+import frc.robot.commands.AutoCommands.DriverCommands.AutoDrive;
 import frc.robot.commands.AutoCommands.DriverCommands.AutoSpecificTag;
 import frc.robot.commands.AutoCommands.DriverCommands.CoralStationAlign;
 import frc.robot.commands.AutoCommands.DriverCommands.LeaveZone;
@@ -209,7 +210,19 @@ public class RobotContainer {
     .alongWith(new ZeroIntake(m_intake).andThen((new ZeroElevator(m_payload))))
     .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L2Position))
     .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L2Position))
-    .andThen(new SetBagSpeedTimed(m_bag));
+    .andThen(new SetBagSpeedTimed(m_bag))
+    .andThen(m_autoTopAlgae)
+    .andThen(new AutoDrive(m_drivetrain, 0.2, 0, 0.5))
+    .andThen(new AutoDrive(m_drivetrain, 0, 0.2, 0.5).alongWith(new SetBagSpeedTimed(m_bag)))
+    .andThen(new AutoDrive(m_drivetrain, -0.2, 0, 0.5))
+    .andThen(new AutoDrive(m_drivetrain,0,0,0));
+      
+  
+
+
+
+
+    
 
     m_poorMansAutoRight = new SequentialCommandGroup(new ZeroIntake(m_intake))
     .andThen(new ZeroElevator(m_payload))
