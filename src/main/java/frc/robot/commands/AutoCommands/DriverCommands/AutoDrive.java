@@ -6,6 +6,9 @@ package frc.robot.commands.AutoCommands.DriverCommands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
+import frc.robot.subsystems.Bag;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Mecanum;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -15,6 +18,7 @@ public class AutoDrive extends Command {
   private double driveX;
   private double driveY;
   private double driveTime;
+  private Bag m_bag;
   /** Creates a new AutoDrive. */
   public AutoDrive(Mecanum d, double driveX, double driveY, double time) {
     m_drivetrain = d;
@@ -22,6 +26,7 @@ public class AutoDrive extends Command {
     this.driveX = driveX;
     this.driveY = driveY;
     this.driveTime = time;
+    m_bag = Bag.getInstance();
     addRequirements(m_drivetrain);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -36,12 +41,14 @@ public class AutoDrive extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    m_bag.setBags(Constants.IntakeConstants.bagspeed);
     m_drivetrain.RobotOrientedDrive(driveX, driveY, 0);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_bag.setBags(0);
     m_timer.stop();
     m_timer.reset();
     m_drivetrain.RobotOrientedDrive(0, 0, 0);

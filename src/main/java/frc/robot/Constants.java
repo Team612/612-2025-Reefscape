@@ -91,7 +91,7 @@ public class Constants {
         public static double kI = 0;
         public static double kD = 0;
 
-        public static double pivotspeed = 0.50; 
+        public static double pivotspeed = 0.65; 
         public static final double L1Position = 23;
         public static final double L2Position = 23;//8.22; //26.126;
         public static final double L3Position = 23;//8.22; //26.126;
