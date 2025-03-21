@@ -16,6 +16,8 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.subsystems.PoseEstimator;
@@ -217,12 +219,16 @@ public class TrajectoryCreation {
 
 
         //gets the angle RELATIVE to the field through polar coordinates
+        Pose2d midPose1;
         Rotation2d heading = new Translation2d(tagX - x, tagY - y).getAngle(); 
         //gets the tag angle, flipped 180 for field relative
         Rotation2d tagAngle = vision.return_tag_pose(id).getRotation().toRotation2d().rotateBy(new Rotation2d(Units.degreesToRadians(180)));
         //final pose is the tag pose transformed by a certain distance RELATIVE to the tag (with robot coordinates)
         //note that the heading should be the tag angle so it faces outward. Putting the tag angle as the heading results in trajectory heading towards the tag, not infront
-        Pose2d midPose1 = new Pose2d(tagX, tagY, tagAngle).transformBy(new Transform2d(new Translation2d(displacementX-1,displacementY),new Rotation2d()));
+        
+        midPose1 = new Pose2d(tagX, tagY, tagAngle).transformBy(new Transform2d(new Translation2d(displacementX-1,displacementY),new Rotation2d()));
+        
+    
         // Pose2d midPose2 = new Pose2d(tagX, tagY, tagAngle).transformBy(new Transform2d(new Translation2d(displacementX-1,displacementY+Units.inchesToMeters(-12.947811)),new Rotation2d()));
         Pose2d finalPose = new Pose2d(tagX, tagY, tagAngle).transformBy(new Transform2d(new Translation2d(displacementX,displacementY),new Rotation2d()));
         

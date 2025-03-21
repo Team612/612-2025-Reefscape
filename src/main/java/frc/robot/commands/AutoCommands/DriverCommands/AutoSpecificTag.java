@@ -9,6 +9,8 @@ import frc.robot.subsystems.PoseEstimator;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Vision;
 import frc.robot.util.TrajectoryCreation;
@@ -39,6 +41,14 @@ public class AutoSpecificTag extends Command {
   public void initialize() {
     PathPlannerPath path = null;
     try {
+      // if (DriverStation.getAlliance().get() == Alliance.Red){
+      //   if (m_id == 22){
+      //     m_id = 9;
+      //   }
+      //   else {
+      //     m_id = 11;
+      //   }
+      // }
       path = m_traj.autoCentering(m_poseEstimator, m_vision, displacementX, displacementY, m_id);
       path.preventFlipping = true;
       controllerCommand = AutoBuilder.followPath(path);

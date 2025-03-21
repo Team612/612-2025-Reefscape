@@ -106,8 +106,11 @@ public class RobotContainer {
   private Command m_coralAlign;
 
 
-  private SequentialCommandGroup m_poorMansAutoLeft;
-  private SequentialCommandGroup m_poorMansAutoRight;
+  private SequentialCommandGroup m_BluePoorMansAutoLeft;
+  private SequentialCommandGroup m_BluePoorMansAutoRight;
+  private SequentialCommandGroup m_RedPoorMansAutoLeft;
+  private SequentialCommandGroup m_RedPoorMansAutoRight;
+  private SequentialCommandGroup m_twoAlgaeAuto;
   private SequentialCommandGroup m_autoL1;
   private SequentialCommandGroup m_autoL2;
   private SequentialCommandGroup m_autoL3;
@@ -204,7 +207,7 @@ public class RobotContainer {
     .andThen(new ZeroElevator(m_payload));
 
 
-    m_poorMansAutoLeft = new SequentialCommandGroup(
+    m_BluePoorMansAutoLeft = new SequentialCommandGroup(
     new PoorLeaveZone(m_drivetrain, m_vision))
     .andThen(new AutoSpecificTag(m_poseEstimator, m_vision, m_trajCreation, -Constants.AutoConstants.xApriltagDisplacement, -Constants.AutoConstants.yApriltagDisplacementright, 22))
     .alongWith(new ZeroIntake(m_intake).andThen((new ZeroElevator(m_payload))))
@@ -219,7 +222,7 @@ public class RobotContainer {
     .andThen(new AutoDrive(m_drivetrain,0,0,0));
       
 
-    m_poorMansAutoRight = new SequentialCommandGroup(
+    m_BluePoorMansAutoRight = new SequentialCommandGroup(
       new PoorLeaveZone(m_drivetrain, m_vision))
       .andThen(new AutoSpecificTag(m_poseEstimator, m_vision, m_trajCreation, -Constants.AutoConstants.xApriltagDisplacement, -Constants.AutoConstants.yApriltagDisplacementright, 20))
       .alongWith(new ZeroIntake(m_intake).andThen((new ZeroElevator(m_payload))))
@@ -232,6 +235,60 @@ public class RobotContainer {
       .andThen(new AutoDrive(m_drivetrain, 0, -0.2, 0.5))
       .andThen(new AutoDrive(m_drivetrain, -0.2, 0, 0.5))
       .andThen(new AutoDrive(m_drivetrain,0,0,0));
+
+
+      m_RedPoorMansAutoLeft = new SequentialCommandGroup(
+        new PoorLeaveZone(m_drivetrain, m_vision))
+        .andThen(new AutoSpecificTag(m_poseEstimator, m_vision, m_trajCreation, -Constants.AutoConstants.xApriltagDisplacement, -Constants.AutoConstants.yApriltagDisplacementright, 9))
+        .alongWith(new ZeroIntake(m_intake).andThen((new ZeroElevator(m_payload))))
+        .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L2Position))
+        .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L2Position))
+        .andThen(new SetBagSpeedTimed(m_bag))
+        .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.algaeIntakePosition))
+        .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.topAlgaePosition))
+        .andThen(new AutoDrive(m_drivetrain, 0.2, 0, 0.5))
+        .andThen(new AutoDrive(m_drivetrain, 0, 0.2, 0.5))
+        .andThen(new AutoDrive(m_drivetrain, -0.2, 0, 0.5))
+        .andThen(new AutoDrive(m_drivetrain,0,0,0));
+
+      m_RedPoorMansAutoRight = new SequentialCommandGroup(
+        new PoorLeaveZone(m_drivetrain, m_vision))
+        .andThen(new AutoSpecificTag(m_poseEstimator, m_vision, m_trajCreation, -Constants.AutoConstants.xApriltagDisplacement, -Constants.AutoConstants.yApriltagDisplacementright, 11))
+        .alongWith(new ZeroIntake(m_intake).andThen((new ZeroElevator(m_payload))))
+        .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L2Position))
+        .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L2Position))
+        .andThen(new SetBagSpeedTimed(m_bag))
+        .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.algaeIntakePosition))
+        .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.topAlgaePosition))
+        .andThen(new AutoDrive(m_drivetrain, 0.2, 0, 0.5))
+        .andThen(new AutoDrive(m_drivetrain, 0, -0.2, 0.5))
+        .andThen(new AutoDrive(m_drivetrain, -0.2, 0, 0.5))
+        .andThen(new AutoDrive(m_drivetrain,0,0,0));
+
+        m_twoAlgaeAuto = new SequentialCommandGroup(
+          new PoorLeaveZone(m_drivetrain, m_vision))
+          .andThen(new AutoSpecificTag(m_poseEstimator, m_vision, m_trajCreation, -Constants.AutoConstants.xApriltagDisplacement, -Constants.AutoConstants.yApriltagDisplacementright, 20))
+          .alongWith(new ZeroIntake(m_intake).andThen((new ZeroElevator(m_payload))))
+          .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L2Position))
+          .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L2Position))
+          .andThen(new SetBagSpeedTimed(m_bag))
+          .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.algaeIntakePosition))
+          .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.topAlgaePosition))
+          .andThen(new AutoDrive(m_drivetrain, 0.2, 0, 0.5))
+          .andThen(new AutoDrive(m_drivetrain, 0, 0.2, 0.5))
+          .andThen(new AutoDrive(m_drivetrain, -0.2, 0, 0.5))
+          .andThen(new AutoDrive(m_drivetrain,0,0,0))
+          .andThen(new AutoDrive(m_drivetrain, -0.5,0,1))
+          .andThen(new AutoSpecificTag(m_poseEstimator, m_vision, m_trajCreation, -Constants.AutoConstants.xApriltagDisplacement, -Constants.AutoConstants.yApriltagDisplacementright, 19))
+          .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.algaeIntakePosition))
+          .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.bottomAlgaePosition))
+          .andThen(new AutoDrive(m_drivetrain, 0.2, 0, 0.5))
+          .andThen(new AutoDrive(m_drivetrain, 0, 0.2, 0.5))
+          .andThen(new AutoDrive(m_drivetrain, -0.2, 0, 0.5))
+          .andThen(new AutoDrive(m_drivetrain,0,0,0));
+
+
+  
         
   
 
@@ -262,6 +319,7 @@ public class RobotContainer {
     m_chooser.addOption("Auto L3", m_autoL3);
     m_chooser.addOption("Forward Meter",m_forwardMeter);
     m_chooser.addOption("Leave Zone",m_LeaveZone);
+    
 
     m_chooser.addOption("Mecanum Characterization", new FeedForwardCharacterization(
                   m_drivetrain,
@@ -271,13 +329,16 @@ public class RobotContainer {
                   m_drivetrain::getCharacterizationVelocity));
 
     m_chooser.setDefaultOption("Nothing Selected", null);
-    m_chooser.addOption("Poor Man's Auto Left", m_poorMansAutoLeft);
-    m_chooser.addOption("Poor Man's Auto Right", m_poorMansAutoRight);
+    m_chooser.addOption("BLUE Poor Man's Auto Right", m_BluePoorMansAutoLeft);
+    m_chooser.addOption("BLUE Poor Man's Auto Left", m_BluePoorMansAutoRight);
+    m_chooser.addOption("RED Poor Man's Auto Right", m_RedPoorMansAutoLeft);
+    m_chooser.addOption("RED Poor Man's Auto Left", m_RedPoorMansAutoRight);
+    m_chooser.addOption("(DO NOT RUN) Two Algae Removal", m_twoAlgaeAuto);
 
-     List<String> autos = PathPlannerUtil.getExistingPaths();
-    for (String auto : autos) {
-      m_chooser.addOption(auto, AutoBuilder.buildAuto(auto));
-    }
+    //  List<String> autos = PathPlannerUtil.getExistingPaths();
+    // for (String auto : autos) {
+    //   m_chooser.addOption(auto, AutoBuilder.buildAuto(auto));
+    // }
 
     SmartDashboard.putData(m_chooser);
   }
@@ -328,20 +389,22 @@ public class RobotContainer {
 
 
 
-    ControlMap.gunnerButton1.whileTrue(m_BagIn);
-    ControlMap.gunnerButton2.whileTrue(m_BagOut);
-    ControlMap.gunnerButton3.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancelAll()));
-    ControlMap.gunnerButton4.onTrue(new SetIntakePivotPosition(m_intake,m_payload,Constants.IntakeConstants.L1Position));
-    ControlMap.gunnerButton5.onTrue(new SetIntakePivotPosition(m_intake,m_payload,Constants.IntakeConstants.L2Position));
-    ControlMap.gunnerButton6.onTrue(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.CoralStationPosition));
-    ControlMap.gunnerButton7.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.L1Position));
-    ControlMap.gunnerButton8.onTrue(m_autoBottomAlgae);
-    ControlMap.gunnerButton9.onTrue(m_autoTopAlgae);
-    ControlMap.gunnerButton10.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.CoralStationPosition));
-    ControlMap.gunnerButton14.onTrue(m_autoZero);
-    ControlMap.gunnerButton13.onTrue(m_autoL2);
-    ControlMap.gunnerButton12.onTrue(m_autoL3);
-    ControlMap.gunnerButton11.onTrue(m_autoCoralStation);
+    ControlMap.gunnerButton1.whileTrue(m_BagIn); //
+    ControlMap.gunnerButton2.whileTrue(m_BagOut); //
+    ControlMap.gunnerButton3.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancelAll())); //
+    // ControlMap.gunnerButton4.onTrue(new SetIntakePivotPosition(m_intake,m_payload,Constants.IntakeConstants.L1Position));
+    // ControlMap.gunnerButton5.onTrue(new SetIntakePivotPosition(m_intake,m_payload,Constants.IntakeConstants.L2Position));
+    // ControlMap.gunnerButton6.onTrue(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.CoralStationPosition));
+    // ControlMap.gunnerButton7.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.L1Position));
+    ControlMap.gunnerButton8.onTrue(m_autoBottomAlgae); //
+    ControlMap.gunnerButton9.onTrue(m_autoTopAlgae); //
+    // ControlMap.gunnerButton10.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.CoralStationPosition));
+    ControlMap.gunnerButton14.onTrue(m_autoZero); //
+    ControlMap.gunnerButton13.onTrue(m_autoL2); //
+    ControlMap.gunnerButton12.onTrue(m_autoL3); //
+    ControlMap.gunnerButton11.onTrue(m_autoCoralStation); //
+
+    
     // ControlMap.gunnerButton12.onTrue(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.CoralStationPosition));
     // ControlMap.gunnerButton4.onTrue(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L1Position));
 

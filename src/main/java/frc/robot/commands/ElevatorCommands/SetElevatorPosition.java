@@ -58,7 +58,7 @@ public class SetElevatorPosition extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (m_timer.get() >= 2.5){
+    if (m_timer.get() >= 2.0){
       return true;
     }
     if (position <= Constants.ElevatorConstants.CoralStationPosition - Constants.ElevatorConstants.elevatorThreshold && m_intake.getPivotPosition() >= Constants.IntakeConstants.maxPivotL1Angle){
