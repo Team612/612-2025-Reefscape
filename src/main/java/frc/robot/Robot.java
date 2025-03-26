@@ -79,6 +79,9 @@ public class Robot extends TimedRobot {
   private mySwerveModule mod2 = new mySwerveModule(mod2AngleMotorID,mod2DriveMotorID,mod2CANcoderID,mod2EncoderOffset);
   private mySwerveModule mod3 = new mySwerveModule(mod3AngleMotorID,mod3DriveMotorID,mod3CANcoderID,mod3EncoderOffset);
 
+  private SparkMax outtake = new SparkMax(21, MotorType.kBrushed);
+  private SparkMax pivot = new SparkMax(20, MotorType.kBrushed);
+
   // instantiating a Swerve Kinematics Object which will calculate our desired swerve module states
   private static final SwerveDriveKinematics swerveKinematics =
   new SwerveDriveKinematics(
@@ -152,6 +155,17 @@ public class Robot extends TimedRobot {
     mod1.setMySwerveState(moduleStates[1]);
     mod2.setMySwerveState(moduleStates[2]);
     mod3.setMySwerveState(moduleStates[3]);
+
+    pivot.set(controller.getRightTriggerAxis() - controller.getLeftTriggerAxis());
+
+    if (controller.getXButton() || controller.getBButton()){
+      if (controller.getXButton())
+        outtake.set(1);
+      if (controller.getBButton())
+        outtake.set(-1);
+    }
+    else
+      outtake.set(0);
   }
 
   @Override
@@ -214,7 +228,7 @@ public class Robot extends TimedRobot {
       drivingMotor.set(desiredState.speedMetersPerSecond);
 
       // this sets the angle motor using pid control to ensure smooth turning
-      angleMotor.set(-turnPIDController.calculate(getCurrentAngle(), desiredState.angle.getRadians()));
+      angleMotor.set(turnPIDController.calculate(getCurrentAngle(), desiredState.angle.getRadians()));
     }
 
     // this returns the wheels current angle in the range (-pi,pi) from the CANcoder inputs
