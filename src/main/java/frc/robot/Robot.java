@@ -4,6 +4,8 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
@@ -29,6 +31,10 @@ public class Robot extends TimedRobot {
   private static final double L2Position = -0.236;
   private static final double L3Position = -0.654;
 
+  public static final int magID = 3;
+  public static final int magReached = 205;
+  public static final int limEID = 9;
+
   // instantiate things here
   private XboxController driveController = new XboxController(driverPort);
   private XboxController gunController = new XboxController(gunnerPort);
@@ -43,6 +49,9 @@ public class Robot extends TimedRobot {
   private static MecanumDrive mech = new MecanumDrive(spark_fl, spark_bl, spark_fr, spark_br);
   private static int Lposition = -1;
   private PIDController elevatorController = new PIDController(Elevatorkp, 0, 0);
+
+  private static AnalogInput m_mag = new AnalogInput(magID);
+  private static DigitalInput m_limE = new DigitalInput(limEID);
   
   // aplies deadband so the robot does not drift when you let go of the controller.
   @SuppressWarnings("deprecation")
@@ -163,7 +172,9 @@ public class Robot extends TimedRobot {
   public void testInit() {}
 
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+    System.out.println("Lime: " + m_limE.get() + " Mag Value: " + m_mag.getValue() + " Mag Voltage: " + m_mag.getVoltage());
+  }
 
   @Override
   public void simulationInit() {}
