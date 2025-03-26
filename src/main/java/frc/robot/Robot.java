@@ -173,7 +173,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testPeriodic() {
-    System.out.println("Lime: " + m_limE.get() + " Mag Value: " + m_mag.getValue() + " Mag Voltage: " + m_mag.getVoltage());
+    // System.out.println("Lime: " + m_limE.get() + " Mag Value: " + m_mag.getValue() + " Mag Voltage: " + m_mag.getVoltage());
+    if ((m_mag.getVoltage() > 0.23) && (m_mag.getVoltage() < 0.25))
+      System.out.println("Magnet Detected");
   }
 
   @Override
