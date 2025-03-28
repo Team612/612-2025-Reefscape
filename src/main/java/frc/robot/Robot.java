@@ -6,6 +6,7 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
@@ -33,7 +34,11 @@ public class Robot extends TimedRobot {
 
   public static final int magID = 3;
   public static final int magReached = 205;
-  public static final int limEID = 9;
+  public static final int limEID = 8;
+
+  private static double zeroOffset = 0.0;
+  private static int rotations = 0; 
+  private static double lastRealValue = 0.0;
 
   // instantiate things here
   private XboxController driveController = new XboxController(driverPort);
@@ -51,7 +56,10 @@ public class Robot extends TimedRobot {
   private PIDController elevatorController = new PIDController(Elevatorkp, 0, 0);
 
   private static AnalogInput m_mag = new AnalogInput(magID);
-  private static DigitalInput m_limE = new DigitalInput(limEID);
+  // private static DigitalInput m_limE = new DigitalInput(limEID);
+
+  DutyCycleEncoder encoder = new DutyCycleEncoder(8);
+
   
   // aplies deadband so the robot does not drift when you let go of the controller.
   @SuppressWarnings("deprecation")
@@ -169,13 +177,31 @@ public class Robot extends TimedRobot {
   public void disabledPeriodic() {}
 
   @Override
-  public void testInit() {}
+  public void testInit() {
+    // encoder.setDutyCycleRange(0,10);
+    // encoder.setDutyCycleRange
+    encoder.setInverted(true);
+  }
 
   @Override
   public void testPeriodic() {
-    // System.out.println("Lime: " + m_limE.get() + " Mag Value: " + m_mag.getValue() + " Mag Voltage: " + m_mag.getVoltage());
-    if ((m_mag.getVoltage() > 0.23) && (m_mag.getVoltage() < 0.25))
-      System.out.println("Magnet Detected");
+    if (elevator.getForwardLimitSwitch().isPressed()){
+      rotations = 0;
+      zeroOffset = encoder.get();
+    }
+    double realValue = encoder.get() - zeroOffset;
+    if (realValue < 0)
+      realValue += 1;
+    if ((realValue < 0.1) && (lastRealValue > 0.9)){
+      rotations++;
+    }
+    if ((realValue > 0.9) && (lastRealValue < 0.1)){
+      rotations--;
+    }
+    System.out.println("bore: " + (realValue + rotations));
+    // if ((m_mag.getVoltage() > 0.23) && (m_mag.getVoltage() < 0.25))
+    //   System.out.println("Magnet Detected" + Math.random());
+    lastRealValue = realValue;
   }
 
   @Override
