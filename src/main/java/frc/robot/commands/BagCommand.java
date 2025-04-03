@@ -4,13 +4,13 @@
 
 package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Sensor;
+import frc.robot.subsystems.Bag;
 
-public class SensorCommand extends Command {
+public class BagCommand extends Command {
   /** Creates a new DefaultDrive. */
   
-  Sensor m_s;
-  public SensorCommand(Sensor s) {
+  Bag m_s;
+  public BagCommand(Bag s) {
     this.m_s = s;
     addRequirements(m_s);
   }

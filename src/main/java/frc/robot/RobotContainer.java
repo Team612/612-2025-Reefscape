@@ -18,11 +18,11 @@ import frc.robot.subsystems.Sensor;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  final Sensor sen = new Sensor();
+  final Bag bag = new Bag();
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
-    final SensorCommand cmd = new SensorCommand(sen);
+    final BagCommand cmd = new BagCommand(sen);
     configureButtonBindings(cmd, sen);
   }
 
