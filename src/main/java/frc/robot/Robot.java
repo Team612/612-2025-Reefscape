@@ -189,15 +189,14 @@ public class Robot extends TimedRobot {
       rotations = 0;
       zeroOffset = encoder.get();
     }
+
     double realValue = encoder.get() - zeroOffset;
     if (realValue < 0)
       realValue += 1;
-    if ((realValue < 0.1) && (lastRealValue > 0.9)){
+    if ((realValue < 0.1) && (lastRealValue > 0.9))
       rotations++;
-    }
-    if ((realValue > 0.9) && (lastRealValue < 0.1)){
+    if ((realValue > 0.9) && (lastRealValue < 0.1))
       rotations--;
-    }
     System.out.println("bore: " + (realValue + rotations));
     // if ((m_mag.getVoltage() > 0.23) && (m_mag.getVoltage() < 0.25))
     //   System.out.println("Magnet Detected" + Math.random());
@@ -208,5 +207,5 @@ public class Robot extends TimedRobot {
   public void simulationInit() {}
 
   @Override
-  public void simulationPeriodic() {} 
+  public void simulationPeriodic() {}
 }
