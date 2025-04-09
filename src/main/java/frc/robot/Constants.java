@@ -204,7 +204,7 @@ public class Constants {
 
 
         //camera isnt centered with the intake
-        public static final double yApriltagDisplacementright = 0.18; // 0.20
+        public static final double yApriltagDisplacementright = 0.15; // 0.20
         public static final double yApriltagDisplacementleft = 0.20; // 0.20
 
         public static final double xApriltagDisplacement = 0.20;

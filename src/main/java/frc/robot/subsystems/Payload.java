@@ -116,8 +116,8 @@ public void setPosition(double position){
   }
   else {
   // controller.setReference(-position, ControlType.kPosition);
-  System.out.println(m_controller.calculate(getPosition(), endGoal));
-  controller.setReference(-m_controller.calculate(getPosition(),endGoal), ControlType.kDutyCycle);
+    System.out.println(m_controller.calculate(getPosition(), endGoal));
+    controller.setReference(-m_controller.calculate(getPosition(),endGoal), ControlType.kDutyCycle);
   }
   //m_controller.setGoal(-position);
   //elevatorMotor.setVoltage(m_controller.calculate(getPosition()) + m_feedforward.calculate(m_controller.getSetpoint().velocity));

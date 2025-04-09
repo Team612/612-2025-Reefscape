@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 // import frc.robot.util.TrajectoryConfiguration;
 // import frc.robot.util.TrajectoryCreation;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.AutoCommands.DriverCommands.ApriltagAlign;
 import frc.robot.commands.AutoCommands.DriverCommands.AutoDrive;
 import frc.robot.commands.AutoCommands.DriverCommands.AutoSpecificTag;
@@ -30,6 +31,12 @@ import frc.robot.commands.AutoCommands.DriverCommands.PoorLeaveZone;
 import frc.robot.commands.AutoCommands.GunnerCommands.SetBagSpeedInTimed;
 // import frc.robot.commands.AutoCommands.DriverCommands.ApriltagAlign;
 import frc.robot.commands.AutoCommands.GunnerCommands.SetBagSpeedTimed;
+import frc.robot.commands.ClimbCommands.ClimbConstantShift;
+import frc.robot.commands.ClimbCommands.CloseServo;
+import frc.robot.commands.ClimbCommands.ManualClimbPivotControls;
+import frc.robot.commands.ClimbCommands.OpenServo;
+import frc.robot.commands.ClimbCommands.PivotClimbIn;
+import frc.robot.commands.ClimbCommands.PivotClimbOut;
 // import frc.robot.commands.ClimbCommands.CloseServo;
 // import frc.robot.commands.ClimbCommands.ManualClimbPivotControls;
 // import frc.robot.commands.ClimbCommands.OpenServo;
@@ -49,6 +56,7 @@ import frc.robot.commands.IntakeCommands.ManualIntakePivotControl;
 import frc.robot.commands.IntakeCommands.SetIntakePivotPosition;
 import frc.robot.commands.IntakeCommands.ZeroIntake;
 import frc.robot.subsystems.Bag;
+import frc.robot.subsystems.Climb;
 // import frc.robot.commands.AutoCommands.DriverCommands.MoveForward;
 // import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Intake;
@@ -69,7 +77,7 @@ public class RobotContainer {
   private Payload m_payload;
   private Intake m_intake;
   private Bag m_bag; 
-  // private Climb m_climb;
+  private Climb m_climb;
   private Mecanum m_drivetrain;
   private PoseEstimator m_poseEstimator;
   private Vision m_vision;
@@ -110,6 +118,10 @@ public class RobotContainer {
   private SequentialCommandGroup m_BluePoorMansAutoRight;
   private SequentialCommandGroup m_RedPoorMansAutoLeft;
   private SequentialCommandGroup m_RedPoorMansAutoRight;
+  private SequentialCommandGroup m_SlowRedAutoRight;
+  private SequentialCommandGroup m_SlowRedAutoLeft;
+  private SequentialCommandGroup m_SlowBlueAutoRight;
+  private SequentialCommandGroup m_SlowBlueAutoLeft;
   private SequentialCommandGroup m_twoAlgaeAuto;
   private SequentialCommandGroup m_autoL1;
   private SequentialCommandGroup m_autoL2;
@@ -131,6 +143,7 @@ public class RobotContainer {
     m_intake = Intake.getInstance();
     m_drivetrain = Mecanum.getInstance();
     m_bag = Bag.getInstance();
+    m_climb = Climb.getInstance();
 
     m_poseEstimator = PoseEstimator.getPoseEstimatorInstance();
     m_vision = Vision.getVisionInstance();
@@ -160,13 +173,13 @@ public class RobotContainer {
     m_leaveZone = new LeaveZone(m_drivetrain, m_vision);
     m_coralAlign = new CoralStationAlign(m_poseEstimator, m_vision, m_trajCreation, Units.inchesToMeters(16), -0.40);
 
-    // m_closeServo = new CloseServo(m_climb);
-    // m_openServo = new OpenServo(m_climb);
-    // m_pivotClimbIn = new PivotClimbIn(m_climb);
-    // m_pivotClimbOut = new PivotClimbOut(m_climb);
+    m_closeServo = new CloseServo(m_climb);
+    m_openServo = new OpenServo(m_climb);
+    m_pivotClimbIn = new PivotClimbIn(m_climb);
+    m_pivotClimbOut = new PivotClimbOut(m_climb);
 
-    // m_ClimbConstantShiftUp = new ClimbConstantShift(0.05);
-    // m_ClimbConstantShiftDown = new ClimbConstantShift(-0.05);
+    m_ClimbConstantShiftUp = new ClimbConstantShift(0.05, m_climb);
+    m_ClimbConstantShiftDown = new ClimbConstantShift(-0.05, m_climb);
 
 
     configureCommands();
@@ -265,6 +278,67 @@ public class RobotContainer {
         .andThen(new AutoDrive(m_drivetrain, -0.2, 0, 0.5))
         .andThen(new AutoDrive(m_drivetrain,0,0,0));
 
+
+        m_SlowRedAutoRight = new SequentialCommandGroup(
+          new WaitCommand(5).andThen(
+          new PoorLeaveZone(m_drivetrain, m_vision))
+          .andThen(new AutoSpecificTag(m_poseEstimator, m_vision, m_trajCreation, -Constants.AutoConstants.xApriltagDisplacement, -Constants.AutoConstants.yApriltagDisplacementright, 11))
+          .alongWith(new ZeroIntake(m_intake).andThen((new ZeroElevator(m_payload))))
+          .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L2Position))
+          .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L2Position))
+          .andThen(new SetBagSpeedTimed(m_bag))
+          .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.algaeIntakePosition))
+          .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.topAlgaePosition))
+          .andThen(new AutoDrive(m_drivetrain, 0.2, 0, 0.5))
+          .andThen(new AutoDrive(m_drivetrain, 0, -0.2, 0.5))
+          .andThen(new AutoDrive(m_drivetrain, -0.2, 0, 0.5))
+          .andThen(new AutoDrive(m_drivetrain,0,0,0)));
+
+        m_SlowRedAutoLeft =  new SequentialCommandGroup(
+          new WaitCommand(5).andThen(
+          new PoorLeaveZone(m_drivetrain, m_vision))
+          .andThen(new AutoSpecificTag(m_poseEstimator, m_vision, m_trajCreation, -Constants.AutoConstants.xApriltagDisplacement, -Constants.AutoConstants.yApriltagDisplacementright, 9))
+          .alongWith(new ZeroIntake(m_intake).andThen((new ZeroElevator(m_payload))))
+          .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L2Position))
+          .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L2Position))
+          .andThen(new SetBagSpeedTimed(m_bag))
+          .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.algaeIntakePosition))
+          .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.topAlgaePosition))
+          .andThen(new AutoDrive(m_drivetrain, 0.2, 0, 0.5))
+          .andThen(new AutoDrive(m_drivetrain, 0, 0.2, 0.5))
+          .andThen(new AutoDrive(m_drivetrain, -0.2, 0, 0.5))
+          .andThen(new AutoDrive(m_drivetrain,0,0,0)));
+
+        m_SlowBlueAutoLeft = new SequentialCommandGroup(
+          new WaitCommand(5).andThen(new PoorLeaveZone(m_drivetrain, m_vision)))
+          .andThen(new AutoSpecificTag(m_poseEstimator, m_vision, m_trajCreation, -Constants.AutoConstants.xApriltagDisplacement, -Constants.AutoConstants.yApriltagDisplacementright, 22))
+          .alongWith(new ZeroIntake(m_intake).andThen((new ZeroElevator(m_payload))))
+          .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L2Position))
+          .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L2Position))
+          .andThen(new SetBagSpeedTimed(m_bag))
+          .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.algaeIntakePosition))
+          .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.topAlgaePosition))
+          .andThen(new AutoDrive(m_drivetrain, 0.2, 0, 0.5))
+          .andThen(new AutoDrive(m_drivetrain, 0, 0.2, 0.5))
+          .andThen(new AutoDrive(m_drivetrain, -0.2, 0, 0.5))
+          .andThen(new AutoDrive(m_drivetrain,0,0,0));
+
+        m_SlowBlueAutoRight = 
+        new WaitCommand(5).andThen(
+        new PoorLeaveZone(m_drivetrain, m_vision))
+        .andThen(new AutoSpecificTag(m_poseEstimator, m_vision, m_trajCreation, -Constants.AutoConstants.xApriltagDisplacement, -Constants.AutoConstants.yApriltagDisplacementright, 20))
+        .alongWith(new ZeroIntake(m_intake).andThen((new ZeroElevator(m_payload))))
+        .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L2Position))
+        .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L2Position))
+        .andThen(new SetBagSpeedTimed(m_bag))
+        .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.algaeIntakePosition))
+        .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.topAlgaePosition))
+        .andThen(new AutoDrive(m_drivetrain, 0.2, 0, 0.5))
+        .andThen(new AutoDrive(m_drivetrain, 0, -0.2, 0.5))
+        .andThen(new AutoDrive(m_drivetrain, -0.2, 0, 0.5))
+        .andThen(new AutoDrive(m_drivetrain,0,0,0));
+        
+
         m_twoAlgaeAuto = new SequentialCommandGroup(
           new PoorLeaveZone(m_drivetrain, m_vision))
           .andThen(new AutoSpecificTag(m_poseEstimator, m_vision, m_trajCreation, -Constants.AutoConstants.xApriltagDisplacement, -Constants.AutoConstants.yApriltagDisplacementright, 20))
@@ -333,6 +407,11 @@ public class RobotContainer {
     m_chooser.addOption("BLUE Poor Man's Auto Left", m_BluePoorMansAutoRight);
     m_chooser.addOption("RED Poor Man's Auto Right", m_RedPoorMansAutoLeft);
     m_chooser.addOption("RED Poor Man's Auto Left", m_RedPoorMansAutoRight);
+    
+    m_chooser.addOption("(SLOW) BLUE Auto Right", m_SlowBlueAutoLeft);
+    m_chooser.addOption("(SLOW) BLUE Auto Left", m_SlowBlueAutoRight);
+    m_chooser.addOption("(SLOW) RED Auto Right", m_SlowRedAutoLeft);
+    m_chooser.addOption("(SLOW) RED Auto Left", m_SlowRedAutoRight);
     m_chooser.addOption("(DO NOT RUN) Two Algae Removal", m_twoAlgaeAuto);
 
     //  List<String> autos = PathPlannerUtil.getExistingPaths();
@@ -379,13 +458,13 @@ public class RobotContainer {
 
     // ControlMap.driver_controls.y().onTrue(m_outAndOpenClimb);   
     // ControlMap.driver_controls.a().onTrue(m_inAndClosedClimb);
-    // ControlMap.driver_controls.x().whileTrue(m_openServo);
-    // ControlMap.driver_controls.b().whileTrue(m_closeServo);
+    ControlMap.driver_controls.x().whileTrue(m_openServo);
+    ControlMap.driver_controls.b().whileTrue(m_closeServo);
 
-    // ControlMap.driver_controls.povLeft().whileTrue(new ManualClimbPivotControls(m_climb, Constants.ClimbConstants.pivotSpeed));
-    // ControlMap.driver_controls.povRight().whileTrue(new ManualClimbPivotControls(m_climb, -Constants.ClimbConstants.pivotSpeed));
-    // ControlMap.driver_controls.povUp().onTrue(m_ClimbConstantShiftUp);
-    // ControlMap.driver_controls.povDown().onTrue(m_ClimbConstantShiftDown);
+    ControlMap.driver_controls.povLeft().whileTrue(new ManualClimbPivotControls(m_climb, Constants.ClimbConstants.pivotSpeed));
+    ControlMap.driver_controls.povRight().whileTrue(new ManualClimbPivotControls(m_climb, -Constants.ClimbConstants.pivotSpeed));
+    ControlMap.driver_controls.povUp().onTrue(m_ClimbConstantShiftUp);
+    ControlMap.driver_controls.povDown().onTrue(m_ClimbConstantShiftDown);
 
 
 
