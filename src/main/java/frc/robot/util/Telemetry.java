@@ -7,9 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 // import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Mecanum;
 import frc.robot.subsystems.Payload;
-import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.Vision;
 
 import java.util.Map;
@@ -26,10 +24,8 @@ import edu.wpi.first.networktables.NetworkTableValue;
 import edu.wpi.first.networktables.PubSubOption;
 
 public class Telemetry {
-    Mecanum m_drivetrain;
     Intake m_intake;
     Payload m_payload;
-    PoseEstimator m_PoseEstimator;
     Vision m_vision;
     // Climb m_climb;
 
@@ -92,11 +88,9 @@ public class Telemetry {
     GenericEntry apriltagX;
     GenericEntry apriltagY;
     public void initData(){
-        m_drivetrain = Mecanum.getInstance();
         m_payload = Payload.getInstance();
         m_intake = Intake.getInstance();
         // m_climb = Climb.getInstance();
-        m_PoseEstimator = PoseEstimator.getPoseEstimatorInstance();
         m_vision = Vision.getVisionInstance();
         table = NetworkTableInstance.getDefault();
 
@@ -186,11 +180,6 @@ public class Telemetry {
 
     public void updateData(){
         //drivetrain
-        pigeonAngle.setDouble(m_drivetrain.getPigeonAngle().getDegrees());
-        sparkFLVoltage.setDouble(m_drivetrain.getSparks()[0].getOutputCurrent());
-        sparkFRVoltage.setDouble(m_drivetrain.getSparks()[1].getOutputCurrent());
-        sparkBLVoltage.setDouble(m_drivetrain.getSparks()[2].getOutputCurrent());
-        sparkBRVoltage.setDouble(m_drivetrain.getSparks()[3].getOutputCurrent());
 
         //payload
         elevatorPosition.setDouble(m_payload.getPosition());
@@ -220,9 +209,6 @@ public class Telemetry {
         Constants.ClimbConstants.pivotSpeed = climbCurrentSetSpeed.getDouble(Constants.ClimbConstants.pivotSpeed);
 
         //autonomous
-        poseX.setDouble(m_PoseEstimator.getPose().getX());
-        poseY.setDouble(m_PoseEstimator.getPose().getY());
-        poseAngle.setDouble(m_PoseEstimator.getPose().getRotation().getDegrees());
         seeAprilTagFront.setBoolean(m_vision.frontHasTag());
         seeAprilTagBack.setBoolean(m_vision.backHasTag());
         apriltagIDFront.setDouble(m_vision.frontTagID());

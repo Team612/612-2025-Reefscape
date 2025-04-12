@@ -25,7 +25,6 @@ public class MotorConfigs {
         configureIntake();
         configureClimb();
         configureElevator();
-        configureDrivetrain();
         configureLEDs();
                    
     }
@@ -143,40 +142,9 @@ public class MotorConfigs {
                 
     }
 
-    public static void configureDrivetrain(){
-        drivetrain_configs = new SparkMaxConfig();
-        drivetrain_configs
-            .smartCurrentLimit(Constants.DrivetrainConstants.currentLimit);
-        
-        drivetrain_configs
-            .encoder
-                .positionConversionFactor(Constants.DrivetrainConstants.kPositionConversionFactor)
-                .velocityConversionFactor(Constants.DrivetrainConstants.kVelocityConversionFactor);
-        
-        drivetrain_configs
-            .absoluteEncoder
-                .positionConversionFactor(Constants.DrivetrainConstants.kPositionConversionFactor)
-                .velocityConversionFactor(Constants.DrivetrainConstants.kVelocityConversionFactor);
-        drivetrain_configs
-            .closedLoop
-                .p(Constants.DrivetrainConstants.kP)
-                .i(Constants.DrivetrainConstants.kI)
-                .d(Constants.DrivetrainConstants.kD);
-        
-
-            
-    }
-
     public void configureLEDs(){
         LED_configs = new CANdleConfiguration();
         LED_configs.stripType = LEDStripType.RGBW;
         LED_configs.vBatOutputMode = VBatOutputMode.Modulated;
     }
-
-
-  
-
-
-
-   
 }

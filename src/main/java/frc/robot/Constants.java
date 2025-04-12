@@ -12,58 +12,75 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
 /** Add your docs here. */
 public class Constants {
 
     public class DrivetrainConstants{
+        // gyro port
+        public static final int gyroID = 0;
+    
+        // sets the minimum controller request percent
+        public static final double Deadband = 0.05;
+    
+        // sets the proportional constant for the angle motor PID
+        public static final double kp = 0.5;
+    
+        // this is a very important constant it measures how much motor percent it takes to travel 1 m/s
+        public static final double metersPerSecondtoMotorPercentConstant = 0.233;
+    
+        // used to desaturate the wheel speeds if we request them to go over this limit
+        public static final double MAX_SPEED = 1/metersPerSecondtoMotorPercentConstant; // m/s
+    
+        // this controls our desired m/s inputs from the controller
+        public static final double xMultiple = MAX_SPEED;
+        public static final double yMultiple = MAX_SPEED;
+        // this controls our desired rad/s inputs from the controller
+        public static final double zMultiple = 3;
+    
+        // used to instantiate swerve kinematics
+        public static final double trackWidth = 0.605;
+        public static final double wheelBase = 0.605;
+    
+        // swerve module 0 constants, front left
+        // when the absolute encoder reads the 0.63 it is actually at 0
+        public static final double mod0EncoderOffset = 0.63;
+        public static final int mod0AngleMotorID = 7;
+        public static final int mod0DriveMotorID = 6;
+        public static final int mod0CANcoderID = 0;
+    
+        // swerve module 1 constants, front right
+        // when the absolute encoder reads 0.02 it is actually at 0
+        public static final double mod1EncoderOffset = 0.735;
+        public static final int mod1AngleMotorID = 5;
+        public static final int mod1DriveMotorID = 4;
+        public static final int mod1CANcoderID = 2;
+    
+        // swerve module 2 constants, back left
+        // when the absolute encoder reads 0.735 it is actually at 0
+        public static final double mod2EncoderOffset = 0.459;
+        public static final int mod2AngleMotorID = 1;
+        public static final int mod2DriveMotorID = 8;
+        public static final int mod2CANcoderID = 3;
+    
+        // swerve module 3 constants, back right
+        // when the absolute encoder reads 0.994 it is actually at 0
+        public static final double mod3EncoderOffset = 0.2;
+        public static final int mod3AngleMotorID = 3;
+        public static final int mod3DriveMotorID = 2;
+        public static final int mod3CANcoderID = 1;
 
-        public static final int pigeonID = 0;
-
-        public static final int SPARK_FL = 2;
-        public static final int SPARK_BR = 4;
-        public static final int SPARK_BL = 3;
-        public static final int SPARK_FR = 1;
-
-        public static final double kP = 0.01;
-        public static final double kI = 0.0;
-        public static final double kD = 0.0;
-        
-
-        // Need to get locations of wheels relative to center of robot
-        public static final Translation2d m_frontLeftLocation = new Translation2d(0.267, 0.305);
-        public static final Translation2d m_frontRightLocation = new Translation2d(0.267, -0.305);
-        public static final Translation2d m_backLeftLocation = new Translation2d(-0.267, 0.305);
-        public static final Translation2d m_backRightLocation = new Translation2d(-0.267, -0.305);
-
-        public static final MecanumDriveKinematics m_kinematics = new MecanumDriveKinematics(
-            m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation
-        );
-
-  
-        public static final double kWheelBase =  Units.inchesToMeters(21); // width from center of back to front wheels (center of the wheel)
-        public static final double kTrackWidth = Units.inchesToMeters(24); // width from right to left wheels (center of the wheel)
-        public static final double kGearReduction = 16;
-        public static final double kS = 0.15950; 
-        public static final double kV = 4.6647;  
-        public static final double kA = 0;
-        public static final int currentLimit = 30;
-
-        public static final SimpleMotorFeedforward kFeedforward =
-         new SimpleMotorFeedforward(Constants.DrivetrainConstants.kS, Constants.DrivetrainConstants.kV, Constants.DrivetrainConstants.kA);
-     
-        public static final double kWheelDiameterMeters = 0.1524; 
-        public static final double kPositionConversionFactor =
-            ((kWheelDiameterMeters * Math.PI)) / (kGearReduction);
-
-        public static final double kVelocityConversionFactor =
-            kPositionConversionFactor / 60.0;
-
+        public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
+        new Translation2d(wheelBase / 2.0, trackWidth / 2.0),
+        new Translation2d(wheelBase / 2.0, -trackWidth / 2.0),
+        new Translation2d(-wheelBase / 2.0, trackWidth / 2.0),
+        new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0));
     }
 
     public class IntakeConstants {
-        public static final int pivotID = 6;
+        public static final int pivotID = 16;
         public static final boolean pivotInverted = false;
         public static final int pivotCurrentLimit = 30;
         public static final double boreOffset = 0;
@@ -81,7 +98,7 @@ public class Constants {
         public static final int limIID = 0;
 
 
-        public static final int bagID = 7; 
+        public static final int bagID = 17; 
         public static double bagspeed = 0.60;
 
         public static final int bagCurrentLimit = 30;
@@ -107,7 +124,7 @@ public class Constants {
     }
 
     public class ElevatorConstants {
-        public static final int elevatorID = 5;
+        public static final int elevatorID = 15;
         public static final boolean elevatorInverted = true;
         public static final int elevatorCurrentLimit = 30;
         public static final IdleMode idleMode = IdleMode.kBrake;
