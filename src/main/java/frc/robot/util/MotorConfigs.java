@@ -4,12 +4,13 @@ import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.CANdle.VBatOutputMode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.LimitSwitchConfig.Type;
 import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 
 
 import frc.robot.Constants;
 
-
+import com.revrobotics.spark.config.LimitSwitchConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 public class MotorConfigs {
@@ -79,39 +80,44 @@ public class MotorConfigs {
     public static void configureElevator(){
         //elevator motor
         elevator_pivot_configs = new SparkMaxConfig();
-        elevator_pivot_configs
-            .inverted(Constants.ElevatorConstants.elevatorInverted)
-            .smartCurrentLimit(Constants.ElevatorConstants.elevatorCurrentLimit)
-            .idleMode(Constants.ElevatorConstants.idleMode);
+        // elevator_pivot_configs
+        //     .inverted(Constants.ElevatorConstants.elevatorInverted)
+        //     .smartCurrentLimit(Constants.ElevatorConstants.elevatorCurrentLimit)
+        //     .idleMode(Constants.ElevatorConstants.idleMode);
 
-        elevator_pivot_configs
-            .encoder
-                .positionConversionFactor(Constants.ElevatorConstants.kPositionConversionFactor)
-                .velocityConversionFactor(Constants.ElevatorConstants.kVelocityConversionFactor);
+        // elevator_pivot_configs
+        //     .encoder
+        //         .positionConversionFactor(Constants.ElevatorConstants.kPositionConversionFactor)
+        //         .velocityConversionFactor(Constants.ElevatorConstants.kVelocityConversionFactor);
         
-        elevator_pivot_configs 
-            .absoluteEncoder
-                .positionConversionFactor(Constants.ElevatorConstants.kPositionConversionFactor)
-                .velocityConversionFactor(Constants.ElevatorConstants.kVelocityConversionFactor);
+        // elevator_pivot_configs 
+        //     .absoluteEncoder
+        //         .positionConversionFactor(Constants.ElevatorConstants.kPositionConversionFactor)
+        //         .velocityConversionFactor(Constants.ElevatorConstants.kVelocityConversionFactor);
         
-        elevator_pivot_configs
-            .closedLoop
-                .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                .p(Constants.ElevatorConstants.kP)
-                .i(Constants.ElevatorConstants.kI)
-                .d(Constants.ElevatorConstants.kD);
+        // elevator_pivot_configs
+        //     .closedLoop
+        //         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+        //         .p(Constants.ElevatorConstants.kP)
+        //         .i(Constants.ElevatorConstants.kI)
+        //         .d(Constants.ElevatorConstants.kD);
               
      
 
-        elevator_pivot_configs
-            .closedLoop
-                .maxMotion
-                    .allowedClosedLoopError(Constants.ElevatorConstants.marginOfError)
-                    .maxVelocity(Constants.ElevatorConstants.maxElevatorSpeed)
-                    .maxAcceleration(Constants.ElevatorConstants.maxElevatorAcceleration)
-                    .positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal);
+        // elevator_pivot_configs
+        //     .closedLoop
+        //         .maxMotion
+        //             .allowedClosedLoopError(Constants.ElevatorConstants.marginOfError)
+        //             .maxVelocity(Constants.ElevatorConstants.maxElevatorSpeed)
+        //             .maxAcceleration(Constants.ElevatorConstants.maxElevatorAcceleration)
+        //             .positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal);
         
-
+        LimitSwitchConfig lC = new LimitSwitchConfig();
+        lC.forwardLimitSwitchEnabled(true);
+        lC.reverseLimitSwitchEnabled(true);
+        lC.reverseLimitSwitchType(Type.kNormallyClosed);
+        lC.forwardLimitSwitchType(Type.kNormallyClosed);
+        elevator_pivot_configs.apply(lC);
 
     }
 

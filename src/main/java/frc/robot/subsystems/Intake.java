@@ -38,7 +38,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void setPivotSpeed(double speed){
-    if (Payload.getSafetySwitch().get() && speed < 0){
+    if (!Payload.getSafetySwitch().get() && speed < 0){
       pivotMotor.set(0);
     }
     else {

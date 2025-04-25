@@ -63,7 +63,7 @@ public class Payload extends SubsystemBase {
   } 
 
 public void setMotorSpeed(double speed) {
-  if (m_limE.get() && speed > 0){
+  if (!m_limE.get() && speed > 0){
     elevatorMotor.set(0);
   }
   else {
@@ -111,7 +111,7 @@ public double magValue(){
 
 public void setPosition(double position){
   State endGoal =  new State(position,0);
-  if (m_limE.get() && position >= elevatorMotor.getEncoder().getPosition()){
+  if (!m_limE.get() && position >= elevatorMotor.getEncoder().getPosition()){
     elevatorMotor.set(0);
   }
   else {
