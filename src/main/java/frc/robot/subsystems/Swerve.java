@@ -13,9 +13,10 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 public class Swerve extends SubsystemBase {
 
   private final SwerveModule mod0 = new SwerveModule(Constants.DrivetrainConstants.mod0AngleMotorID,Constants.DrivetrainConstants.mod0DriveMotorID,Constants.DrivetrainConstants.mod0CANcoderID,Constants.DrivetrainConstants.mod0EncoderOffset);
@@ -23,6 +24,7 @@ public class Swerve extends SubsystemBase {
   private final SwerveModule mod2 = new SwerveModule(Constants.DrivetrainConstants.mod2AngleMotorID,Constants.DrivetrainConstants.mod2DriveMotorID,Constants.DrivetrainConstants.mod2CANcoderID,Constants.DrivetrainConstants.mod2EncoderOffset);
   private final SwerveModule mod3 = new SwerveModule(Constants.DrivetrainConstants.mod3AngleMotorID,Constants.DrivetrainConstants.mod3DriveMotorID,Constants.DrivetrainConstants.mod3CANcoderID,Constants.DrivetrainConstants.mod3EncoderOffset);
   private final Pigeon2 gyro = new Pigeon2(Constants.DrivetrainConstants.gyroID);
+  public static Swerve swerveInstance = null; 
   private SwerveModulePosition[] modulePositions = {new SwerveModulePosition(),new SwerveModulePosition(),new SwerveModulePosition(),new SwerveModulePosition()};
   private SwerveDriveOdometry odometry = new SwerveDriveOdometry(Constants.DrivetrainConstants.swerveKinematics, new Rotation2d(), modulePositions);
 
@@ -87,6 +89,9 @@ public class Swerve extends SubsystemBase {
   public void resetGyro(){
     gyro.reset();
   }
+  public double getGyro(){
+    return gyro.getRotation2d().getDegrees();
+  }
   public Pose2d getPose(){
     return new Pose2d(odometry.getPoseMeters().getX(),odometry.getPoseMeters().getY(),gyro.getRotation2d());
   }
@@ -102,9 +107,22 @@ public class Swerve extends SubsystemBase {
     return Constants.DrivetrainConstants.swerveKinematics.toChassisSpeeds(moduleStates);
   }
 
+  public static Swerve getInstance(){
+    if (swerveInstance == null){
+      swerveInstance = new Swerve();
+    }
+    return swerveInstance;
+  }
+
+  
+  public double getAngleE(){
+    return mod2.getCurrentAngle();
+  }
+
   @Override
   public void periodic() {
     SwerveModulePosition[] tempModulePositions = {mod0.getCurrentWheelPosition(),mod1.getCurrentWheelPosition(),mod2.getCurrentWheelPosition(),mod3.getCurrentWheelPosition()};
     odometry.update(gyro.getRotation2d(), tempModulePositions);
+    System.out.println(getAngleE());
   }
 }

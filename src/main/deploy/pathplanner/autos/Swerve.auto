@@ -1,0 +1,56 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "ToReefScore"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "autoL2"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "GetCoral"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "autoCoral"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "ScoreBack"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "autoL3"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

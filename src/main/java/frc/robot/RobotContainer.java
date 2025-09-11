@@ -123,11 +123,11 @@ public class RobotContainer {
     m_defaultElevatorCommand = new ManualElevatorControl(m_payload);
     m_defaultIntakeCommand = new ManualIntakePivotControl(m_intake);
 
-    // m_defaultDrive = new ArcadeDrive(
-    //   () -> -ControlMap.driver_controls.getLeftY()*Constants.DrivetrainConstants.xMultiple, 
-    //   () -> -ControlMap.driver_controls.getLeftX()*Constants.DrivetrainConstants.yMultiple, 
-    //   () -> -ControlMap.driver_controls.getRightX()*Constants.DrivetrainConstants.zMultiple,
-    //   m_drivetrain);
+    m_defaultDrive = new ArcadeDrive(
+      () -> -ControlMap.driver_controls.getLeftY()*Constants.DrivetrainConstants.xMultiple, 
+      () -> -ControlMap.driver_controls.getLeftX()*Constants.DrivetrainConstants.yMultiple, 
+      () -> -ControlMap.driver_controls.getRightX()*Constants.DrivetrainConstants.zMultiple,
+      m_drivetrain);
 
     // m_defaultDrive = new DefaultDrive(m_drivetrain);
     // m_fieldRelativeDrive = new FieldRelativeDrive(m_drivetrain);
@@ -263,7 +263,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("autoL2", m_autoL2);
     NamedCommands.registerCommand("autoL3", m_autoL3);
     // NamedCommands.registerCommand("AprilCenter", m_apriltagCentering);
-    // NamedCommands.registerCommand("autoCoral", m_autoCoralStation2);
+    NamedCommands.registerCommand("autoCoral", m_autoCoralStation2);
 
     m_chooser.addOption("Auto L1", m_autoL1);
     m_chooser.addOption("Auto L2", m_autoL2);
@@ -304,7 +304,7 @@ public class RobotContainer {
   }
 
   public void configureDefaultCommand(){
-    // m_drivetrain.setDefaultCommand(m_defaultDrive);
+    m_drivetrain.setDefaultCommand(m_defaultDrive);
     m_payload.setDefaultCommand(m_defaultElevatorCommand);
     m_intake.setDefaultCommand(m_defaultIntakeCommand);
   }
