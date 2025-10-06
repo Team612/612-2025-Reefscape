@@ -17,7 +17,10 @@ import edu.wpi.first.math.util.Units;
 
 /** Add your docs here. */
 public class Constants {
-
+    public static final double maxSpeed = 0.0;
+    public static final double maxAcceleration = 0.0;
+    public static final double maxAngularVelocity = 0.0;
+    public static final double maxAngularAcceleration = 0.0;
     public class DrivetrainConstants{
         // gyro port
         public static final int gyroID = 0;

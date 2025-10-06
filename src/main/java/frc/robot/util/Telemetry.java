@@ -209,10 +209,10 @@ public class Telemetry {
         Constants.ClimbConstants.pivotSpeed = climbCurrentSetSpeed.getDouble(Constants.ClimbConstants.pivotSpeed);
 
         //autonomous
-        seeAprilTagFront.setBoolean(m_vision.frontHasTag());
-        seeAprilTagBack.setBoolean(m_vision.backHasTag());
-        apriltagIDFront.setDouble(m_vision.frontTagID());
-        apriltagIDBack.setDouble(m_vision.backTagID());
+        // seeAprilTagFront.setBoolean(m_vision.frontHasTag());
+        // seeAprilTagBack.setBoolean(m_vision.backHasTag());
+        // apriltagIDFront.setDouble(m_vision.frontTagID());
+        // apriltagIDBack.setDouble(m_vision.backTagID());
     
 
 

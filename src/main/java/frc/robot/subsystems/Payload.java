@@ -174,6 +174,12 @@ public boolean isLimitPressed() {
       elevatorMotor.getEncoder().setPosition(0);
     }
 
+    if (elevatorMotor.getReverseLimitSwitch().isPressed()){ //limit switch reads backwards; true when not pressed
+      timer++;
+      System.out.println("Limit switch is pressed, up payload: " + timer);
+      elevatorMotor.getEncoder().setPosition(0);
+    }
+
 
 
     SmartDashboard.putNumber("Magnetic Sensor Reading (Voltage): ", magVoltage());

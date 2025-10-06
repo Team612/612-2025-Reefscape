@@ -89,8 +89,8 @@ public class Swerve extends SubsystemBase {
   public void resetGyro(){
     gyro.reset();
   }
-  public double getGyro(){
-    return gyro.getRotation2d().getDegrees();
+  public Rotation2d getGyro(){
+    return gyro.getRotation2d();
   }
   public Pose2d getPose(){
     return new Pose2d(odometry.getPoseMeters().getX(),odometry.getPoseMeters().getY(),gyro.getRotation2d());
@@ -107,6 +107,16 @@ public class Swerve extends SubsystemBase {
     return Constants.DrivetrainConstants.swerveKinematics.toChassisSpeeds(moduleStates);
   }
 
+
+  public SwerveModulePosition[] getPositions() {
+    SwerveModulePosition[] positions = new SwerveModulePosition[4];
+    positions[0] = mod0.getCurrentWheelPosition();
+    positions[1] = mod1.getCurrentWheelPosition();
+    positions[2] = mod2.getCurrentWheelPosition();
+    positions[3] = mod3.getCurrentWheelPosition();
+    return positions;
+  }
+
   public static Swerve getInstance(){
     if (swerveInstance == null){
       swerveInstance = new Swerve();
@@ -118,10 +128,17 @@ public class Swerve extends SubsystemBase {
   public double getAngleE(){
     return mod2.getCurrentAngle();
   }
+  public SwerveModulePosition[] getSwerveDriveWheelPositions() {
+    return modulePositions;
+  }
+  // public void AutoDrive(ChassisSpeeds speeds) {
+  //   setRobotBassedOffFieldChassisSpeeds(speeds);
 
+  // }
   @Override
   public void periodic() {
     SwerveModulePosition[] tempModulePositions = {mod0.getCurrentWheelPosition(),mod1.getCurrentWheelPosition(),mod2.getCurrentWheelPosition(),mod3.getCurrentWheelPosition()};
+    modulePositions = tempModulePositions;
     odometry.update(gyro.getRotation2d(), tempModulePositions);
     System.out.println(getAngleE());
   }

@@ -35,6 +35,8 @@ import frc.robot.subsystems.Bag;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Leds;
 import frc.robot.subsystems.Payload;
+// import frc.robot.subsystems.PoseEstimator;
+// import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
 import frc.robot.util.ControlMap;
@@ -45,6 +47,7 @@ public class RobotContainer {
   private Payload m_payload;
   private Intake m_intake;
   private Bag m_bag; 
+  // private PoseEstimator m_PoseE;
   // private Climb m_climb;
   private Swerve m_drivetrain;
   private Vision m_vision;
@@ -99,7 +102,7 @@ public class RobotContainer {
 
 
   public RobotContainer() {
-
+    // m_PoseE = new PoseEstimator();
     m_drivetrain = new Swerve();
     m_payload = Payload.getInstance();
     m_intake = Intake.getInstance();
