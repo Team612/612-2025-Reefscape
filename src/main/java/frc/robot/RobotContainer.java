@@ -272,16 +272,18 @@ public class RobotContainer {
     NamedCommands.registerCommand("autoL1", m_autoL1);
     NamedCommands.registerCommand("autoL2", m_autoL2);
     NamedCommands.registerCommand("autoL3", m_autoL3);
+    NamedCommands.registerCommand("Leave Zone", m_SuperPoorMansAutoOnlyLeave);
     // NamedCommands.registerCommand("AprilCenter", m_apriltagCentering);
     NamedCommands.registerCommand("autoCoral", m_autoCoralStation2);
 
     m_chooser.addOption("Auto L1", m_autoL1);
     m_chooser.addOption("Auto L2", m_autoL2);
     m_chooser.addOption("Auto L3", m_autoL3);
+    m_chooser.addOption("Leave Zone", m_SuperPoorMansAutoOnlyLeave);
     // m_chooser.addOption("Forward Meter",m_forwardMeter);
     // m_chooser.addOption("Leave Zone",m_LeaveZone);
 
-    m_chooser.setDefaultOption("Nothing Selected", null);
+    m_chooser.setDefaultOption("Leave Zone", m_SuperPoorMansAutoOnlyLeave);
     // m_chooser.addOption("BLUE Poor Man's Auto Right", m_BluePoorMansAutoLeft);
     // m_chooser.addOption("BLUE Poor Man's Auto Left", m_BluePoorMansAutoRight);
     // m_chooser.addOption("RED Poor Man's Auto Right", m_RedPoorMansAutoLeft);
