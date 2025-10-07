@@ -9,6 +9,7 @@ import java.util.List;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 // import frc.robot.subsystems.PoseEstimator;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -22,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.AutoCommands.GunnerCommands.SetBagSpeedInTimed;
 import frc.robot.commands.AutoCommands.GunnerCommands.SetBagSpeedTimed;
 import frc.robot.commands.DriveCommands.ArcadeDrive;
+import frc.robot.commands.DriveCommands.SuperPoorLeaveZone;
 import frc.robot.commands.ElevatorCommands.ManualElevatorControl;
 import frc.robot.commands.ElevatorCommands.SetElevatorPosition;
 import frc.robot.commands.ElevatorCommands.ZeroElevator;
@@ -35,6 +37,7 @@ import frc.robot.subsystems.Bag;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Leds;
 import frc.robot.subsystems.Payload;
+import frc.robot.subsystems.PoseEstimator;
 // import frc.robot.subsystems.PoseEstimator;
 // import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.Swerve;
@@ -53,6 +56,7 @@ public class RobotContainer {
   private Vision m_vision;
   private Leds m_leds;
   private MotorConfigs m_motorConfigs = new MotorConfigs();
+  private PoseEstimator m_PoseEstimator;
 
   private SendableChooser<Command> m_chooser;
   
@@ -78,6 +82,7 @@ public class RobotContainer {
   private Command m_ClimbConstantShiftDown;
   private Command m_leaveZone;
   private Command m_poorLeaveZone;
+  private Command m_SuperPoorMansAutoOnlyLeave;
   private Command m_coralAlign;
   private Command m_defaultDrive;
 
@@ -115,6 +120,7 @@ public class RobotContainer {
 
     m_BagIn = new BagIn(m_bag);
     m_BagOut =  new BagOut(m_bag);
+    m_PoseEstimator = new PoseEstimator();
     // m_forwardMeter = new MoveForward(m_drivetrain, m_poseEstimator, m_trajCreation, m_vision, 0, false);
     // m_PivotIntakeOut = new PivotIntakeOut(m_intake, m_payload);
     // m_PivotIntakeIn = new PivotIntakeIn(m_intake,m_payload);
@@ -177,6 +183,7 @@ public class RobotContainer {
 
     m_autoZero = new SequentialCommandGroup(new ZeroIntake(m_intake))
     .andThen(new ZeroElevator(m_payload));
+    m_SuperPoorMansAutoOnlyLeave = new SuperPoorLeaveZone(m_drivetrain, m_vision, new Pose2d(m_PoseEstimator.getCurrentPose().getX()+3, m_PoseEstimator.getCurrentPose().getY(), m_PoseEstimator.getCurrentPose().getRotation()));
 
 
     // m_BluePoorMansAutoLeft = new SequentialCommandGroup(
