@@ -108,7 +108,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     // m_PoseE = new PoseEstimator();
-    m_drivetrain = new Swerve();
+    m_drivetrain = Swerve.getInstance();
     m_payload = Payload.getInstance();
     m_intake = Intake.getInstance();
     m_bag = Bag.getInstance();
@@ -311,7 +311,7 @@ public class RobotContainer {
     ControlMap.gunnerButton9.onTrue(m_autoTopAlgae);
     ControlMap.gunnerButton14.onTrue(m_autoZero);
     ControlMap.gunnerButton13.onTrue(m_autoL2);
-    ControlMap.driver_controls.rightBumper().onTrue(m_autoL2);
+    ControlMap.driver_controls.rightBumper().onTrue(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L2Position));
     ControlMap.gunnerButton12.onTrue(m_autoL3);
     ControlMap.gunnerButton11.onTrue(m_autoCoralStation);
   }
