@@ -17,7 +17,10 @@ import edu.wpi.first.math.util.Units;
 
 /** Add your docs here. */
 public class Constants {
-
+    public static final double maxSpeed = 0.0;
+    public static final double maxAcceleration = 0.0;
+    public static final double maxAngularVelocity = 0.0;
+    public static final double maxAngularAcceleration = 0.0;
     public class DrivetrainConstants{
         // gyro port
         public static final int gyroID = 0;
@@ -61,7 +64,7 @@ public class Constants {
         // swerve module 2 constants, back left
         // when the absolute encoder reads 0.735 it is actually at 0
         public static final double mod2EncoderOffset = 0.459;
-        public static final int mod2AngleMotorID = 1;
+        public static final int mod2AngleMotorID = 11;
         public static final int mod2DriveMotorID = 8;
         public static final int mod2CANcoderID = 3;
     

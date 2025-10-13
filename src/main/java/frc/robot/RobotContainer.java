@@ -9,6 +9,7 @@ import java.util.List;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 // import frc.robot.subsystems.PoseEstimator;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -22,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.AutoCommands.GunnerCommands.SetBagSpeedInTimed;
 import frc.robot.commands.AutoCommands.GunnerCommands.SetBagSpeedTimed;
 import frc.robot.commands.DriveCommands.ArcadeDrive;
+import frc.robot.commands.DriveCommands.SuperPoorLeaveZone;
 import frc.robot.commands.ElevatorCommands.ManualElevatorControl;
 import frc.robot.commands.ElevatorCommands.SetElevatorPosition;
 import frc.robot.commands.ElevatorCommands.ZeroElevator;
@@ -35,6 +37,9 @@ import frc.robot.subsystems.Bag;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Leds;
 import frc.robot.subsystems.Payload;
+import frc.robot.subsystems.PoseEstimator;
+// import frc.robot.subsystems.PoseEstimator;
+// import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
 import frc.robot.util.ControlMap;
@@ -45,11 +50,13 @@ public class RobotContainer {
   private Payload m_payload;
   private Intake m_intake;
   private Bag m_bag; 
+  // private PoseEstimator m_PoseE;
   // private Climb m_climb;
   private Swerve m_drivetrain;
   private Vision m_vision;
   private Leds m_leds;
   private MotorConfigs m_motorConfigs = new MotorConfigs();
+  private PoseEstimator m_PoseEstimator;
 
   private SendableChooser<Command> m_chooser;
   
@@ -75,6 +82,7 @@ public class RobotContainer {
   private Command m_ClimbConstantShiftDown;
   private Command m_leaveZone;
   private Command m_poorLeaveZone;
+  private Command m_SuperPoorMansAutoOnlyLeave;
   private Command m_coralAlign;
   private Command m_defaultDrive;
 
@@ -99,7 +107,7 @@ public class RobotContainer {
 
 
   public RobotContainer() {
-
+    // m_PoseE = new PoseEstimator();
     m_drivetrain = new Swerve();
     m_payload = Payload.getInstance();
     m_intake = Intake.getInstance();
@@ -112,6 +120,7 @@ public class RobotContainer {
 
     m_BagIn = new BagIn(m_bag);
     m_BagOut =  new BagOut(m_bag);
+    m_PoseEstimator = new PoseEstimator();
     // m_forwardMeter = new MoveForward(m_drivetrain, m_poseEstimator, m_trajCreation, m_vision, 0, false);
     // m_PivotIntakeOut = new PivotIntakeOut(m_intake, m_payload);
     // m_PivotIntakeIn = new PivotIntakeIn(m_intake,m_payload);
@@ -123,11 +132,11 @@ public class RobotContainer {
     m_defaultElevatorCommand = new ManualElevatorControl(m_payload);
     m_defaultIntakeCommand = new ManualIntakePivotControl(m_intake);
 
-    // m_defaultDrive = new ArcadeDrive(
-    //   () -> -ControlMap.driver_controls.getLeftY()*Constants.DrivetrainConstants.xMultiple, 
-    //   () -> -ControlMap.driver_controls.getLeftX()*Constants.DrivetrainConstants.yMultiple, 
-    //   () -> -ControlMap.driver_controls.getRightX()*Constants.DrivetrainConstants.zMultiple,
-    //   m_drivetrain);
+    m_defaultDrive = new ArcadeDrive(
+      () -> -ControlMap.driver_controls.getLeftY()*Constants.DrivetrainConstants.xMultiple, 
+      () -> -ControlMap.driver_controls.getLeftX()*Constants.DrivetrainConstants.yMultiple, 
+      () -> -ControlMap.driver_controls.getRightX()*Constants.DrivetrainConstants.zMultiple,
+      m_drivetrain);
 
     // m_defaultDrive = new DefaultDrive(m_drivetrain);
     // m_fieldRelativeDrive = new FieldRelativeDrive(m_drivetrain);
@@ -174,6 +183,7 @@ public class RobotContainer {
 
     m_autoZero = new SequentialCommandGroup(new ZeroIntake(m_intake))
     .andThen(new ZeroElevator(m_payload));
+    m_SuperPoorMansAutoOnlyLeave = new SuperPoorLeaveZone(m_drivetrain, m_vision, new Pose2d(m_PoseEstimator.getCurrentPose().getX()+3, m_PoseEstimator.getCurrentPose().getY(), m_PoseEstimator.getCurrentPose().getRotation()));
 
 
     // m_BluePoorMansAutoLeft = new SequentialCommandGroup(
@@ -262,16 +272,18 @@ public class RobotContainer {
     NamedCommands.registerCommand("autoL1", m_autoL1);
     NamedCommands.registerCommand("autoL2", m_autoL2);
     NamedCommands.registerCommand("autoL3", m_autoL3);
+    NamedCommands.registerCommand("Leave Zone", m_SuperPoorMansAutoOnlyLeave);
     // NamedCommands.registerCommand("AprilCenter", m_apriltagCentering);
-    // NamedCommands.registerCommand("autoCoral", m_autoCoralStation2);
+    NamedCommands.registerCommand("autoCoral", m_autoCoralStation2);
 
     m_chooser.addOption("Auto L1", m_autoL1);
     m_chooser.addOption("Auto L2", m_autoL2);
     m_chooser.addOption("Auto L3", m_autoL3);
+    m_chooser.addOption("Leave Zone", m_SuperPoorMansAutoOnlyLeave);
     // m_chooser.addOption("Forward Meter",m_forwardMeter);
     // m_chooser.addOption("Leave Zone",m_LeaveZone);
 
-    m_chooser.setDefaultOption("Nothing Selected", null);
+    m_chooser.setDefaultOption("Leave Zone", m_SuperPoorMansAutoOnlyLeave);
     // m_chooser.addOption("BLUE Poor Man's Auto Right", m_BluePoorMansAutoLeft);
     // m_chooser.addOption("BLUE Poor Man's Auto Left", m_BluePoorMansAutoRight);
     // m_chooser.addOption("RED Poor Man's Auto Right", m_RedPoorMansAutoLeft);
@@ -305,7 +317,7 @@ public class RobotContainer {
   }
 
   public void configureDefaultCommand(){
-    // m_drivetrain.setDefaultCommand(m_defaultDrive);
+    m_drivetrain.setDefaultCommand(m_defaultDrive);
     m_payload.setDefaultCommand(m_defaultElevatorCommand);
     m_intake.setDefaultCommand(m_defaultIntakeCommand);
   }
