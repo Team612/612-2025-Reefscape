@@ -173,6 +173,7 @@ public boolean isLimitPressed() {
       System.out.println("Limit switch is pressed, zero payload: " + timer);
       elevatorMotor.getEncoder().setPosition(0);
     }
+    System.out.println("motor value "+elevatorMotor.get());
 
 
 
