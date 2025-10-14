@@ -8,42 +8,32 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
-public class SuperPoorLeaveZone extends Command {
+public class LeaveZone extends Command {
   private final Swerve m_drivetrain;
-  private final Vision m_vision;
-  private final Pose2d targetPose;
   private final double tolerance = 0.1; // Tolerance for reaching the target position (in meters)
+double timer;
 
-  public SuperPoorLeaveZone(Swerve drivetrain, Vision vision, Pose2d targetPose) {
+  public LeaveZone(Swerve drivetrain) {
     m_drivetrain = drivetrain;
-    m_vision = vision;
-    this.targetPose = targetPose;
-    addRequirements(m_drivetrain, m_vision);
+    addRequirements(m_drivetrain);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    timer = 0;
     // Reset odometry or encoders if necessary
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Pose2d currentPose = m_drivetrain.getPose();
-    Translation2d currentPosition = currentPose.getTranslation();
-    Translation2d targetPosition = targetPose.getTranslation();
-
-    double xError = targetPosition.getX() - currentPosition.getX();
-    double yError = targetPosition.getY() - currentPosition.getY();
-
+    timer += 1;
     // Use proportional control to calculate speeds
-    double xSpeed = xError * 0.5; // Adjust the constant as needed
-    double ySpeed = yError * 0.5;
+    double xSpeed = 0.8;// Adjust the constant as needed
+    double ySpeed = 0.0;
 
-    // Limit speeds to maximum allowed values
-    xSpeed = Math.min(Math.max(xSpeed, -Constants.DrivetrainConstants.MAX_SPEED), Constants.DrivetrainConstants.MAX_SPEED); // Clamp speed between -0.5 and 0.5
-    ySpeed = Math.min(Math.max(ySpeed, -Constants.DrivetrainConstants.MAX_SPEED), Constants.DrivetrainConstants.MAX_SPEED);
+    m_drivetrain.resetGyro();
 
     // Create ChassisSpeeds object for field-relative movement
     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, 0.0, m_drivetrain.getHeading());
@@ -55,12 +45,7 @@ public class SuperPoorLeaveZone extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    Pose2d currentPose = m_drivetrain.getPose();
-    Translation2d currentPosition = currentPose.getTranslation();
-    Translation2d targetPosition = targetPose.getTranslation();
-
-    double distanceToTarget = currentPosition.getDistance(targetPosition);
-    return distanceToTarget < tolerance; // Check if within tolerance
+    return timer > 150; // Check if within tolerance of 1000 scheduler runs
   }
 
   // Called once the command ends or is interrupted.
