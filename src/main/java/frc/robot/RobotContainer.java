@@ -313,6 +313,7 @@ public class RobotContainer {
     ControlMap.gunnerButton9.onTrue(m_autoTopAlgae);
     ControlMap.gunnerButton14.onTrue(m_autoZero);
     ControlMap.gunnerButton13.onTrue(m_autoL2);
+    ControlMap.driver_controls.rightBumper().onTrue(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L2Position));
     ControlMap.gunnerButton12.onTrue(m_autoL3);
     ControlMap.gunnerButton11.onTrue(m_autoCoralStation);
   }

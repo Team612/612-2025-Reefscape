@@ -140,6 +140,5 @@ public class Swerve extends SubsystemBase {
     SwerveModulePosition[] tempModulePositions = {mod0.getCurrentWheelPosition(),mod1.getCurrentWheelPosition(),mod2.getCurrentWheelPosition(),mod3.getCurrentWheelPosition()};
     modulePositions = tempModulePositions;
     odometry.update(gyro.getRotation2d(), tempModulePositions);
-    System.out.println(getAngleE());
   }
 }

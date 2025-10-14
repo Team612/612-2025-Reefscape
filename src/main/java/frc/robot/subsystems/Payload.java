@@ -174,17 +174,16 @@ public boolean isLimitPressed() {
       elevatorMotor.getEncoder().setPosition(0);
     }
 
-    if (elevatorMotor.getReverseLimitSwitch().isPressed()){ //limit switch reads backwards; true when not pressed
-      timer++;
-      System.out.println("Limit switch is pressed, up payload: " + timer);
-      elevatorMotor.getEncoder().setPosition(0);
-    }
+    // if (elevatorMotor.getReverseLimitSwitch().isPressed()){ //limit switch reads backwards; true when not pressed
+    //   timer++;
+    //   System.out.println("Limit switch is pressed, up payload: " + timer);
+    //   elevatorMotor.getEncoder().setPosition(0);
+    // }
 
 
 
     SmartDashboard.putNumber("Magnetic Sensor Reading (Voltage): ", magVoltage());
     SmartDashboard.putNumber("Magnetic Sensor Reading (Value): ", magValue());
-
     SmartDashboard.putBoolean("Elevator Limit Switch (Value): ", m_limE.get());
     // // Constants.ElevatorConstants.payloadspeed = Preferences.getDouble("Pay Speed", Constants.ElevatorConstants.payloadspeed);
     //    // // SmartDashboard.putNumber("Elevator 2 Velocity", elevator.getEncoder().getVelocity());
