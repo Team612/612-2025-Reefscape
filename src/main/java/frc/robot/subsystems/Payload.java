@@ -170,7 +170,7 @@ public boolean isLimitPressed() {
     // timer++;
     if (elevatorMotor.getForwardLimitSwitch().isPressed()){ //limit switch reads backwards; true when not pressed
       timer++;
-      System.out.println("Limit switch is pressed, zero payload: " + timer);
+      // System.out.println("Limit switch is pressed, zero payload: " + timer);
       elevatorMotor.getEncoder().setPosition(0);
     }
 
