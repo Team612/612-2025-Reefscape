@@ -8,53 +8,44 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.Constants.DriveConstants;
 
-public class SwerveModule extends SubsystemBase {
-  private SparkMax angleMotor;
-  private SparkMax drivingMotor;
-  private CANcoder angleEncoder;
-  private double encoderOffset;
-  private PIDController turnPIDController = new PIDController(Constants.DrivetrainConstants.kp, 0, 0);    
+public class SwerveModule {
+    private SparkMax driveMotor;
+    private SparkMax steerMotor;
+    public CANcoder angleEncoder;
+    private double encoderOffset;
+    private PIDController turnPIDController = new PIDController(DriveConstants.kp, 0, 0.0);
 
-  public SwerveModule(int angleMotorID, int drivingMotorID, int angleEncoderID, double encoderOffset){
-    angleMotor = new SparkMax(angleMotorID,MotorType.kBrushless);
-    drivingMotor = new SparkMax(drivingMotorID,MotorType.kBrushless);
-    angleEncoder = new CANcoder(angleEncoderID);
-    this.encoderOffset = encoderOffset;
-    turnPIDController.enableContinuousInput(-Math.PI, Math.PI);
-  }
+    public SwerveModule(int drivingMotorID, int steerMotorID, int angleEncoderID, double encoderOffset){
+        driveMotor = new SparkMax(drivingMotorID,MotorType.kBrushless);
+        steerMotor = new SparkMax(steerMotorID,MotorType.kBrushless);
+        angleEncoder = new CANcoder(angleEncoderID);
+        this.encoderOffset = encoderOffset;
 
-  @SuppressWarnings("deprecation")
-  public void setMySwerveState(SwerveModuleState desiredState){
-    SwerveModuleState optimizedState = SwerveModuleState.optimize(desiredState, new Rotation2d(getCurrentAngle()));
-    drivingMotor.set(optimizedState.speedMetersPerSecond * Constants.DrivetrainConstants.metersPerSecondtoMotorPercentConstant);
-    angleMotor.set(turnPIDController.calculate(getCurrentAngle(), optimizedState.angle.getRadians()));
-  }
+        turnPIDController.enableContinuousInput(-Math.PI, Math.PI);
+    }
 
-  public double getCurrentAngle() {
-    double rotations = angleEncoder.getAbsolutePosition().getValueAsDouble() - encoderOffset;
-    if (rotations < 0)
-      rotations += 1;      
-    if (rotations < 0.5)
-      return rotations * 2 * Math.PI;
-    else
-      return (rotations-1) * 2 * Math.PI;
-  }
+    public void setSwerveState(SwerveModuleState desiredState){
+        desiredState.optimize(new Rotation2d(getCurrentAngle()));
 
-  public double getCurrentVelocity(){
-    return drivingMotor.getEncoder().getVelocity();
-  }
+        driveMotor.set(desiredState.speedMetersPerSecond);
 
-  public SwerveModulePosition getCurrentWheelPosition(){
-    return new SwerveModulePosition(drivingMotor.getEncoder().getPosition(), new Rotation2d(getCurrentAngle()));
-  }
+        steerMotor.set(turnPIDController.calculate(getCurrentAngle(), desiredState.angle.getRadians()));
+    }
 
-  public void resetEncoder(){
-    drivingMotor.getEncoder().setPosition(0);
-  }
+    public double getCurrentVelocity(){
+      return driveMotor.getEncoder().getVelocity() * DriveConstants.tickToMetersConstant;
+    }
 
-  @Override
-  public void periodic() {}
+    public SwerveModulePosition getCurrentWheelPosition(){
+      return new SwerveModulePosition(driveMotor.getEncoder().getPosition() * DriveConstants.tickToMetersConstant, new Rotation2d(getCurrentAngle()));
+    }
+
+    public double getCurrentAngle() {
+        double rotations = angleEncoder.getAbsolutePosition().getValueAsDouble() - encoderOffset;
+        if (rotations < -0.5)
+          rotations += 1;
+        return rotations * 2 * Math.PI;
+      }
 }

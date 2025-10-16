@@ -1,328 +1,130 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
-import java.util.List;
+import frc.robot.Constants.BagConstants;
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.PayloadConstants;
+import frc.robot.commands.ArcadeDrive;
+import frc.robot.commands.ArcadeGun;
+import frc.robot.commands.AutoBagOut;
+import frc.robot.commands.DriverStationArcadeGun;
+import frc.robot.commands.DriverStationBag;
+import frc.robot.commands.ManualBag;
+import frc.robot.commands.PayloadSetPoint;
+import frc.robot.commands.SetOdometryPosition;
+import frc.robot.commands.SetPayloadPosition;
+import frc.robot.commands.SimpleLeaveZone;
+import frc.robot.commands.Zero;
+import frc.robot.subsystems.Bag;
+import frc.robot.subsystems.Payload;
+import frc.robot.subsystems.Swerve;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.util.Units;
-// import frc.robot.subsystems.PoseEstimator;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.AutoCommands.GunnerCommands.SetBagSpeedInTimed;
-import frc.robot.commands.AutoCommands.GunnerCommands.SetBagSpeedTimed;
-import frc.robot.commands.DriveCommands.ArcadeDrive;
-import frc.robot.commands.DriveCommands.SuperPoorLeaveZone;
-import frc.robot.commands.ElevatorCommands.ManualElevatorControl;
-import frc.robot.commands.ElevatorCommands.SetElevatorPosition;
-import frc.robot.commands.ElevatorCommands.ZeroElevator;
-import frc.robot.commands.IntakeCommands.AutoOutCoral;
-import frc.robot.commands.IntakeCommands.BagIn;
-import frc.robot.commands.IntakeCommands.BagOut;
-import frc.robot.commands.IntakeCommands.ManualIntakePivotControl;
-import frc.robot.commands.IntakeCommands.SetIntakePivotPosition;
-import frc.robot.commands.IntakeCommands.ZeroIntake;
-import frc.robot.subsystems.Bag;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Leds;
-import frc.robot.subsystems.Payload;
-import frc.robot.subsystems.PoseEstimator;
-// import frc.robot.subsystems.PoseEstimator;
-// import frc.robot.subsystems.PoseEstimator;
-import frc.robot.subsystems.Swerve;
-import frc.robot.subsystems.Vision;
-import frc.robot.util.ControlMap;
-import frc.robot.util.MotorConfigs;
-import frc.robot.util.PathPlannerUtil;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class RobotContainer {
-  private Payload m_payload;
-  private Intake m_intake;
-  private Bag m_bag; 
-  // private PoseEstimator m_PoseE;
-  // private Climb m_climb;
-  private Swerve m_drivetrain;
-  private Vision m_vision;
-  private Leds m_leds;
-  private MotorConfigs m_motorConfigs = new MotorConfigs();
-  private PoseEstimator m_PoseEstimator;
+  private final Swerve m_swerve = new Swerve();
+  private final Payload m_payload = new Payload();
+  private final Bag m_bag = new Bag();
 
-  private SendableChooser<Command> m_chooser;
-  
-  
-  
-  private Command m_BagIn;
-  private Command m_BagOut;
-  // private Command m_PivotIntakeIn;
-  // private Command m_PivotIntakeOut;
-  // private Command m_ElevatorUp;
-  // private Command m_ElevatorDown;
-  private Command m_apriltagCentering;
-  private Command m_defaultElevatorCommand;
-  private Command m_defaultIntakeCommand;
-  private Command m_forwardMeter;
-  private Command m_fieldRelativeDrive;
-  private Command m_closeServo;
-  private Command m_openServo;
-  private Command m_pivotClimbIn;
-  private Command m_pivotClimbOut;
-  private Command m_LeaveZone;
-  private Command m_ClimbConstantShiftUp;
-  private Command m_ClimbConstantShiftDown;
-  private Command m_leaveZone;
-  private Command m_poorLeaveZone;
-  private Command m_SuperPoorMansAutoOnlyLeave;
-  private Command m_coralAlign;
-  private Command m_defaultDrive;
+  private final CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
+  // SWITCH WITH CONTROLLERS
+  private final CommandXboxController m_gunController = new CommandXboxController(OperatorConstants.kGunnerControllerPort);
+  // private static Joystick gunner_controls = new Joystick(OperatorConstants.kGunnerDriverStationPort1);
+  // private static Joystick gunner_controls_2 = new Joystick(OperatorConstants.kGunnerDriverStationPort2);
+  // private static JoystickButton gunnerButton1 = new JoystickButton(gunner_controls, 11);
+  // private static JoystickButton gunnerButton2 = new JoystickButton(gunner_controls, 9);
+  // private static JoystickButton gunnerButton8 = new JoystickButton(gunner_controls, 5);
+  // private static JoystickButton gunnerButton9 = new JoystickButton(gunner_controls, 7);
+  // private static JoystickButton gunnerButton11 = new JoystickButton(gunner_controls, 3);
+  // private static JoystickButton gunnerButton12 = new JoystickButton(gunner_controls, 10);
+  // private static JoystickButton gunnerButton13 = new JoystickButton(gunner_controls, 6);
+  // private static JoystickButton gunnerButton14 = new JoystickButton(gunner_controls_2, 12);
 
-  private SequentialCommandGroup m_BluePoorMansAutoLeft;
-  private SequentialCommandGroup m_BluePoorMansAutoRight;
-  private SequentialCommandGroup m_RedPoorMansAutoLeft;
-  private SequentialCommandGroup m_RedPoorMansAutoRight;
-  private SequentialCommandGroup m_twoAlgaeAuto;
-  private SequentialCommandGroup m_autoL1;
-  private SequentialCommandGroup m_autoL2;
-  private SequentialCommandGroup m_autoL3;
-  private SequentialCommandGroup m_autoBottomAlgae;
-  private SequentialCommandGroup m_autoTopAlgae;
-  private SequentialCommandGroup m_autoCoralStation;
-  private SequentialCommandGroup m_autoCoralStation2;
-
-  private SequentialCommandGroup m_autoZero;
-  private SequentialCommandGroup m_outAndOpenClimb;
-  private SequentialCommandGroup m_inAndClosedClimb;
-
-
+  private SendableChooser<Command> autoChooser;
 
   public RobotContainer() {
-    // m_PoseE = new PoseEstimator();
-    m_drivetrain = Swerve.getInstance();
-    m_payload = Payload.getInstance();
-    m_intake = Intake.getInstance();
-    m_bag = Bag.getInstance();
+    NamedCommands.registerCommand("L2",new PayloadSetPoint(m_payload, PayloadConstants.L2Position, PayloadConstants.coralScoringPosition));
+    NamedCommands.registerCommand("BottomAlgie",new PayloadSetPoint(m_payload, PayloadConstants.bottomAlgaePosition, PayloadConstants.algaeIntakePosition));
+    NamedCommands.registerCommand("TopAlgie",new PayloadSetPoint(m_payload, PayloadConstants.topAlgaePosition, PayloadConstants.algaeIntakePosition));
+    NamedCommands.registerCommand("BagOut",new AutoBagOut(m_bag));
+    NamedCommands.registerCommand("SimpleLeaveZone", new SimpleLeaveZone(m_swerve));
 
-    m_vision = Vision.getVisionInstance();
-    m_leds = Leds.getInstance();
+    m_swerve.setDefaultCommand(new ArcadeDrive(m_swerve,m_driverController));
+
+    // SWITCH WITH CONTROLLERS
+    m_payload.setDefaultCommand(new ArcadeGun(m_payload,m_gunController));
+    m_bag.setDefaultCommand(new ManualBag(m_bag,m_gunController));
+    // m_payload.setDefaultCommand(new DriverStationArcadeGun(m_payload,gunner_controls));
     
-    m_chooser = new SendableChooser<>();
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
 
-    m_BagIn = new BagIn(m_bag);
-    m_BagOut =  new BagOut(m_bag);
-    m_PoseEstimator = new PoseEstimator();
-    // m_forwardMeter = new MoveForward(m_drivetrain, m_poseEstimator, m_trajCreation, m_vision, 0, false);
-    // m_PivotIntakeOut = new PivotIntakeOut(m_intake, m_payload);
-    // m_PivotIntakeIn = new PivotIntakeIn(m_intake,m_payload);
-    // m_ElevatorUp = new ElevatorUp(m_payload);
-    // m_ElevatorDown = new ElevatorDown(m_payload);
-    // m_LeaveZone = new LeaveZone(m_drivetrain, m_vision);
-    // m_poorLeaveZone = new PoorLeaveZone(m_drivetrain, m_vision);
-
-    m_defaultElevatorCommand = new ManualElevatorControl(m_payload);
-    m_defaultIntakeCommand = new ManualIntakePivotControl(m_intake);
-
-    m_defaultDrive = new ArcadeDrive(
-      () -> -ControlMap.driver_controls.getLeftY()*Constants.DrivetrainConstants.xMultiple, 
-      () -> -ControlMap.driver_controls.getLeftX()*Constants.DrivetrainConstants.yMultiple, 
-      () -> -ControlMap.driver_controls.getRightX()*Constants.DrivetrainConstants.zMultiple,
-      m_drivetrain);
-
-    // m_defaultDrive = new DefaultDrive(m_drivetrain);
-    // m_fieldRelativeDrive = new FieldRelativeDrive(m_drivetrain);
-
-    // m_apriltagCentering = new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, -0.2, -0.2);
-    // m_leaveZone = new LeaveZone(m_drivetrain, m_vision);
-    // m_coralAlign = new CoralStationAlign(m_poseEstimator, m_vision, m_trajCreation, Units.inchesToMeters(16), -0.40);
-
-    // m_closeServo = new CloseServo(m_climb);
-    // m_openServo = new OpenServo(m_climb);
-    // m_pivotClimbIn = new PivotClimbIn(m_climb);
-    // m_pivotClimbOut = new PivotClimbOut(m_climb);
-
-    // m_ClimbConstantShiftUp = new ClimbConstantShift(0.05);
-    // m_ClimbConstantShiftDown = new ClimbConstantShift(-0.05);
-
-
-    configureCommands();
     configureBindings();
-    configureDefaultCommand();
-  
   }
-
-  private void configureCommands(){
-
-    m_autoCoralStation = new SequentialCommandGroup(new SetElevatorPosition(m_payload, m_intake,Constants.ElevatorConstants.CoralStationPosition)
-    .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.CoralStationPosition)));
-
-    m_autoL1 = new SequentialCommandGroup(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.L1Position))
-    .andThen(new AutoOutCoral(m_intake, m_bag))
-    .andThen(new SetElevatorPosition(m_payload,m_intake, Constants.ElevatorConstants.basePosition));
-
-    m_autoL2 = new SequentialCommandGroup(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L2Position))
-    .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L2Position));
-
-    m_autoL3 =  new SequentialCommandGroup(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L3Position))
-    .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L3Position));
-
-    m_autoBottomAlgae = new SequentialCommandGroup(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.algaeIntakePosition))
-    .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.bottomAlgaePosition));
-
-    m_autoTopAlgae = new SequentialCommandGroup(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.algaeIntakePosition))
-    .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.topAlgaePosition));
-
-    m_autoZero = new SequentialCommandGroup(new ZeroIntake(m_intake))
-    .andThen(new ZeroElevator(m_payload));
-    m_SuperPoorMansAutoOnlyLeave = new SuperPoorLeaveZone(m_drivetrain, m_vision, new Pose2d(m_PoseEstimator.getCurrentPose().getX()+3, m_PoseEstimator.getCurrentPose().getY(), m_PoseEstimator.getCurrentPose().getRotation()));
-
-
-    // m_BluePoorMansAutoLeft = new SequentialCommandGroup(
-    // new PoorLeaveZone(m_drivetrain, m_vision))
-    // .andThen(new AutoSpecificTag(m_poseEstimator, m_vision, m_trajCreation, -Constants.AutoConstants.xApriltagDisplacement, -Constants.AutoConstants.yApriltagDisplacementright, 22))
-    // .alongWith(new ZeroIntake(m_intake).andThen((new ZeroElevator(m_payload))))
-    // .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L2Position))
-    // .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L2Position))
-    // .andThen(new SetBagSpeedTimed(m_bag))
-    // .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.algaeIntakePosition))
-    // .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.topAlgaePosition))
-    // .andThen(new AutoDrive(m_drivetrain, 0.2, 0, 0.5))
-    // .andThen(new AutoDrive(m_drivetrain, 0, 0.2, 0.5))
-    // .andThen(new AutoDrive(m_drivetrain, -0.2, 0, 0.5))
-    // .andThen(new AutoDrive(m_drivetrain,0,0,0));
-      
-
-    // m_BluePoorMansAutoRight = new SequentialCommandGroup(
-    //   new PoorLeaveZone(m_drivetrain, m_vision))
-    //   .andThen(new AutoSpecificTag(m_poseEstimator, m_vision, m_trajCreation, -Constants.AutoConstants.xApriltagDisplacement, -Constants.AutoConstants.yApriltagDisplacementright, 20))
-    //   .alongWith(new ZeroIntake(m_intake).andThen((new ZeroElevator(m_payload))))
-    //   .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L2Position))
-    //   .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L2Position))
-    //   .andThen(new SetBagSpeedTimed(m_bag))
-    //   .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.algaeIntakePosition))
-    //   .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.topAlgaePosition))
-    //   .andThen(new AutoDrive(m_drivetrain, 0.2, 0, 0.5))
-    //   .andThen(new AutoDrive(m_drivetrain, 0, -0.2, 0.5))
-    //   .andThen(new AutoDrive(m_drivetrain, -0.2, 0, 0.5))
-    //   .andThen(new AutoDrive(m_drivetrain,0,0,0));
-
-
-    //   m_RedPoorMansAutoLeft = new SequentialCommandGroup(
-    //     new PoorLeaveZone(m_drivetrain, m_vision))
-    //     .andThen(new AutoSpecificTag(m_poseEstimator, m_vision, m_trajCreation, -Constants.AutoConstants.xApriltagDisplacement, -Constants.AutoConstants.yApriltagDisplacementright, 9))
-    //     .alongWith(new ZeroIntake(m_intake).andThen((new ZeroElevator(m_payload))))
-    //     .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L2Position))
-    //     .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L2Position))
-    //     .andThen(new SetBagSpeedTimed(m_bag))
-    //     .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.algaeIntakePosition))
-    //     .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.topAlgaePosition))
-    //     .andThen(new AutoDrive(m_drivetrain, 0.2, 0, 0.5))
-    //     .andThen(new AutoDrive(m_drivetrain, 0, 0.2, 0.5))
-    //     .andThen(new AutoDrive(m_drivetrain, -0.2, 0, 0.5))
-    //     .andThen(new AutoDrive(m_drivetrain,0,0,0));
-
-    //   m_RedPoorMansAutoRight = new SequentialCommandGroup(
-    //     new PoorLeaveZone(m_drivetrain, m_vision))
-    //     .andThen(new AutoSpecificTag(m_poseEstimator, m_vision, m_trajCreation, -Constants.AutoConstants.xApriltagDisplacement, -Constants.AutoConstants.yApriltagDisplacementright, 11))
-    //     .alongWith(new ZeroIntake(m_intake).andThen((new ZeroElevator(m_payload))))
-    //     .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L2Position))
-    //     .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L2Position))
-    //     .andThen(new SetBagSpeedTimed(m_bag))
-    //     .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.algaeIntakePosition))
-    //     .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.topAlgaePosition))
-    //     .andThen(new AutoDrive(m_drivetrain, 0.2, 0, 0.5))
-    //     .andThen(new AutoDrive(m_drivetrain, 0, -0.2, 0.5))
-    //     .andThen(new AutoDrive(m_drivetrain, -0.2, 0, 0.5))
-    //     .andThen(new AutoDrive(m_drivetrain,0,0,0));
-
-    //     m_twoAlgaeAuto = new SequentialCommandGroup(
-    //       new PoorLeaveZone(m_drivetrain, m_vision))
-    //       .andThen(new AutoSpecificTag(m_poseEstimator, m_vision, m_trajCreation, -Constants.AutoConstants.xApriltagDisplacement, -Constants.AutoConstants.yApriltagDisplacementright, 20))
-    //       .alongWith(new ZeroIntake(m_intake).andThen((new ZeroElevator(m_payload))))
-    //       .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.L2Position))
-    //       .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L2Position))
-    //       .andThen(new SetBagSpeedTimed(m_bag))
-    //       .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.algaeIntakePosition))
-    //       .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.topAlgaePosition))
-    //       .andThen(new AutoDrive(m_drivetrain, 0.2, 0, 0.5))
-    //       .andThen(new AutoDrive(m_drivetrain, 0, 0.2, 0.5))
-    //       .andThen(new AutoDrive(m_drivetrain, -0.2, 0, 0.5))
-    //       .andThen(new AutoDrive(m_drivetrain,0,0,0))
-    //       .andThen(new AutoDrive(m_drivetrain, -0.5,0,1))
-    //       .andThen(new AutoSpecificTag(m_poseEstimator, m_vision, m_trajCreation, -Constants.AutoConstants.xApriltagDisplacement, -Constants.AutoConstants.yApriltagDisplacementright, 19))
-    //       .andThen(new SetIntakePivotPosition(m_intake, m_payload, Constants.IntakeConstants.algaeIntakePosition))
-    //       .andThen(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.bottomAlgaePosition))
-    //       .andThen(new AutoDrive(m_drivetrain, 0.2, 0, 0.5))
-    //       .andThen(new AutoDrive(m_drivetrain, 0, 0.2, 0.5))
-    //       .andThen(new AutoDrive(m_drivetrain, -0.2, 0, 0.5))
-    //       .andThen(new AutoDrive(m_drivetrain,0,0,0));
-
-    m_outAndOpenClimb = null; //new SequentialCommandGroup(m_pivotClimbOut).andThen(m_openServo);
-    m_inAndClosedClimb = null;//new SequentialCommandGroup(m_closeServo).andThen(m_pivotClimbIn);
-
-    NamedCommands.registerCommand("autoL1", m_autoL1);
-    NamedCommands.registerCommand("autoL2", m_autoL2);
-    NamedCommands.registerCommand("autoL3", m_autoL3);
-    NamedCommands.registerCommand("Leave Zone", m_SuperPoorMansAutoOnlyLeave);
-    // NamedCommands.registerCommand("AprilCenter", m_apriltagCentering);
-    NamedCommands.registerCommand("autoCoral", m_autoCoralStation2);
-
-    m_chooser.addOption("Auto L1", m_autoL1);
-    m_chooser.addOption("Auto L2", m_autoL2);
-    m_chooser.addOption("Auto L3", m_autoL3);
-    m_chooser.addOption("Leave Zone", m_SuperPoorMansAutoOnlyLeave);
-    // m_chooser.addOption("Forward Meter",m_forwardMeter);
-    // m_chooser.addOption("Leave Zone",m_LeaveZone);
-
-    m_chooser.setDefaultOption("Leave Zone", m_SuperPoorMansAutoOnlyLeave);
-    // m_chooser.addOption("BLUE Poor Man's Auto Right", m_BluePoorMansAutoLeft);
-    // m_chooser.addOption("BLUE Poor Man's Auto Left", m_BluePoorMansAutoRight);
-    // m_chooser.addOption("RED Poor Man's Auto Right", m_RedPoorMansAutoLeft);
-    // m_chooser.addOption("RED Poor Man's Auto Left", m_RedPoorMansAutoRight);
-    // m_chooser.addOption("(DO NOT RUN) Two Algae Removal", m_twoAlgaeAuto);
-
-    SmartDashboard.putData(m_chooser);
-  }
-
-
 
   private void configureBindings() {
-    ControlMap.driver_controls.leftBumper().onTrue(new InstantCommand(() -> m_drivetrain.resetGyro()));
-    // ControlMap.driver_controls.leftTrigger().onTrue(new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, 
-    // -Constants.AutoConstants.xApriltagDisplacement,
-    // Constants.AutoConstants.yApriltagDisplacementleft));
-    // ControlMap.driver_controls.rightTrigger().onTrue(new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, 
-    // -Constants.AutoConstants.xApriltagDisplacement,
-    // -Constants.AutoConstants.yApriltagDisplacementright));
-
-    ControlMap.gunnerButton1.whileTrue(m_BagIn);
-    ControlMap.gunnerButton2.whileTrue(m_BagOut);
-    ControlMap.gunnerButton3.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancelAll())); //
-    ControlMap.gunnerButton8.onTrue(m_autoBottomAlgae);
-    ControlMap.gunnerButton9.onTrue(m_autoTopAlgae);
-    ControlMap.gunnerButton14.onTrue(m_autoZero);
-    ControlMap.gunnerButton13.onTrue(m_autoL2);
-    ControlMap.driver_controls.rightBumper().onTrue(new SetElevatorPosition(m_payload, m_intake, Constants.ElevatorConstants.L2Position));
-    ControlMap.gunnerButton12.onTrue(m_autoL3);
-    ControlMap.gunnerButton11.onTrue(m_autoCoralStation);
-  }
-
-  public void configureDefaultCommand(){
-    m_drivetrain.setDefaultCommand(m_defaultDrive);
-    m_payload.setDefaultCommand(m_defaultElevatorCommand);
-    m_intake.setDefaultCommand(m_defaultIntakeCommand);
+    m_driverController.leftBumper().onTrue(new SetOdometryPosition(m_swerve, new Pose2d()));
+    m_driverController.rightBumper().onTrue(new SetOdometryPosition(m_swerve, new Pose2d(0,0,new Rotation2d(Math.PI))));
+    
+    // SWITCH WITH CONTROLLERS
+    Trigger manualOverrideTrigger = new Trigger(() ->
+      Math.abs(m_gunController.getLeftY()) > PayloadConstants.initializeDEADBAND
+      || Math.abs(m_gunController.getRightX()) > PayloadConstants.initializeDEADBAND
+    );
+    manualOverrideTrigger.onTrue(new ArcadeGun(m_payload,m_gunController));
+    m_gunController.x().onTrue(new Zero(m_payload));
+    m_gunController.a().onTrue(new PayloadSetPoint(m_payload, PayloadConstants.L2Position, PayloadConstants.coralScoringPosition));
+    m_gunController.y().onTrue(new PayloadSetPoint(m_payload, PayloadConstants.L3Position, PayloadConstants.coralScoringPosition));
+    m_gunController.b().onTrue(new PayloadSetPoint(m_payload, PayloadConstants.CoralStationElevatorPosition, PayloadConstants.CoralStationIntakePosition));
+    m_gunController.leftBumper().onTrue(new PayloadSetPoint(m_payload, PayloadConstants.bottomAlgaePosition, PayloadConstants.algaeIntakePosition));
+    m_gunController.rightBumper().onTrue(new PayloadSetPoint(m_payload, PayloadConstants.topAlgaePosition, PayloadConstants.algaeIntakePosition));
+    // Trigger driverStationManualOverrideTrigger = new Trigger(() ->
+    //   (gunner_controls.getRawAxis(0) != -0.0078125)
+    //   || (gunner_controls.getRawAxis(1) != -0.0078125)
+    // );
+    // driverStationManualOverrideTrigger.onTrue(new DriverStationArcadeGun(m_payload,gunner_controls));
+    // gunnerButton1.whileTrue(new DriverStationBag(m_bag, BagConstants.driverBagSpeed));
+    // gunnerButton2.whileTrue(new DriverStationBag(m_bag, -BagConstants.driverBagSpeed));
+    // gunnerButton8.onTrue(new PayloadSetPoint(m_payload, PayloadConstants.bottomAlgaePosition, PayloadConstants.algaeIntakePosition));
+    // gunnerButton9.onTrue(new PayloadSetPoint(m_payload, PayloadConstants.topAlgaePosition, PayloadConstants.algaeIntakePosition));
+    // gunnerButton14.onTrue(new Zero(m_payload));
+    // gunnerButton13.onTrue(new PayloadSetPoint(m_payload, PayloadConstants.L2Position, PayloadConstants.coralScoringPosition));
+    // gunnerButton12.onTrue(new PayloadSetPoint(m_payload, PayloadConstants.L3Position, PayloadConstants.coralScoringPosition));
+    // gunnerButton11.onTrue(new PayloadSetPoint(m_payload, PayloadConstants.CoralStationElevatorPosition, PayloadConstants.CoralStationIntakePosition));
   }
 
   public Command getAutonomousCommand() {
-    return (m_chooser.getSelected() != null) ? m_chooser.getSelected() : Commands.print("No autonomous command configured");
+    // return new SequentialCommandGroup(
+    //   new SetOdometryPosition(m_swerve, new Pose2d(0,0,new Rotation2d(Math.PI))),
+    //   new SetPayloadPosition(m_payload, PayloadConstants.startingElevatorPos, PayloadConstants.startingPivotPos),
+    //   autoChooser.getSelected(),
+    //   new AutoBagOut(m_bag)
+    // );
+
+    // all auto commands
+    // return new AutoBagOut(m_bag)
+    // return new PayloadSetPoint(m_payload, PayloadConstants.L2Position, PayloadConstants.coralScoringPosition)
+    // return new PayloadSetPoint(m_payload, PayloadConstants.topAlgaePosition, PayloadConstants.algaeIntakePosition)
+    // return new PayloadSetPoint(m_payload, PayloadConstants.bottomAlgaePosition, PayloadConstants.algaeIntakePosition)
+    // return new SimpleLeaveZone(m_swerve)
+
+    // only use if pathplanner is absolutely refusing to run properly
+    return new SequentialCommandGroup(
+      new SetOdometryPosition(m_swerve, new Pose2d(0,0,new Rotation2d(Math.PI))),
+      new SetPayloadPosition(m_payload, PayloadConstants.startingElevatorPos, PayloadConstants.startingPivotPos),
+      new SimpleLeaveZone(m_swerve)
+    );
   }
 }
