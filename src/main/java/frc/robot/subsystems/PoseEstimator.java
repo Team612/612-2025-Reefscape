@@ -145,6 +145,7 @@ arrayPublisher = NetworkTableInstance.getDefault()
 
   @Override
   public void periodic() {
+    SmartDashboard.putString("Pose2d", String.format("(%.6f, %.6f, %.6f)", getCurrentPose().getX(), getCurrentPose().getY(), getCurrentPose().getRotation().getDegrees()));
     
     //updates the drivePoseEstimator with with Navx angle and current wheel positions
     drivePoseEstimator.update(driveSubsystem.getGyro(), driveSubsystem.getPositions());

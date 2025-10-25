@@ -44,35 +44,35 @@ public class Constants {
         public static final double zMultiple = 3;
     
         // used to instantiate swerve kinematics
-        public static final double trackWidth = 0.605;
-        public static final double wheelBase = 0.605;
+        public static final double trackWidth = 0.550;
+        public static final double wheelBase = 0.555;
     
         // swerve module 0 constants, front left
         // when the absolute encoder reads the 0.63 it is actually at 0
-        public static final double mod0EncoderOffset = 0.63;
-        public static final int mod0AngleMotorID = 7;
-        public static final int mod0DriveMotorID = 6;
-        public static final int mod0CANcoderID = 0;
+        public static final double mod0EncoderOffset = 0.277;
+        public static final int mod0AngleMotorID = 5;
+        public static final int mod0DriveMotorID = 4;
+        public static final int mod0CANcoderID = 3;
     
         // swerve module 1 constants, front right
         // when the absolute encoder reads 0.02 it is actually at 0
-        public static final double mod1EncoderOffset = 0.735;
-        public static final int mod1AngleMotorID = 5;
-        public static final int mod1DriveMotorID = 4;
+        public static final double mod1EncoderOffset = 0.398;
+        public static final int mod1AngleMotorID = 3;
+        public static final int mod1DriveMotorID = 2;
         public static final int mod1CANcoderID = 2;
     
         // swerve module 2 constants, back left
         // when the absolute encoder reads 0.735 it is actually at 0
-        public static final double mod2EncoderOffset = 0.459;
-        public static final int mod2AngleMotorID = 11;
-        public static final int mod2DriveMotorID = 8;
-        public static final int mod2CANcoderID = 3;
+        public static final double mod2EncoderOffset = -0.260;
+        public static final int mod2AngleMotorID = 7;
+        public static final int mod2DriveMotorID = 6;
+        public static final int mod2CANcoderID = 4;
     
         // swerve module 3 constants, back right
         // when the absolute encoder reads 0.994 it is actually at 0
-        public static final double mod3EncoderOffset = 0.2;
-        public static final int mod3AngleMotorID = 3;
-        public static final int mod3DriveMotorID = 2;
+        public static final double mod3EncoderOffset = 0.022;
+        public static final int mod3AngleMotorID = 1;
+        public static final int mod3DriveMotorID = 8;
         public static final int mod3CANcoderID = 1;
 
         public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(

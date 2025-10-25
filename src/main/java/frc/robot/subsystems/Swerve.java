@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -73,10 +74,10 @@ public class Swerve extends SubsystemBase {
   }
 
   public void setAllModuleStates(SwerveModuleState[] states){
-    mod0.setMySwerveState(states[0]);
-    mod1.setMySwerveState(states[1]);
-    mod2.setMySwerveState(states[2]);
-    mod3.setMySwerveState(states[3]);
+    for (int i = 0; i < states.length; i++) {
+      SmartDashboard.putNumber(String.format("mod%dspeed", i),states[i].speedMetersPerSecond);
+      mod0.setMySwerveState(states[i]);
+    }
   }
 
   public void resetEncoders(){
@@ -140,6 +141,6 @@ public class Swerve extends SubsystemBase {
     SwerveModulePosition[] tempModulePositions = {mod0.getCurrentWheelPosition(),mod1.getCurrentWheelPosition(),mod2.getCurrentWheelPosition(),mod3.getCurrentWheelPosition()};
     modulePositions = tempModulePositions;
     odometry.update(gyro.getRotation2d(), tempModulePositions);
-    System.out.println(getAngleE());
+    // System.out.println(getAngleE());
   }
 }

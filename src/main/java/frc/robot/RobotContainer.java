@@ -282,15 +282,12 @@ public class RobotContainer {
     m_chooser.addOption("Leave Zone", m_SuperPoorMansAutoOnlyLeave);
     // m_chooser.addOption("Forward Meter",m_forwardMeter);
     // m_chooser.addOption("Leave Zone",m_LeaveZone);
-
-    m_chooser.setDefaultOption("Leave Zone", m_SuperPoorMansAutoOnlyLeave);
     // m_chooser.addOption("BLUE Poor Man's Auto Right", m_BluePoorMansAutoLeft);
     // m_chooser.addOption("BLUE Poor Man's Auto Left", m_BluePoorMansAutoRight);
     // m_chooser.addOption("RED Poor Man's Auto Right", m_RedPoorMansAutoLeft);
     // m_chooser.addOption("RED Poor Man's Auto Left", m_RedPoorMansAutoRight);
     // m_chooser.addOption("(DO NOT RUN) Two Algae Removal", m_twoAlgaeAuto);
-
-    SmartDashboard.putData(m_chooser);
+    SmartDashboard.putData("Auto Chooser", m_chooser);
   }
 
 
