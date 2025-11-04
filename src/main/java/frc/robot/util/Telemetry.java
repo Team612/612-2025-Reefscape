@@ -12,7 +12,7 @@ import frc.robot.subsystems.Vision;
 
 import java.util.Map;
 
-// import frc.robot.subsystems.PoseEstimator;
+import frc.robot.subsystems.PoseEstimator;
 // import frc.robot.subsystems.Vision;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.DoubleSubscriber;
@@ -27,6 +27,8 @@ public class Telemetry {
     Intake m_intake;
     Payload m_payload;
     Vision m_vision;
+    PoseEstimator m_poseEstimator = PoseEstimator.getPoseEstimatorInstance();
+
     // Climb m_climb;
 
     NetworkTableInstance table;
@@ -87,7 +89,15 @@ public class Telemetry {
 
     GenericEntry apriltagX;
     GenericEntry apriltagY;
+    GenericEntry fieldLayout;
+
     public void initData(){
+
+        // poseAngle = drivetrainData.getDoubleTopic("Robot Angle").getGenericEntry();
+        // poseY.setDouble(m_poseEstimator.getCurrentPose().getY());
+
+        // poseAngle.setDouble(m_poseEstimator.getCurrentPose().getRotation().getDegrees());
+
         m_payload = Payload.getInstance();
         m_intake = Intake.getInstance();
         // m_climb = Climb.getInstance();
@@ -101,7 +111,9 @@ public class Telemetry {
         
 
 
-        //drivetrain
+        // drivetrain
+                // fieldLayout = drivetrainData.getRawTopic("Field").getGenericEntry();
+
         pigeonAngle = drivetrainData.getDoubleTopic("Robot Angle").getGenericEntry();
         sparkFRVoltage = drivetrainData.getDoubleTopic("FR Voltage").getGenericEntry();
         sparkFLVoltage = drivetrainData.getDoubleTopic("FL Voltage").getGenericEntry();
@@ -180,7 +192,8 @@ public class Telemetry {
 
     public void updateData(){
         //drivetrain
-
+        poseX.setDouble(m_poseEstimator.getCurrentPose().getX());
+        // fieldLayout.setValue(m_poseEstimator.getField2d());
         //payload
         elevatorPosition.setDouble(m_payload.getPosition());
         elevatorVelocity.setDouble(m_payload.getVelocity());
@@ -274,7 +287,6 @@ public class Telemetry {
     //     m_climb = Climb.getInstance();
     //     m_intake = Intake.getInstance();
     //     m_payload = Payload.getInstance();
-    //     // m_poseEstimator = PoseEstimator.getPoseEstimatorInstance();
     //     // m_vision = Vision.getVisionInstance();
 
     //     drivetrainTab = Shuffleboard.getTab("Drivetrain");
@@ -345,9 +357,7 @@ public class Telemetry {
     //     Constants.IntakeConstants.bagspeed = (double) bagCurrentSetSpeed.get().getValue();
     //     Constants.ClimbConstants.pivotSpeed = (double) climbCurrentSetSpeed.get().getValue();
 
-    //     // poseX.setDouble(m_poseEstimator.getPose().getX());
-    //     // poseY.setDouble(m_poseEstimator.getPose().getY());
-    //     // poseAngle.setDouble(m_poseEstimator.getPose().getRotation().getDegrees());
+
     //     // seeAprilTag.setBoolean(m_vision.frontHasTag());
     //     // apriltagAmbiguity.setDouble((m_vision.frontHasTag()) ? m_vision.getFrontPipelineResult().getBestTarget().getPoseAmbiguity() : 0.0);
     //     // apriltagX.setDouble((m_vision.frontHasTag()) ? m_vision.getFrontPipelineResult().getBestTarget().getBestCameraToTarget().getX() : 0.0);

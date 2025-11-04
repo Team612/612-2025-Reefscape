@@ -35,24 +35,27 @@ import frc.robot.commands.IntakeCommands.ManualIntakePivotControl;
 import frc.robot.commands.IntakeCommands.SetIntakePivotPosition;
 
 import frc.robot.commands.IntakeCommands.ZeroIntake;
+import frc.robot.commands.TrajectoryCommands.MoveToPose;
 import frc.robot.subsystems.Bag;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Leds;
+import frc.robot.commands.TrajectoryCommands.TrajectoryCreation;
 import frc.robot.subsystems.Payload;
 // import frc.robot.subsystems.PoseEstimator;
-// import frc.robot.subsystems.PoseEstimator;
+import frc.robot.subsystems.PoseEstimator;
 // import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
 import frc.robot.util.ControlMap;
 import frc.robot.util.MotorConfigs;
 import frc.robot.util.PathPlannerUtil;
+import frc.robot.commands.TrajectoryCommands.RunPose;
 
 public class RobotContainer {
   private Payload m_payload;
   private Intake m_intake;
   private Bag m_bag; 
-  // private PoseEstimator m_PoseE;
+  private PoseEstimator m_PoseE;
   // private Climb m_climb;
   private Swerve m_drivetrain;
   private Vision m_vision;
@@ -63,9 +66,10 @@ public class RobotContainer {
   private SendableChooser<Command> m_chooser;
   
   
-  
+  private Command RunPose;
   private Command m_BagIn;
   private Command m_BagOut;
+  private TrajectoryCreation m_trajectoryCreation;
   // private Command m_PivotIntakeIn;
   // private Command m_PivotIntakeOut;
   // private Command m_ElevatorUp;
@@ -110,18 +114,19 @@ public class RobotContainer {
 
   public RobotContainer() {
     // m_PoseE = new PoseEstimator();
-    m_drivetrain =  new Swerve();
+    m_drivetrain =  Swerve.getInstance();
     m_payload = Payload.getInstance();
     m_intake = Intake.getInstance();
     m_bag = Bag.getInstance();
 
     m_vision = Vision.getVisionInstance();
     m_leds = Leds.getInstance();
-    
+    m_PoseE = PoseEstimator.getPoseEstimatorInstance();
     m_chooser = new SendableChooser<>();
 
     m_BagIn = new BagIn(m_bag);
     m_BagOut =  new BagOut(m_bag);
+    m_trajectoryCreation = new TrajectoryCreation();
     // m_PoseEstimator = new PoseEstimator();
     // m_forwardMeter = new MoveForward(m_drivetrain, m_poseEstimator, m_trajCreation, m_vision, 0, false);
     // m_PivotIntakeOut = new PivotIntakeOut(m_intake, m_payload);
@@ -133,7 +138,7 @@ public class RobotContainer {
 
     m_defaultElevatorCommand = new ManualElevatorControl(m_payload);
     m_defaultIntakeCommand = new ManualIntakePivotControl(m_intake);
-
+    RunPose = new RunPose(m_drivetrain, m_PoseE, m_trajectoryCreation, m_vision, 2.0);
     m_defaultDrive = new ArcadeDrive(
       () -> -ControlMap.driver_controls.getLeftY()*Constants.DrivetrainConstants.xMultiple, 
       () -> -ControlMap.driver_controls.getLeftX()*Constants.DrivetrainConstants.yMultiple, 
@@ -154,6 +159,10 @@ public class RobotContainer {
 
     // m_ClimbConstantShiftUp = new ClimbConstantShift(0.05);
     // m_ClimbConstantShiftDown = new ClimbConstantShift(-0.05);
+    List<String> autos = PathPlannerUtil.getExistingPaths();
+    for (String auto : autos) {
+      m_chooser.addOption(auto,  AutoBuilder.buildAuto(auto));
+    }
 
 
     configureCommands();
@@ -185,7 +194,7 @@ public class RobotContainer {
 
     m_autoZero = new SequentialCommandGroup(new ZeroIntake(m_intake))
     .andThen(new ZeroElevator(m_payload));
-    m_SuperPoorMansAutoOnlyLeave = new LeaveZone(m_drivetrain);
+    m_SuperPoorMansAutoOnlyLeave = new MoveToPose(m_drivetrain, new Pose2d(m_PoseE.getCurrentPose().getX()+3, m_PoseE.getCurrentPose().getY(), m_PoseE.getCurrentPose().getRotation()));
 
 
     // m_BluePoorMansAutoLeft = new SequentialCommandGroup(
@@ -299,6 +308,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     ControlMap.driver_controls.leftBumper().onTrue(new InstantCommand(() -> m_drivetrain.resetGyro()));
+    ControlMap.driver_controls.a().onTrue(RunPose);
     // ControlMap.driver_controls.leftTrigger().onTrue(new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, 
     // -Constants.AutoConstants.xApriltagDisplacement,
     // Constants.AutoConstants.yApriltagDisplacementleft));
