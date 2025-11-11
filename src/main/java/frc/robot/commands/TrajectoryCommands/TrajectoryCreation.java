@@ -36,7 +36,7 @@ public class TrajectoryCreation extends Command {
 
         List<Waypoint> bezierPoints = PathPlannerPath.waypointsFromPoses(
             new Pose2d(x, y, angle),
-            new Pose2d(x, y + distance, angle)
+            new Pose2d(x, y - distance, angle)
         );
 
         // Create the path using the bezier points created above
@@ -84,7 +84,7 @@ public class TrajectoryCreation extends Command {
 
         List<Waypoint> bezierPoints = PathPlannerPath.waypointsFromPoses(
             new Pose2d(x, y, new Rotation2d(-90)),
-            new Pose2d(x, y-distance, new Rotation2d(-90))
+            new Pose2d(x+distance, y, new Rotation2d(-90))
         );
 
         // Create the path using the bezier points created above
@@ -108,7 +108,7 @@ public class TrajectoryCreation extends Command {
 
         List<Waypoint> bezierPoints = PathPlannerPath.waypointsFromPoses(
             new Pose2d(x, y, angle),
-            new Pose2d(x, y+distance, angle)
+            new Pose2d(x-distance, y, angle)
         );
         System.out.println(x + " " + y+1);
 

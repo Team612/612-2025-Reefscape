@@ -21,13 +21,10 @@ public class Constants {
     // public static final double maxAcceleration = 0.0;
     // public static final double maxAngularVelocity = 0.0;
     // public static final double maxAngularAcceleration = 0.0;
-    public static final double maxSpeed = 4.5; // meters per second
-    public static final double maxAngularVelocity = Math.PI;
-    public static final double maxAcceleration = 1;
-    public static final double maxAngularAcceleration = Math.PI/6;
-
-
-    
+        public static final double maxSpeed = 4.5; // meters per second
+        public static final double maxAngularVelocity = Math.PI;
+        public static final double maxAcceleration = 1;
+        public static final double maxAngularAcceleration = Math.PI/6;
     public class DrivetrainConstants{
         // gyro port
         public static final int gyroID = 0;
@@ -43,6 +40,8 @@ public class Constants {
     
         // used to desaturate the wheel speeds if we request them to go over this limit
         public static final double MAX_SPEED = 1/metersPerSecondtoMotorPercentConstant; // m/s
+        public static final double kSwerveGearRatio = 1/2;
+        public static final double actualMaxSpeed = MAX_SPEED/kSwerveGearRatio*Math.PI;
     
         // this controls our desired m/s inputs from the controller
         public static final double xMultiple = MAX_SPEED;

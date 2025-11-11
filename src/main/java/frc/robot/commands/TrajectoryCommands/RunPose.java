@@ -7,6 +7,7 @@ package frc.robot.commands.TrajectoryCommands;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.Swerve;
@@ -40,8 +41,9 @@ public class RunPose extends Command {
   @Override
   public void initialize() {
 
-    PathPlannerPath path = m_traj.Backward(poseEstimatorSystem, translation);
-    
+    PathPlannerPath path = m_traj.Forward(poseEstimatorSystem, translation);
+
+  
     controllerCommand = AutoBuilder.followPath(path);
     controllerCommand.initialize();
   }

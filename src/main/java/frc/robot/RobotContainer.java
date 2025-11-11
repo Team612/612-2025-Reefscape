@@ -138,7 +138,7 @@ public class RobotContainer {
 
     m_defaultElevatorCommand = new ManualElevatorControl(m_payload);
     m_defaultIntakeCommand = new ManualIntakePivotControl(m_intake);
-    RunPose = new RunPose(m_drivetrain, m_PoseE, m_trajectoryCreation, m_vision, 2.0);
+    RunPose = new RunPose(m_drivetrain, m_PoseE, m_trajectoryCreation, m_vision, 1.0);
     m_defaultDrive = new ArcadeDrive(
       () -> -ControlMap.driver_controls.getLeftY()*Constants.DrivetrainConstants.xMultiple, 
       () -> -ControlMap.driver_controls.getLeftX()*Constants.DrivetrainConstants.yMultiple, 
