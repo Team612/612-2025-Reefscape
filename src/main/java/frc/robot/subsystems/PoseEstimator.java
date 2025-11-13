@@ -152,7 +152,7 @@ arrayPublisher = NetworkTableInstance.getDefault()
 
     
     // SmartDashboard.putData("Current Pose", );
-    //updates the drivePoseEstimator with with Navx angle and current wheel positions
+    //updates the drivePoseEstimator with Navx angle and current wheel positions
     drivePoseEstimator.update(driveSubsystem.getHeading(), driveSubsystem.getPositions());
 
 

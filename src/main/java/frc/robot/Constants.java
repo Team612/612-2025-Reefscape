@@ -21,7 +21,7 @@ public class Constants {
     // public static final double maxAcceleration = 0.0;
     // public static final double maxAngularVelocity = 0.0;
     // public static final double maxAngularAcceleration = 0.0;
-        public static final double maxSpeed = 4.5; // meters per second
+        public static final double maxSpeed = DrivetrainConstants.MAX_SPEED; // meters per second, 4.5 m/s
         public static final double maxAngularVelocity = Math.PI;
         public static final double maxAcceleration = 1;
         public static final double maxAngularAcceleration = Math.PI/6;
