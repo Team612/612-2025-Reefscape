@@ -14,7 +14,7 @@ import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.Vision;
 
-public class RunPose extends Command {
+public class PathTravel extends Command {
   private final Swerve driveSystem;
   private final Vision m_vision;
   private final PoseEstimator poseEstimatorSystem;
@@ -24,7 +24,7 @@ public class RunPose extends Command {
   private Command controllerCommand = Commands.none();
 
   /** Creates a new RunOnTheFly. */
-  public RunPose(Swerve d, PoseEstimator p, TrajectoryCreation m_trajectoryCreation, Vision v, 
+  public PathTravel(Swerve d, PoseEstimator p, TrajectoryCreation m_trajectoryCreation, Vision v, 
                     double y) {
     // Use addRequirements() here to declare subsystem dependencies.
     driveSystem = d;

@@ -7,12 +7,12 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
-public class MoveToPose extends Command {
+public class OldMoveToPose extends Command {
   private final Swerve m_drivetrain;
   private final Pose2d targetPose;
   private final double tolerance = 0.1; // Tolerance for reaching the target position (in meters)
 
-  public MoveToPose(Swerve drivetrain, Pose2d targetPose) {
+  public OldMoveToPose(Swerve drivetrain, Pose2d targetPose) {
     m_drivetrain = drivetrain;
     this.targetPose = targetPose;
     addRequirements(m_drivetrain);

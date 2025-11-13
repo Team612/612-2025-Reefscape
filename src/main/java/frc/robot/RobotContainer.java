@@ -35,7 +35,7 @@ import frc.robot.commands.IntakeCommands.ManualIntakePivotControl;
 import frc.robot.commands.IntakeCommands.SetIntakePivotPosition;
 
 import frc.robot.commands.IntakeCommands.ZeroIntake;
-import frc.robot.commands.TrajectoryCommands.MoveToPose;
+import frc.robot.commands.TrajectoryCommands.OldMoveToPose;
 import frc.robot.subsystems.Bag;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Leds;
@@ -49,7 +49,7 @@ import frc.robot.subsystems.Vision;
 import frc.robot.util.ControlMap;
 import frc.robot.util.MotorConfigs;
 import frc.robot.util.PathPlannerUtil;
-import frc.robot.commands.TrajectoryCommands.RunPose;
+import frc.robot.commands.TrajectoryCommands.PathTravel;
 
 public class RobotContainer {
   private Payload m_payload;
@@ -138,7 +138,7 @@ public class RobotContainer {
 
     m_defaultElevatorCommand = new ManualElevatorControl(m_payload);
     m_defaultIntakeCommand = new ManualIntakePivotControl(m_intake);
-    RunPose = new RunPose(m_drivetrain, m_PoseE, m_trajectoryCreation, m_vision, 1.0);
+    RunPose = new PathTravel(m_drivetrain, m_PoseE, m_trajectoryCreation, m_vision, 1.0);
     m_defaultDrive = new ArcadeDrive(
       () -> -ControlMap.driver_controls.getLeftY()*Constants.DrivetrainConstants.xMultiple, 
       () -> -ControlMap.driver_controls.getLeftX()*Constants.DrivetrainConstants.yMultiple, 
@@ -194,7 +194,7 @@ public class RobotContainer {
 
     m_autoZero = new SequentialCommandGroup(new ZeroIntake(m_intake))
     .andThen(new ZeroElevator(m_payload));
-    m_SuperPoorMansAutoOnlyLeave = new MoveToPose(m_drivetrain, new Pose2d(m_PoseE.getCurrentPose().getX()+3, m_PoseE.getCurrentPose().getY(), m_PoseE.getCurrentPose().getRotation()));
+    m_SuperPoorMansAutoOnlyLeave = new OldMoveToPose(m_drivetrain, new Pose2d(m_PoseE.getCurrentPose().getX()+3, m_PoseE.getCurrentPose().getY(), m_PoseE.getCurrentPose().getRotation()));
 
 
     // m_BluePoorMansAutoLeft = new SequentialCommandGroup(
