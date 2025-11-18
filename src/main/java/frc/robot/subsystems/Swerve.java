@@ -68,7 +68,7 @@ public class Swerve extends SubsystemBase {
 
   public Object setRobotBassedOffFieldChassisSpeeds(ChassisSpeeds c){
     SwerveModuleState[] moduleStates = Constants.DrivetrainConstants.swerveKinematics.toSwerveModuleStates(c);
-    SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.DrivetrainConstants.MAX_SPEED);
+    SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.DrivetrainConstants.maxSpeed);
     setAllModuleStates(moduleStates);
     return null;
   }

@@ -50,6 +50,7 @@ import frc.robot.util.ControlMap;
 import frc.robot.util.MotorConfigs;
 import frc.robot.util.PathPlannerUtil;
 import frc.robot.commands.TrajectoryCommands.PathTravel;
+import frc.robot.commands.TrajectoryCommands.AprilTagCentering;
 
 public class RobotContainer {
   private Payload m_payload;
@@ -66,7 +67,11 @@ public class RobotContainer {
   private SendableChooser<Command> m_chooser;
   
   
-  private Command RunPose;
+  private Command RunPoseR;
+  private Command RunPoseL;
+  private Command RunPoseB;
+  private Command RunPoseF;
+  private Command RunAprilTag;
   private Command m_BagIn;
   private Command m_BagOut;
   private TrajectoryCreation m_trajectoryCreation;
@@ -138,11 +143,20 @@ public class RobotContainer {
 
     m_defaultElevatorCommand = new ManualElevatorControl(m_payload);
     m_defaultIntakeCommand = new ManualIntakePivotControl(m_intake);
-    RunPose = new PathTravel(m_drivetrain, m_PoseE, m_trajectoryCreation, m_vision, 1.0);
+    RunPoseF = new PathTravel(m_drivetrain, m_PoseE, m_trajectoryCreation, m_vision, 1.0, "f");
+
+    RunPoseB = new PathTravel(m_drivetrain, m_PoseE, m_trajectoryCreation, m_vision, 1.0, "b");
+
+    RunPoseL = new PathTravel(m_drivetrain, m_PoseE, m_trajectoryCreation, m_vision, 1.0, "l");
+
+    RunPoseR = new PathTravel(m_drivetrain, m_PoseE, m_trajectoryCreation, m_vision, 1.0, "r");
+
+    RunAprilTag = new AprilTagCentering(m_drivetrain, m_PoseE, m_trajectoryCreation, m_vision);
+
     m_defaultDrive = new ArcadeDrive(
-      () -> -ControlMap.driver_controls.getLeftY()*Constants.DrivetrainConstants.xMultiple, 
-      () -> -ControlMap.driver_controls.getLeftX()*Constants.DrivetrainConstants.yMultiple, 
-      () -> -ControlMap.driver_controls.getRightX()*Constants.DrivetrainConstants.zMultiple,
+      () -> -ControlMap.driver_controls.getLeftY()*Constants.DrivetrainConstants.xPercent, 
+      () -> -ControlMap.driver_controls.getLeftX()*Constants.DrivetrainConstants.yPercent, 
+      () -> -ControlMap.driver_controls.getRightX()*Constants.DrivetrainConstants.zPercent,
       m_drivetrain);
 
     // m_defaultDrive = new DefaultDrive(m_drivetrain);
@@ -308,8 +322,11 @@ public class RobotContainer {
 
   private void configureBindings() {
     ControlMap.driver_controls.leftBumper().onTrue(new InstantCommand(() -> m_drivetrain.resetGyro()));
-    ControlMap.driver_controls.a().onTrue(RunPose);
-    
+    ControlMap.driver_controls.a().onTrue(RunPoseB);
+    ControlMap.driver_controls.b().onTrue(RunPoseR);
+    ControlMap.driver_controls.x().onTrue(RunPoseL);
+    ControlMap.driver_controls.y().onTrue(RunPoseF);
+    ControlMap.driver_controls.leftTrigger().onTrue(RunAprilTag);
     // ControlMap.driver_controls.leftTrigger().onTrue(new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, 
     // -Constants.AutoConstants.xApriltagDisplacement,
     // Constants.AutoConstants.yApriltagDisplacementleft));

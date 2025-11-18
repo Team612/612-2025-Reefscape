@@ -30,42 +30,43 @@ public class Constants {
         
             // swerve module 0 constants, front left
             // when the absolute encoder reads the 0.63 it is actually at 0
-            public static final double frontLEncoderOffset = 0.63;
-            public static final int frontLSteerMotorID = 7;
-            public static final int frontLDriveMotorID = 6;
-            public static final int frontLCANcoderID = 0;
+            public static final double mod0EncoderOffset = 0.63;
+            public static final int mod0AngleMotorID = 7;
+            public static final int mod0DriveMotorID = 6;
+            public static final int mod0CANcoderID = 0;
         
             // swerve module 1 constants, front right
             // when the absolute encoder reads 0.02 it is actually at 0
-            public static final double frontREncoderOffset = 0.735;
-            public static final int frontRSteerMotorID = 5;
-            public static final int frontRDriveMotorID = 4;
-            public static final int frontRCANcoderID = 2;
+            public static final double  mod1EncoderOffset = 0.735;
+            public static final int mod1AngleMotorID = 5;
+            public static final int mod1DriveMotorID = 4;
+            public static final int mod1CANcoderID = 2;
         
             // swerve module 2 constants, back left
             // when the absolute encoder reads 0.735 it is actually at 0
-            public static final double backLEncoderOffset = 0.459;
-            public static final int backLSteerMotorID = 11;
-            public static final int backLDriveMotorID = 8;
-            public static final int backLCANcoderID = 3;
+            public static final double mod2EncoderOffset = 0.459;
+            public static final int mod2AngleMotorID = 11;
+            public static final int mod2DriveMotorID = 8;
+            public static final int mod2CANcoderID = 3;
         
             // swerve module 3 constants, back right
             // when the absolute encoder reads 0.994 it is actually at 0
-            public static final double backREncoderOffset = 0.2;
-            public static final int backRSteerMotorID = 3;
-            public static final int backRDriveMotorID = 2;
-            public static final int backRCANcoderID = 1;
+            public static final double mod3EncoderOffset = 0.2;
+            public static final int mod3AngleMotorID = 3;
+            public static final int mod3DriveMotorID = 2;
+            public static final int mod3CANcoderID = 1;
         
             // measured values
             public static final double maxSpeed = 4.29184549356;
             public static final double trackWidth = 0.605;
             public static final double wheelBase = 0.605;
+
             public static final double tickToMetersConstant = 1.04; // !! has not been measured irl yet !!
         
             // desired values
-            public static final double xPercent = 1;
-            public static final double yPercent = 1;
-            public static final double zPercent = 0.3;
+            public static final double xPercent = 2;
+            public static final double yPercent = 2;
+            public static final double zPercent = 1;
             public static final double kp = 0.5;
             public static final double DEADBAND = 0.05;
             public static final double simpleLeaveZoneSpeed = 0.2;

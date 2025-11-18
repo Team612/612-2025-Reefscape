@@ -19,19 +19,16 @@ public class AprilTagCentering extends Command {
   private final Vision m_vision;
   private final PoseEstimator poseEstimatorSystem;
   private final TrajectoryCreation m_traj;
-  private final double translation;
 
   private Command controllerCommand = Commands.none();
 
   /** Creates a new RunOnTheFly. */
-  public AprilTagCentering(Swerve d, PoseEstimator p, TrajectoryCreation m_trajectoryCreation, Vision v, 
-                    double y) {
+  public AprilTagCentering(Swerve d, PoseEstimator p, TrajectoryCreation m_trajectoryCreation, Vision v) {
     // Use addRequirements() here to declare subsystem dependencies.
     driveSystem = d;
     poseEstimatorSystem = p;
     m_traj = m_trajectoryCreation;
     m_vision = v;
-    translation = y;
 
 
     addRequirements(d, v, p);
@@ -40,9 +37,11 @@ public class AprilTagCentering extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
-    PathPlannerPath path = m_traj.apriltagCentering(poseEstimatorSystem, m_vision);
-
+    PathPlannerPath path = null;
+    if (m_vision.frontHasTag()){
+      path = m_traj.apriltagCentering(poseEstimatorSystem, m_vision);
+    }
+    
   
     controllerCommand = AutoBuilder.followPath(path);
     controllerCommand.initialize();

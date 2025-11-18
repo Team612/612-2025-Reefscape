@@ -20,18 +20,20 @@ public class PathTravel extends Command {
   private final PoseEstimator poseEstimatorSystem;
   private final TrajectoryCreation m_traj;
   private final double translation;
+  private final String dire;
 
   private Command controllerCommand = Commands.none();
 
   /** Creates a new RunOnTheFly. */
   public PathTravel(Swerve d, PoseEstimator p, TrajectoryCreation m_trajectoryCreation, Vision v, 
-                    double y) {
+                    double y, String dir) {
     // Use addRequirements() here to declare subsystem dependencies.
     driveSystem = d;
     poseEstimatorSystem = p;
     m_traj = m_trajectoryCreation;
     m_vision = v;
     translation = y;
+    dire = dir;
 
 
     addRequirements(d, v, p);
@@ -40,9 +42,20 @@ public class PathTravel extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
-    PathPlannerPath path = m_traj.Forward(poseEstimatorSystem, translation);
-
+    PathPlannerPath path = null;
+    if (dire.equals("f")){
+      path = m_traj.Forward(poseEstimatorSystem, translation);
+    }
+    if (dire.equals("b")){
+      path = m_traj.Backward(poseEstimatorSystem, translation);
+    }
+    if (dire.equals("l")){
+      path = m_traj.StrafeLeft(poseEstimatorSystem, translation);
+    }
+    if (dire.equals("r")){
+      path = m_traj.StrafeRight(poseEstimatorSystem, translation);
+    }
+  
   
     controllerCommand = AutoBuilder.followPath(path);
     controllerCommand.initialize();
