@@ -50,7 +50,7 @@ public class ArcadeDrive extends Command {
     if (Math.abs(zRotation) < Constants.DrivetrainConstants.Deadband) zRotation = 0;
     ChassisSpeeds speeds = ChassisSpeeds.fromRobotRelativeSpeeds(xSpeed,ySpeed,zRotation,m_subsystem.getHeading());
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
-    SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.DrivetrainConstants.MAX_SPEED);
+    SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.DrivetrainConstants.maxSpeed);
     m_subsystem.setAllModuleStates(states);
   }
 

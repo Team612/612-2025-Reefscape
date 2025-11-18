@@ -27,7 +27,7 @@ import frc.robot.subsystems.Vision;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class TrajectoryCreation extends Command {
-  private PathConstraints constraints = new PathConstraints(Constants.maxSpeed, Constants.maxAcceleration, Constants.maxAngularVelocity, Constants.maxAngularAcceleration);
+  private PathConstraints constraints = new PathConstraints(Constants.DrivetrainConstants.maxSpeed, Constants.maxAcceleration, Constants.maxAngularVelocity, Constants.maxAngularAcceleration);
   public PathPlannerPath StrafeRight(PoseEstimator estimation, double distance){ 
         Pose2d estimatedPose = estimation.getCurrentPose();
         double x = estimatedPose.getX();

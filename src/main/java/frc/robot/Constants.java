@@ -21,72 +21,133 @@ public class Constants {
     // public static final double maxAcceleration = 0.0;
     // public static final double maxAngularVelocity = 0.0;
     // public static final double maxAngularAcceleration = 0.0;
-        public static final double maxSpeed = DrivetrainConstants.MAX_SPEED; // meters per second, 4.5 m/s
+        // public static final double maxSpeed = 4.5; // meters per second, 4.5 m/s
         public static final double maxAngularVelocity = Math.PI;
         public static final double maxAcceleration = 1;
         public static final double maxAngularAcceleration = Math.PI/6;
-    public class DrivetrainConstants{
-        // gyro port
-        public static final int gyroID = 0;
-    
-        // sets the minimum controller request percent
-        public static final double Deadband = 0.05;
-    
-        // sets the proportional constant for the angle motor PID
-        public static final double kp = 0.5;
-    
-        // this is a very important constant it measures how much motor percent it takes to travel 1 m/s
-        public static final double metersPerSecondtoMotorPercentConstant = 0.233;
-    
-        // used to desaturate the wheel speeds if we request them to go over this limit
-        public static final double MAX_SPEED = 1/metersPerSecondtoMotorPercentConstant; // m/s
-        public static final double kSwerveGearRatio = 1/2;
-        public static final double actualMaxSpeed = MAX_SPEED/kSwerveGearRatio*Math.PI;
-    
-        // this controls our desired m/s inputs from the controller
-        public static final double xMultiple = MAX_SPEED;
-        public static final double yMultiple = MAX_SPEED;
-        // this controls our desired rad/s inputs from the controller
-        public static final double zMultiple = 3;
-    
-        // used to instantiate swerve kinematics
-        public static final double trackWidth = 0.605;
-        public static final double wheelBase = 0.605;
-    
-        // swerve module 0 constants, front left
-        // when the absolute encoder reads the 0.63 it is actually at 0
-        public static final double mod0EncoderOffset = 0.63;
-        public static final int mod0AngleMotorID = 7;
-        public static final int mod0DriveMotorID = 6;
-        public static final int mod0CANcoderID = 0;
-    
-        // swerve module 1 constants, front right
-        // when the absolute encoder reads 0.02 it is actually at 0
-        public static final double mod1EncoderOffset = 0.735;
-        public static final int mod1AngleMotorID = 5;
-        public static final int mod1DriveMotorID = 4;
-        public static final int mod1CANcoderID = 2;
-    
-        // swerve module 2 constants, back left
-        // when the absolute encoder reads 0.735 it is actually at 0
-        public static final double mod2EncoderOffset = 0.459;
-        public static final int mod2AngleMotorID = 11;
-        public static final int mod2DriveMotorID = 8;
-        public static final int mod2CANcoderID = 3;
-    
-        // swerve module 3 constants, back right
-        // when the absolute encoder reads 0.994 it is actually at 0
-        public static final double mod3EncoderOffset = 0.2;
-        public static final int mod3AngleMotorID = 3;
-        public static final int mod3DriveMotorID = 2;
-        public static final int mod3CANcoderID = 1;
-
-        public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
-        new Translation2d(wheelBase / 2.0, trackWidth / 2.0),
-        new Translation2d(wheelBase / 2.0, -trackWidth / 2.0),
-        new Translation2d(-wheelBase / 2.0, trackWidth / 2.0),
-        new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0));
+        public static class DrivetrainConstants {
+            public static final int gyroID = 0;
+        
+            // swerve module 0 constants, front left
+            // when the absolute encoder reads the 0.63 it is actually at 0
+            public static final double frontLEncoderOffset = 0.63;
+            public static final int frontLSteerMotorID = 7;
+            public static final int frontLDriveMotorID = 6;
+            public static final int frontLCANcoderID = 0;
+        
+            // swerve module 1 constants, front right
+            // when the absolute encoder reads 0.02 it is actually at 0
+            public static final double frontREncoderOffset = 0.735;
+            public static final int frontRSteerMotorID = 5;
+            public static final int frontRDriveMotorID = 4;
+            public static final int frontRCANcoderID = 2;
+        
+            // swerve module 2 constants, back left
+            // when the absolute encoder reads 0.735 it is actually at 0
+            public static final double backLEncoderOffset = 0.459;
+            public static final int backLSteerMotorID = 11;
+            public static final int backLDriveMotorID = 8;
+            public static final int backLCANcoderID = 3;
+        
+            // swerve module 3 constants, back right
+            // when the absolute encoder reads 0.994 it is actually at 0
+            public static final double backREncoderOffset = 0.2;
+            public static final int backRSteerMotorID = 3;
+            public static final int backRDriveMotorID = 2;
+            public static final int backRCANcoderID = 1;
+        
+            // measured values
+            public static final double maxSpeed = 4.29184549356;
+            public static final double trackWidth = 0.605;
+            public static final double wheelBase = 0.605;
+            public static final double tickToMetersConstant = 1.04; // !! has not been measured irl yet !!
+        
+            // desired values
+            public static final double xPercent = 1;
+            public static final double yPercent = 1;
+            public static final double zPercent = 0.3;
+            public static final double kp = 0.5;
+            public static final double DEADBAND = 0.05;
+            public static final double simpleLeaveZoneSpeed = 0.2;
+            public static final int simpleLeaveZoneTime = 100;
+        
+            // derived values, hope you like math
+            public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
+                new Translation2d(wheelBase / 2.0, trackWidth / 2.0),
+                new Translation2d(wheelBase / 2.0, -trackWidth / 2.0),
+                new Translation2d(-wheelBase / 2.0, trackWidth / 2.0),
+                new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0));
+        
+            public static final double radiusInMeters = Math.sqrt((trackWidth/2)*(trackWidth/2)+(wheelBase/2)*(wheelBase/2));
+            public static final double zNecessaryOffset = zPercent/radiusInMeters;
+        
+            public static final double metersPerSecondToPercent = 1/maxSpeed;
+            public static final double Deadband = 0.05;
+            public static final double maxRadiansPerSecondSpeed = maxSpeed/radiusInMeters;
+            public static final double radiansPerSecondToPercent = 1/maxRadiansPerSecondSpeed;
     }
+    // public class DrivetrainConstants{
+    //     // gyro port
+    //     public static final int gyroID = 0;
+    
+    //     // sets the minimum controller request percent
+    //     public static final double Deadband = 0.05;
+    
+    //     // sets the proportional constant for the angle motor PID
+    //     public static final double kp = 0.5;
+    
+    //     // this is a very important constant it measures how much motor percent it takes to travel 1 m/s
+    //     public static final double metersPerSecondtoMotorPercentConstant = 0.233;
+    
+    //     // used to desaturate the wheel speeds if we request them to go over this limit
+    //     public static final double MAX_SPEED = 1/metersPerSecondtoMotorPercentConstant; // m/s
+    //     public static final double kSwerveGearRatio = 1/2;
+    //     public static final double actualMaxSpeed = MAX_SPEED/kSwerveGearRatio*Math.PI;
+    
+    //     // this controls our desired m/s inputs from the controller
+    //     public static final double xMultiple = MAX_SPEED;
+    //     public static final double yMultiple = MAX_SPEED;
+    //     // this controls our desired rad/s inputs from the controller
+    //     public static final double zMultiple = 3;
+    
+    //     // used to instantiate swerve kinematics
+    //     public static final double trackWidth = 0.605;
+    //     public static final double wheelBase = 0.605;
+    
+    //     // swerve module 0 constants, front left
+    //     // when the absolute encoder reads the 0.63 it is actually at 0
+    //     public static final double mod0EncoderOffset = 0.63;
+    //     public static final int mod0AngleMotorID = 7;
+    //     public static final int mod0DriveMotorID = 6;
+    //     public static final int mod0CANcoderID = 0;
+    
+    //     // swerve module 1 constants, front right
+    //     // when the absolute encoder reads 0.02 it is actually at 0
+    //     public static final double mod1EncoderOffset = 0.735;
+    //     public static final int mod1AngleMotorID = 5;
+    //     public static final int mod1DriveMotorID = 4;
+    //     public static final int mod1CANcoderID = 2;
+    
+    //     // swerve module 2 constants, back left
+    //     // when the absolute encoder reads 0.735 it is actually at 0
+    //     public static final double mod2EncoderOffset = 0.459;
+    //     public static final int mod2AngleMotorID = 11;
+    //     public static final int mod2DriveMotorID = 8;
+    //     public static final int mod2CANcoderID = 3;
+    
+    //     // swerve module 3 constants, back right
+    //     // when the absolute encoder reads 0.994 it is actually at 0
+    //     public static final double mod3EncoderOffset = 0.2;
+    //     public static final int mod3AngleMotorID = 3;
+    //     public static final int mod3DriveMotorID = 2;
+    //     public static final int mod3CANcoderID = 1;
+
+    //     public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
+    //     new Translation2d(wheelBase / 2.0, trackWidth / 2.0),
+    //     new Translation2d(wheelBase / 2.0, -trackWidth / 2.0),
+    //     new Translation2d(-wheelBase / 2.0, trackWidth / 2.0),
+    //     new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0));
+    // }
 
     public class IntakeConstants {
         public static final int pivotID = 16;

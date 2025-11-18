@@ -39,8 +39,8 @@ public class OldMoveToPose extends Command {
     double ySpeed = yError * 0.5;
 
     // Limit speeds to maximum allowed values
-    xSpeed = Math.min(Math.max(xSpeed, -Constants.DrivetrainConstants.MAX_SPEED), Constants.DrivetrainConstants.MAX_SPEED); // Clamp speed between -0.5 and 0.5
-    ySpeed = Math.min(Math.max(ySpeed, -Constants.DrivetrainConstants.MAX_SPEED), Constants.DrivetrainConstants.MAX_SPEED);
+    // xSpeed = Math.min(Math.max(xSpeed, -Constants.DrivetrainConstants.MAX_SPEED), Constants.DrivetrainConstants.MAX_SPEED); // Clamp speed between -0.5 and 0.5
+    // ySpeed = Math.min(Math.max(ySpeed, -Constants.DrivetrainConstants.MAX_SPEED), Constants.DrivetrainConstants.MAX_SPEED);
 
     // Create ChassisSpeeds object for field-relative movement
     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, 0.0, m_drivetrain.getHeading());

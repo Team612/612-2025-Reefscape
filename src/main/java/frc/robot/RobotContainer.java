@@ -309,6 +309,7 @@ public class RobotContainer {
   private void configureBindings() {
     ControlMap.driver_controls.leftBumper().onTrue(new InstantCommand(() -> m_drivetrain.resetGyro()));
     ControlMap.driver_controls.a().onTrue(RunPose);
+    
     // ControlMap.driver_controls.leftTrigger().onTrue(new ApriltagAlign(m_poseEstimator, m_vision, m_trajCreation, 
     // -Constants.AutoConstants.xApriltagDisplacement,
     // Constants.AutoConstants.yApriltagDisplacementleft));

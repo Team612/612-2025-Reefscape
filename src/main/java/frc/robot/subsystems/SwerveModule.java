@@ -29,7 +29,7 @@ public class SwerveModule extends SubsystemBase {
   @SuppressWarnings("deprecation")
   public void setMySwerveState(SwerveModuleState desiredState){
     SwerveModuleState optimizedState = SwerveModuleState.optimize(desiredState, new Rotation2d(getCurrentAngle()));
-    drivingMotor.set(optimizedState.speedMetersPerSecond * Constants.DrivetrainConstants.metersPerSecondtoMotorPercentConstant);
+    drivingMotor.set(optimizedState.speedMetersPerSecond * Constants.DrivetrainConstants.metersPerSecondToPercent);
     angleMotor.set(turnPIDController.calculate(getCurrentAngle(), optimizedState.angle.getRadians()));
   }
 
