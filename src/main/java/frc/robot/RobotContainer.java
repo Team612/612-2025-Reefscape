@@ -23,7 +23,8 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.AutoCommands.GunnerCommands.SetBagSpeedInTimed;
 import frc.robot.commands.AutoCommands.GunnerCommands.SetBagSpeedTimed;
 import frc.robot.commands.DriveCommands.ArcadeDrive;
-import frc.robot.commands.DriveCommands.SuperPoorLeaveZone;
+import frc.robot.commands.DriveCommands.LeaveZone;
+// import frc.robot.commands.DriveCommands.SuperPoorLeaveZone;
 import frc.robot.commands.ElevatorCommands.ManualElevatorControl;
 import frc.robot.commands.ElevatorCommands.SetElevatorPosition;
 import frc.robot.commands.ElevatorCommands.ZeroElevator;
@@ -32,12 +33,13 @@ import frc.robot.commands.IntakeCommands.BagIn;
 import frc.robot.commands.IntakeCommands.BagOut;
 import frc.robot.commands.IntakeCommands.ManualIntakePivotControl;
 import frc.robot.commands.IntakeCommands.SetIntakePivotPosition;
+
 import frc.robot.commands.IntakeCommands.ZeroIntake;
 import frc.robot.subsystems.Bag;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Leds;
 import frc.robot.subsystems.Payload;
-import frc.robot.subsystems.PoseEstimator;
+// import frc.robot.subsystems.PoseEstimator;
 // import frc.robot.subsystems.PoseEstimator;
 // import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.Swerve;
@@ -56,7 +58,7 @@ public class RobotContainer {
   private Vision m_vision;
   private Leds m_leds;
   private MotorConfigs m_motorConfigs = new MotorConfigs();
-  private PoseEstimator m_PoseEstimator;
+  // private PoseEstimator m_PoseEstimator;
 
   private SendableChooser<Command> m_chooser;
   
@@ -108,7 +110,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     // m_PoseE = new PoseEstimator();
-    m_drivetrain = Swerve.getInstance();
+    m_drivetrain =  new Swerve();
     m_payload = Payload.getInstance();
     m_intake = Intake.getInstance();
     m_bag = Bag.getInstance();
@@ -120,14 +122,14 @@ public class RobotContainer {
 
     m_BagIn = new BagIn(m_bag);
     m_BagOut =  new BagOut(m_bag);
-    m_PoseEstimator = new PoseEstimator();
+    // m_PoseEstimator = new PoseEstimator();
     // m_forwardMeter = new MoveForward(m_drivetrain, m_poseEstimator, m_trajCreation, m_vision, 0, false);
     // m_PivotIntakeOut = new PivotIntakeOut(m_intake, m_payload);
     // m_PivotIntakeIn = new PivotIntakeIn(m_intake,m_payload);
     // m_ElevatorUp = new ElevatorUp(m_payload);
     // m_ElevatorDown = new ElevatorDown(m_payload);
     // m_LeaveZone = new LeaveZone(m_drivetrain, m_vision);
-    // m_poorLeaveZone = new PoorLeaveZone(m_drivetrain, m_vision);
+    // m_poorLeaveZone = new SuperPoorLeaveZone(m_drivetrain, m_vision);
 
     m_defaultElevatorCommand = new ManualElevatorControl(m_payload);
     m_defaultIntakeCommand = new ManualIntakePivotControl(m_intake);
@@ -183,7 +185,7 @@ public class RobotContainer {
 
     m_autoZero = new SequentialCommandGroup(new ZeroIntake(m_intake))
     .andThen(new ZeroElevator(m_payload));
-    m_SuperPoorMansAutoOnlyLeave = new SuperPoorLeaveZone(m_drivetrain, m_vision, new Pose2d(m_PoseEstimator.getCurrentPose().getX()+3, m_PoseEstimator.getCurrentPose().getY(), m_PoseEstimator.getCurrentPose().getRotation()));
+    m_SuperPoorMansAutoOnlyLeave = new LeaveZone(m_drivetrain);
 
 
     // m_BluePoorMansAutoLeft = new SequentialCommandGroup(
