@@ -5,9 +5,7 @@ import java.util.List;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.targeting.PhotonTrackedTarget;
 
 import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -23,12 +21,9 @@ import com.pathplanner.lib.path.Waypoint;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -71,7 +66,6 @@ public class Swerve extends SubsystemBase {
 
   private static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
 
-  // ---------------- Vision objects ----------------
   private PhotonCamera frontCamera = new PhotonCamera(Constants.frontCameraName);
     private PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(
     aprilTagFieldLayout,
@@ -79,8 +73,6 @@ public class Swerve extends SubsystemBase {
     frontCameraTransform
   );
 
-  // ---------------- Swerve Pose Estimator ----------------
-  // Initial guess = start at origin
   private Pose2d initialPose = new Pose2d(0, 0, new Rotation2d());
   private SwerveDrivePoseEstimator poseEstimator;
 
@@ -163,7 +155,6 @@ public class Swerve extends SubsystemBase {
   }
 
   public Pose2d getPose(){
-    // return new Pose2d(odometry.getPoseMeters().getX(),odometry.getPoseMeters().getY(),heading);
     return poseEstimator.getEstimatedPosition();
   }
 
@@ -223,7 +214,6 @@ public class Swerve extends SubsystemBase {
 
     heading = Rotation2d.fromDegrees(Math.IEEEremainder(gyro.getYaw().getValueAsDouble(), 360));
 
-    // pose estimator stuff
     poseEstimator.update(
       gyro.getRotation2d(),
       getModulePositions()
@@ -241,12 +231,12 @@ public class Swerve extends SubsystemBase {
       }
     }
 
-    Pose2d fusedPose = poseEstimator.getEstimatedPosition();
+    Pose2d pos = poseEstimator.getEstimatedPosition();
 
-    SmartDashboard.putNumber("OdometryX", fusedPose.getX());
-    SmartDashboard.putNumber("OdometryY", fusedPose.getY());
-    SmartDashboard.putNumber("RobotHeading", fusedPose.getRotation().getDegrees());
-    field.setRobotPose(fusedPose);
+    SmartDashboard.putNumber("PosX", pos.getX());
+    SmartDashboard.putNumber("PosY", pos.getY());
+    SmartDashboard.putNumber("PosHeading", pos.getRotation().getDegrees());
+    field.setRobotPose(pos);
 
     if (resetTrigger){
       gyro.reset();
@@ -259,35 +249,5 @@ public class Swerve extends SubsystemBase {
     }
 
     SmartDashboard.putNumber("RobotHeading", heading.getDegrees());
-    // SmartDashboard.putNumber("OdometryHeading",odometry.getPoseMeters().getRotation().getDegrees());
-    // SmartDashboard.putNumber("OdometryX",odometry.getPoseMeters().getX());
-    // SmartDashboard.putNumber("OdometryY",odometry.getPoseMeters().getY());
-    // field.setRobotPose(odometry.getPoseMeters());
-  }
-
-  // documentation style of vision updates
-  public void updateVision() {
-    PhotonPipelineResult result = frontCamera.getLatestResult();
-
-    if (!result.hasTargets()) return;
-
-    PhotonTrackedTarget target = result.getBestTarget();
-
-    Pose3d tag3d = aprilTagFieldLayout.getTagPose(target.getFiducialId()).get();
-    Pose2d tag2d = tag3d.toPose2d();
-    double targetHeight = tag3d.getZ();
-
-    Pose2d robotPose = PhotonUtils.estimateFieldToRobot(
-        0.0,// kCameraHeight,
-        targetHeight,// kTargetHeight,
-        0.0,// kCameraPitch,
-        0.0,// kTargetPitch,
-        Rotation2d.fromDegrees(-target.getYaw()),
-        gyro.getRotation2d(),
-        tag2d,
-        new Transform2d()
-    );
-    
-    poseEstimator.addVisionMeasurement(robotPose, result.getTimestampSeconds());
   }
 }
