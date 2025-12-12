@@ -7,7 +7,7 @@ import frc.robot.subsystems.Swerve;
 public class ResetEncoders extends InstantCommand {
   Swerve m_swerve;
 
-  public ResetEncoders() {
+  public ResetEncoders(Swerve m_swerve) {
     this.m_swerve = m_swerve;
     addRequirements(m_swerve);
   }

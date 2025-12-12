@@ -4,65 +4,27 @@
 
 package frc.robot;
 
-import java.net.http.WebSocket;
-import java.nio.file.FileSystem;
-
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.net.WebServer;
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.util.Telemetry;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  private Telemetry m_telemetry;
 
   private final RobotContainer m_robotContainer;
 
+  private PowerDistribution pdh = new PowerDistribution();
+
   public Robot() {
     m_robotContainer = new RobotContainer();
-    m_telemetry = new Telemetry();
-  }
-
-  public void robotInit() {
-    WebServer.start(5800, Filesystem.getDeployDirectory().getPath()); //for elastic
-    m_telemetry.initData();
-    // if (!Preferences.containsKey("Pay Speed")){
-    //   Preferences.setDouble("Pay Speed", Constants.ElevatorConstants.payloadspeed);
-    // }
-    // if (!Preferences.containsKey("Pivot Speed")){
-    //   Preferences.setDouble("Pivot Speed", Constants.IntakeConstants.pivotspeed);
-    // }
-    // if (!Preferences.containsKey("Bag Speed")){
-    //   Preferences.setDouble("Bag Speed", Constants.IntakeConstants.bagspeed);
-    // }
-    // if (!Preferences.containsKey("Intake Pivot kP")){
-    //   Preferences.setDouble("Intake Pivot kP", Constants.IntakeConstants.kP);
-    // }
-    // if (!Preferences.containsKey("Intake Pivot kI")){
-    //   Preferences.setDouble("Intake Pivot kI", Constants.IntakeConstants.kI);
-    // }
-    // if (!Preferences.containsKey("Intake Pivot kD")){
-    //   Preferences.setDouble("Intake Pivot kD", Constants.IntakeConstants.kD);
-    // }
-    // if (!Preferences.containsKey("Elevator kP")){
-    //   Preferences.setDouble("Elevator kP", Constants.ElevatorConstants.kP);
-    // }
-    // if (!Preferences.containsKey("Elevator kI")){
-    //   Preferences.setDouble("Elevator kI", Constants.ElevatorConstants.kI);
-    // }
-    // if (!Preferences.containsKey("Elevator kD")){
-    //   Preferences.setDouble("Elevator kD", Constants.ElevatorConstants.kD);
-    // }
   }
 
   @Override
   public void robotPeriodic() {
-    m_telemetry.updateData();
     CommandScheduler.getInstance().run();
+    SmartDashboard.putNumber("Current Draw", pdh.getTotalCurrent());
   }
 
   @Override
@@ -84,8 +46,7 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousPeriodic() {
-  }
+  public void autonomousPeriodic() {}
 
   @Override
   public void autonomousExit() {}
