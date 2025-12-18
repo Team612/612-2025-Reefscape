@@ -13,27 +13,26 @@ public class Constants {
     public static final double trackWidth = 0.550;
     public static final double wheelBase = 0.555;
 
-    public static final double wheelDiameter = 0.096;
-    // public static final double gearRatio = 5.91;
-    public static final double gearRatio = 6;
-    // public static final double gearRatio = 6.75;
-    public static final double rotationsToMeters = ((Math.PI * wheelDiameter) / gearRatio)*1.3;
-
-    public static final double metersPerSecondToPercent = 0.2;
-    public static final double radiansPerSecondToPercent = 0.0127835295656;
-
     public static final SwerveDriveKinematics swerveKinematics =
         new SwerveDriveKinematics(
             new Translation2d(wheelBase / 2.0, trackWidth / 2.0),
             new Translation2d(wheelBase / 2.0, -trackWidth / 2.0),
             new Translation2d(-wheelBase / 2.0, trackWidth / 2.0),
             new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0));
+    public static final double radiusInMeters = Math.sqrt(trackWidth*trackWidth+wheelBase*wheelBase)/2;
+
+    public static final double maxMetersPerSecondSpeed = 5;
+    public static final double metersPerSecondToPercent = 1/maxMetersPerSecondSpeed;
+    public static final double maxRadiansPerSecondSpeed = maxMetersPerSecondSpeed/radiusInMeters;
+    public static final double radiansPerSecondToPercent = 1/maxRadiansPerSecondSpeed;
+
+    public static final double rotationsToMeters = 0.0653451271947;
 
     public static final double xPercent = 1;
     public static final double yPercent = 1;
     public static final double zPercent = 1;
 
-    public static final double zNecessaryOffset = (zPercent)/(Math.sqrt((trackWidth/2)*(trackWidth/2)+(wheelBase/2)*(wheelBase/2)));
+    public static final double zNecessaryOffset = zPercent/radiusInMeters;
 
     public static final int controllerPortNumber = 0;
 

@@ -83,6 +83,7 @@ public class Swerve extends SubsystemBase {
     backR = new SwerveModule(Constants.backRDriveMotorID, Constants.backRSteerMotorID, Constants.backRCANcoderID, Constants.backREncoderOffset);
 
     gyro = new Pigeon2(Constants.gyroID);
+
     candle = new CANdle(Constants.CANdleID);
     candle.animate(null);
     candle.setLEDs(255,255,255);
@@ -98,10 +99,10 @@ public class Swerve extends SubsystemBase {
       new Rotation2d(),
       getModulePositions(),
       initialPose,
-      // State standard deviations (meters and radians)
-      VecBuilder.fill(0.1, 0.1, 0.05),
+      // Odometry Standard Deviations, x y & z
+      VecBuilder.fill(0.003, 0.003, 0.001),
       // Vision measurement std deviations
-      VecBuilder.fill(0.9, 0.9, 6)
+      VecBuilder.fill(0.07, 0.07, 0.08)
     );
 
     Shuffleboard.getTab("Drive").add("Field", field).withSize(6, 4);
@@ -207,6 +208,7 @@ public class Swerve extends SubsystemBase {
 
   @Override
   public void periodic() {
+
     SmartDashboard.putNumber("FrontL", frontL.angleEncoder.getAbsolutePosition().getValueAsDouble());
     SmartDashboard.putNumber("FrontR", frontR.angleEncoder.getAbsolutePosition().getValueAsDouble());
     SmartDashboard.putNumber("BackL", backL.angleEncoder.getAbsolutePosition().getValueAsDouble());
